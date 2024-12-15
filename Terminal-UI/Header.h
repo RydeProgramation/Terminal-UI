@@ -1,0 +1,27 @@
+#include <iostream>
+#include <stdio.h>     
+#include <stdlib.h>   
+#include <Windows.h>
+#include <time.h>
+#include <fstream>
+#include <vector>
+#include <fcntl.h>
+#include <string>
+#include <optional>
+#include <conio.h> 
+#include <limits>
+#include <random>
+#include <sstream>
+#include <mutex>
+#include <thread>
+#include <algorithm>
+#include <functional>
+#include <unordered_map>
+
+#include "trUI.h"
+#include "trSize.h"
+#include "trCoordinate.h"
+#include "trWidget.h"
+#include "trSelector.h"
+#include "trUI_Tools.h"
+#include "trData.h"
