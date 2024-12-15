@@ -1,0 +1,393 @@
+#include "trUI.h"
+
+// UI
+
+using namespace std;
+using namespace UITools;
+
+// fnc
+
+trUserInterface* CreateUserInterface()
+{
+	return new trUserInterface();
+}
+
+// INI
+
+trUserInterface::trUserInterface() : SizeWindow(new trSize((0), int(0))), CursorSelector(new trData(int(0))), BorderWidth(int(5)), mtx(new std::mutex), KB(new trKeyBoardManagement()), Widgets(new std::unordered_map<std::string, trWidget*>())
+{
+	
+}
+
+// CODE
+
+void trUserInterface::Start()
+{
+	SetupConsole();
+
+	/*T = new thread(&trUserInterface::Loop, this);
+
+	T2 = new thread(&trKeyBoardManagement::Start, &KB);*/
+
+	T = new std::thread([this]() { this->Loop(); });
+	T2 = new std::thread([this]() { this->KB->Start(); });
+}
+
+void trUserInterface::Update()
+{
+	SizeWindow->SetSize(GetConsoleSize().GetSizeX().GetDataActual(), GetConsoleSize().GetSizeY().GetDataActual());
+	SizeWindow->Update();
+
+	std::lock_guard<std::mutex> lock(*mtx);
+
+	UpdateWidget();
+
+	if (RefreshVerification()) // BUG A CHAQUE FOIS CA RENTRE DANS LE RESFRESH
+	{
+		Refresh();
+	}
+
+	for (auto& widg : *Widgets)
+	{
+
+		if (!widg.second->GetActivate().GetDataActual())
+		{
+			HideWidget(widg.second);
+		}
+
+		else if (widg.second->GetActivate().GetDataActual() && widg.second->GetChange().GetDataActual())
+		{
+			DisplayWidget(widg.second);
+		}
+	}
+
+	KB->ActionBTN();
+}
+
+void trUserInterface::Refresh()
+{
+	// system("cls");
+
+	Border();
+
+	for (auto& widg : *Widgets)
+	{
+		widg.second->SetChange(true);
+	}
+
+	hideCursor();
+}
+
+bool trUserInterface::RefreshVerification()
+{
+	return (SizeWindow->GetSizeX().GetDataActual() != SizeWindow->GetSizeX().GetDataOld() || SizeWindow->GetSizeY().GetDataActual() != SizeWindow->GetSizeY().GetDataOld()) ? true : false;
+}
+
+void trUserInterface::Loop()
+{
+	while (true)
+	{
+		Update();
+	}
+}
+
+void trUserInterface::Border()
+{
+	MoveCursorTo(trCoordinate<int>(0, 0));
+
+	std::ostringstream output;
+
+	string topBottomBorder(SizeWindow->GetSizeX().GetDataActual() * BorderWidth, '*');
+	string sideBorder(BorderWidth * 2, '*');
+	string emptyLine(SizeWindow->GetSizeX().GetDataActual() - BorderWidth * 4, ' ');
+
+	output << topBottomBorder;
+
+	string middleLine = sideBorder + emptyLine + sideBorder;
+	for (int i = BorderWidth; i < SizeWindow->GetSizeY().GetDataActual() - BorderWidth; ++i) {
+		output << middleLine;
+	}
+
+	output << topBottomBorder;
+
+	SetColorConsole(15);
+
+	cout << output.str();
+	
+	MoveCursorTo(trCoordinate<int>(0, 0));
+}
+
+void trUserInterface::SetupConsole()
+{
+	SetConsoleOutputCP(CP_UTF8);
+
+	SetConsoleCP(CP_UTF8);
+
+	BorderWidth = 6;
+
+	CursorSelector = 0;
+
+	hideCursor();
+
+	SizeWindow->SetSize(GetConsoleSize(BorderWidth).GetSizeX().GetDataActual(), GetConsoleSize(BorderWidth).GetSizeY().GetDataActual());
+	SizeWindow->Update();
+
+	KB->CreateBTN(new trBTN_Key(VK_LEFT, bind(&trUserInterface::SelectPrevious, this)));
+	KB->CreateBTN(new trBTN_Key(VK_RIGHT, bind(&trUserInterface::SelectNext, this)));
+}
+
+bool trUserInterface::CreateWidget(trWidget* WIDG)
+{
+	std::lock_guard<std::mutex> lock(*mtx);
+
+	if (Widgets->find(WIDG->GetName().GetDataActual()) == Widgets->end())
+	{
+		(*Widgets)[WIDG->GetName().GetDataActual()] = WIDG;
+	}
+
+	else
+	{
+		return false;
+	}
+
+	return true;
+}
+
+bool trUserInterface::DestroyWidget(trWidget* WIDG)
+{
+	std::lock_guard<std::mutex> lock(*mtx);
+
+	CleanWidget(WIDG);
+
+	Widgets->erase(WIDG->GetName().GetDataActual());
+
+	delete WIDG;
+
+	return false;
+}
+
+bool trUserInterface::DestroyWidget(const string& name) // VERIF SI BUG
+{
+	std::lock_guard<std::mutex> lock(*mtx);
+
+	if ((*Widgets)[name])
+	{
+		CleanWidget((*Widgets)[name]);
+
+		delete (*Widgets)[name];
+
+		Widgets->erase(name);
+
+		return true;
+	}
+
+	throw std::out_of_range("ERROR N'EXISTE PAS");
+
+	return false;
+}
+
+const trWidget trUserInterface::GetWidget(const string& Name) const
+{	
+	auto it = Widgets->find(Name);
+
+	if (it != Widgets->end()) 
+	{
+		return *(it->second);
+	}
+
+	else 
+	{
+		throw std::out_of_range("Widget not found");
+	}
+}
+
+int trUserInterface::DisplayWidget(trWidget* WIDG)
+{
+	if (WIDG->GetChange().GetDataActual())
+	{
+		CleanWidget(WIDG);
+
+		std::ostringstream output;
+
+		int c = 0;
+
+		for (int j = WIDG->GetRelativePosition().GetY().GetDataActual(); j < WIDG->GetRelativePosition().GetY().GetDataActual() + WIDG->GetSize().GetSizeY().GetDataActual(); j++)
+		{
+			output << WIDG->GetContent().GetDataActual().substr(min(c, WIDG->GetContent().GetDataActual().size() - 1), WIDG->GetSize().GetSizeX().GetDataActual() - max(WIDG->GetRelativePosition().GetX().GetDataActual() + WIDG->GetSize().GetSizeX().GetDataActual() - GetConsoleSize(BorderWidth).GetSizeX().GetDataActual(), 0));
+
+			// ANALYSER SI OUTPOUT NE CONTIENT PAS DE "\n"
+			
+			MoveCursorTo(trCoordinate<int>(WIDG->GetRelativePosition().GetX().GetDataActual(), j), BorderWidth);
+
+			if (!IsOutSide(trCoordinate<int>(WIDG->GetRelativePosition().GetX().GetDataActual(), j), BorderWidth))
+			{	
+				WIDG->Display(output);
+			}
+
+			output.str("");
+
+			c += WIDG->GetSize().GetSizeX().GetDataActual();
+		}
+
+		WIDG->SetChange(false);
+	}
+
+	if (WIDG->GetDelayCaractere().GetDataActual() != 0) // <-- jsp si ça sert a qqchose
+	{                                                   // <-- jsp si ça sert a qqchose
+		WIDG->SetDelayCaractere(0);                     // <-- jsp si ça sert a qqchose
+	}                                                   // <-- jsp si ça sert a qqchose
+
+	return 0;
+}
+
+void trUserInterface::HideWidget(trWidget* WIDG) // < ----- BUUUG
+{
+	/*for (int j = min(WIDG->GetRelativePosition().GetY().GetDataActual(), WIDG->GetRelativePosition().GetY().GetDataOld()); j < max(WIDG->GetRelativePosition().GetY().GetDataActual(), WIDG->GetRelativePosition().GetY().GetDataOld()) + max(WIDG->GetSize().GetSizeY().GetDataOld(), WIDG->GetSize().GetSizeY().GetDataActual()); j++)
+	{
+		for (int i = min(WIDG->GetRelativePosition().GetX().GetDataActual(), WIDG->GetRelativePosition().GetX().GetDataOld()); i < max(WIDG->GetRelativePosition().GetX().GetDataActual(), WIDG->GetRelativePosition().GetX().GetDataOld()) + max(WIDG->GetSize().GetSizeX().GetDataOld(), WIDG->GetSize().GetSizeX().GetDataActual()); i++)
+		{
+			if (IsOutSide(trCoordinate<int>(i, j), false))
+			{
+				continue; // <-- pas sur (chatgpt)
+			}
+
+			MoveCursorTo(trCoordinate<int>(j, i), BorderWidth);
+			cout << " ";
+		}
+	}*/
+
+	throw std::out_of_range("code pas fait (utiliser cleanwidget ?)"); // jsp pas pk j'utilise out of range ;(((((((((((((((((
+}
+
+void trUserInterface::CleanWidget(trWidget* WIDG)
+{
+	for (int j = WIDG->GetRelativePosition().GetY().GetDataOld(); j <= WIDG->GetRelativePosition().GetY().GetDataOld() + WIDG->GetSize().GetSizeY().GetDataOld(); j++)
+	{
+		if (!IsOutSide(trCoordinate<int>(WIDG->GetRelativePosition().GetX().GetDataOld(), j), BorderWidth))
+		{
+			SetColorConsole(15);
+			string clean(WIDG->GetSize().GetSizeX().GetDataOld() - max(WIDG->GetRelativePosition().GetX().GetDataOld() + WIDG->GetSize().GetSizeX().GetDataOld() - GetConsoleSize(BorderWidth).GetSizeX().GetDataActual(), 0), ' ');
+			MoveCursorTo(trCoordinate<int>(WIDG->GetRelativePosition().GetX().GetDataOld(), j), BorderWidth);
+			cout << clean;
+		}
+	}
+}
+
+void trUserInterface::UpdateWidget()
+{
+	for (auto& widg : *Widgets)
+	{
+		widg.second->APPLY(GetConsoleSize(BorderWidth));
+	}
+}
+
+void trUserInterface::Select(const string& name)
+{
+	for (auto& widg : *Widgets)
+	{
+		if (trSelector* sltr = dynamic_cast<trSelector*>(widg.second))
+		{
+			sltr->SetSelected(sltr->trWidget::GetName().GetDataActual() == name);
+			sltr->trWidget::SetChange(true);
+		}
+	}
+}
+
+void trUserInterface::SelectNext() // <-- a refaire en entier (car pas optimiser + non-utilisation de vector)
+{
+	/*bool found = false;
+
+	for (auto& widg : Widgets)
+	{
+		if (trSelector* sltr = dynamic_cast<trSelector*>(widg.second))
+		{
+			if (found)
+			{
+				sltr->SetSelected(true);
+				sltr->SetChange(true);
+				found = false;
+				i = Widgets.size();
+			}
+
+			else if (sltr->IsSelected().GetDataActual())
+			{
+				found = true;
+				sltr->SetSelected(false);
+				sltr->SetChange(true);
+			}
+		}
+	}
+
+	if (found)
+	{
+		for (size_t i = 0; i < Widgets.size(); i++)
+		{
+			if (trSelector* sltr = dynamic_cast<trSelector*>(Widgets[i]))
+			{
+				sltr->SetSelected(true);
+				sltr->SetChange(true);
+				found = false;
+				i = Widgets.size();
+			}
+		}
+	}*/
+}
+
+void trUserInterface::SelectPrevious() // <-- a refaire en entier (car pas optimiser + non-utilisation de vector)
+{
+	/*bool found = false;
+
+	for (int i = int(Widgets.size()) - 1; i >= 0; i--)
+	{
+		if (trSelector* sltr = dynamic_cast<trSelector*>(Widgets[i]))
+		{
+			if (found)
+			{
+				sltr->SetSelected(true);
+				sltr->SetChange(true);
+				found = false;
+				i = 0;
+			}
+
+			else if (sltr->IsSelected().GetDataActual())
+			{
+				found = true;
+				sltr->SetSelected(false);
+				sltr->SetChange(true);
+			}
+		}
+	}
+
+	if (found)
+	{
+		for (int i = int(Widgets.size()) - 1; i > 0; i--)
+		{
+			if (trSelector* sltr = dynamic_cast<trSelector*>(Widgets[i]))
+			{
+				sltr->SetSelected(true);
+				sltr->SetChange(true);
+				found = false;
+				i = 0;
+			}
+		}
+	}*/
+}
+
+// DESTRUCTEUR
+
+trUserInterface::~trUserInterface()
+{
+	delete KB;
+
+	delete mtx;
+
+	delete Widgets;
+
+	delete T;
+
+	delete T2;
+
+	delete SizeWindow;
+
+	delete CursorSelector;
+}
