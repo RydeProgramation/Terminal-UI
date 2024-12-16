@@ -64,6 +64,7 @@ public:
 	void AddToSize(int x_, int y_);
 
 	void AddToContent(const std::string& content_);
+	//void AddToContent(const char& content_);
 
 	void AddToColor(int color_);
 

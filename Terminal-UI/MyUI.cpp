@@ -24,9 +24,9 @@ void MyUI::Start()
 	trUserInterface::Start();
 	
 	// ZONE DE TEST
-	while (true)
+	/*while (true)
 	{
-	}
+	}*/
 	// FIN DE ZONE DE TEST
 
 	vector<string> hello3;
@@ -101,19 +101,17 @@ void MyUI::Start()
 
 	DestroyWidget("Hello3");
 
-	string parag = "Salutations, brave aventurier ! Mon projet est une application magique qui ouvre les portes des marches financiers.\nA l'aide de la puissante technique de Monte-Carlo, je simule des trajectoire aleatoire pour les options (calls et puts).Imagine-toi chevauchant un dragon volant au-dessus des courbes de prix, scrutant les volatilites et les risques.\nLes prix d'options se revelent tels des tresors caches dans les profondeurs du marche. Que la chance soit avec toi !\nJe te propose donc cette application pour que tu fasses tes propres simulations et decouvres les secrets enfouis dans\nles volutes des courbes financieres.";
-
-	// BUUG
-	// BUUG --- EN gros le string parag contient des \n qui font que le texte saute la ligne et du coup fait écrire dans le terminal n'importe comment
-	// BUUG
+	string parag = "Salutations, brave aventurier ! Mon projet est une application magique qui ouvre les portes des marches financiers.\nA l'aide de la puissante technique de Monte-Carlo, je simule des trajectoire aleatoire pour les options (calls et puts).\nImagine-toi chevauchant un dragon volant au-dessus des courbes de prix, scrutant les volatilites et les risques.\nLes prix d'options se revelent tels des tresors caches dans les profondeurs du marche. Que la probabilites soit avec toi !\nJe te propose donc cette application pour que tu fasses tes propres simulations et decouvres les secrets enfouis dans\nles volutes des courbes financieres.";
 
 	trSize<int>* size_ = new trSize<int>(GetConsoleSize());
 
-	CreateWidgetWait(new trWidget(0, 0, 120, 6, MiddleCenter, parag, "Paragraphe"));
+	CreateWidgetWait(new trWidget(0, 0, 120, 6, MiddleCenter, "S", "Paragraphe")); // BUB
 
-	// Widgets[WidgetResearch("Paragraphe")]->delay_caractere = 25;
-
-	Sleep(25 * parag.size());
+	for (int i = 1; i < parag.size(); i++)
+	{
+		SetWidget("Paragraphe", &trWidget::AddToContent, string(1, parag[i])); // BUB
+		Sleep(25); // BUB
+	}
 
 	/*while (Widgets[WidgetResearch("Paragraphe")]->delay_caractere != 0)
 	{
@@ -130,7 +128,7 @@ void MyUI::Start()
 		Sleep(800);
 	}
 
-	DestroyWidget("Paragraphe");
+	DestroyWidget("Paragraphe"); // bug ?
 
 	Menu1();
 

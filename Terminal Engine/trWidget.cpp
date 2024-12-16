@@ -92,6 +92,13 @@ void trWidget::AddToContent(const string& content_)
 	content->SetData(content->GetDataNew() + content_);
 }
 
+/*
+void trWidget::AddToContent(const char& content_)
+{
+	string temp(1, content_);
+	content->SetData(content->GetDataNew() + temp);
+}*/
+
 void trWidget::AddToColor(int color_)
 {
 	color->SetData(color->GetDataNew() + color_);
@@ -204,7 +211,6 @@ void trWidget::UpdateRelativePosition()
 {
 	RelativePosition->SetCoord(max(Position->GetX().GetDataNew() + RelativePositionPoint->GetX().GetDataActual(), 0), max(Position->GetY().GetDataNew() + RelativePositionPoint->GetY().GetDataActual(), 0));
 }
-
 
 void trWidget::APPLY(const trSize<int> SizeWindow_)
 {

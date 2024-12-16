@@ -141,6 +141,14 @@ private: // FNC
 	void MoveCursorToOstream(const trCoordinate<int> &Pos, std::ostringstream *output, const trSize<int> &SizeOutput);
 
 	/// <summary>
+	/// Permet de déplacer pour un ostrinstream donnée la position du curseur en prenant compte de la bordure
+	/// </summary>
+	/// <param name="Pos"></param>
+	/// <param name="output"></param>
+	/// <param name="BorderW"></param>
+	void MoveCursorToOstream(const trCoordinate<int>& Pos, std::ostringstream* output, const trSize<int>& SizeOutput, int BorderW);
+
+	/// <summary>
 	/// Permet de déplacer pour un ostrinstream donnée la position du curseur
 	/// </summary>
 	/// <param name="Pos"></param>
@@ -168,6 +176,11 @@ private: // FNC
 	/// 
 	/// </summary>
 	void Loop();
+
+	/// <summary>
+	/// Raffraichie le terminal en affichant les "pixel"
+	/// </summary>
+	void Render();
 
 public:
 
