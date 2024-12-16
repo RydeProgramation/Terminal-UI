@@ -7,7 +7,7 @@ using namespace UITools;
 
 // INI
 
-MyUI::MyUI() : trUserInterface()
+MyUI::MyUI() : trUserInterface(1)
 {
 
 }
@@ -22,6 +22,12 @@ MyUI::~MyUI()
 void MyUI::Start()
 {
 	trUserInterface::Start();
+	
+	// ZONE DE TEST
+	while (true)
+	{
+	}
+	// FIN DE ZONE DE TEST
 
 	vector<string> hello3;
 

@@ -192,6 +192,9 @@ void trWidget::UpdateRelativePositionPoint(int ConsoleSize_x, int ConsoleSize_y)
 	case BottomRight:
 		RelativePositionPoint->SetCoord(ConsoleSize_x - size->GetSizeX().GetDataActual(), ConsoleSize_y - size->GetSizeY().GetDataActual());
 		break;
+	default:
+		std::cerr << "AUCUN NE CORESPOND";
+		std::exit(1);
 	}
 
 	RelativePositionPoint->Update();

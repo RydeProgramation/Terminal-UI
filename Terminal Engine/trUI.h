@@ -19,107 +19,8 @@
 #define TERMINAL_ENGINE_API __declspec(dllimport)
 #endif
 
-// INTERFACE INUTILE
-
-/*
-class TERMINAL_ENGINE_API trUserInterface // RANGER LES FONCTINON C'EST DANS UN BORDEL PAS POSSIBLE
-{
-public:
-
-	// DEF
-	virtual ~trUserInterface() = default;
-
-	// FNC
-
-	/// <summary>
-	/// Lance l'interface utilisateur
-	/// </summary>
-	virtual void Start() = 0;
-
-	/// <summary>
-	/// Update (cote...);
-	/// </summary>
-	/// <param name="BorderWidth"> BorderWidth des * </param>
-	virtual void Update() = 0;
-
-	/// <summary>
-	/// 
-	/// </summary>
-	virtual void Refresh() = 0;
-
-	/// <summary>
-	/// 
-	/// </summary>
-	virtual bool RefreshVerification() = 0;
-
-	/// <summary>
-	/// Crée une bordure
-	/// </summary>
-	/// <param name="BorderWidth">Nombre de pixel sur le coté</param>
-	virtual void Border() = 0;
-
-	/// <summary>
-	/// SetupConsole
-	/// </summary>
-	virtual void SetupConsole() = 0;
-
-	/// SELECTION ///
-
-	/// <summary>
-	/// Select (trSelector...)
-	/// </summary>
-	/// <param name="name"></param>
-	/// <returns></returns>
-	virtual void Select(std::string name) = 0; // a changer la méthode
-
-	/// <summary>
-	/// /
-	/// </summary>
-	virtual void SelectNext() = 0;
-
-	/// <summary>
-	/// 
-	/// </summary>
-	virtual void SelectPrevious() = 0;
-
-	/// WIDGET MANG ///
-
-	/// <summary>
-	/// 
-	/// </summary>
-	/// <typeparam name="Widget_T"> trWidget, trSelector... </typeparam>
-	/// <param name="WIDG"></param>
-	/// <returns></returns>
-	// template <typename Widget_T>
-	virtual bool CreateWidget(trWidget* WIDG) = 0;
-
-	/// <summary>
-	/// 
-	/// </summary>
-	/// <typeparam name="Widget_T"> trWidget, trSelector... </typeparam>
-	/// <param name="name"></param>
-	/// <param name="WIDG"></param>
-	/// <returns></returns>
-	// template <typename Widget_T> 
-	virtual bool DestroyWidget(trWidget* WIDG) = 0;
-
-	/// <summary>
-	/// 
-	/// </summary>
-	/// <typeparam name="Widget_T"> trWidget, trSelector... </typeparam>
-	/// <param name="name"></param>
-	/// <param name="WIDG"></param>
-	/// <returns></returns>
-	// template <typename Widget_T> 
-	virtual bool DestroyWidget(std::string name) = 0;
-
-	/// <summary>
-	/// FONCTION VIDE
-	/// </summary>
-	/// <param name="name"></param>
-	/// <param name="WIDG"></param>
-	virtual trWidget GetWidget(std::string name) const = 0;
-};*/
+#define DIRECT_TERMINAL 0
+#define RENDER_SYSTEM 1
 
 class TERMINAL_ENGINE_API trUserInterface : trObject // RANGER LES FONCTINON C'EST DANS UN BORDEL PAS POSSIBLE
 {
@@ -127,7 +28,7 @@ public:
 	
 	// INI
 
-	trUserInterface();
+	trUserInterface(int RenderType_);
 	
 	// FNC
 
@@ -233,6 +134,20 @@ private: // FNC
 	int DisplayWidget(trWidget* WIDG); // pas fini
 
 	/// <summary>
+	/// Permet de déplacer pour un ostrinstream donnée la position du curseur
+	/// </summary>
+	/// <param name="Pos"></param>
+	/// <param name="output"></param>
+	void MoveCursorToOstream(const trCoordinate<int> &Pos, std::ostringstream *output, const trSize<int> &SizeOutput);
+
+	/// <summary>
+	/// Permet de déplacer pour un ostrinstream donnée la position du curseur
+	/// </summary>
+	/// <param name="Pos"></param>
+	/// <param name="output"></param>
+	void CleanOstreamSize(std::ostringstream* output, const trSize<int>& SizeOutput);
+
+	/// <summary>
 	/// 
 	/// </summary>
 	/// <param name="WIDG"></param>
@@ -279,6 +194,10 @@ private:
 	trSize<int> *SizeWindow;
 
 	trData<int> *CursorSelector;
+
+	std::ostringstream *Render_;
+
+	int RenderType;
 };
 
 TERMINAL_ENGINE_API trUserInterface* CreateUserInterface();
