@@ -22,12 +22,6 @@ MyUI::~MyUI()
 void MyUI::Start()
 {
 	trUserInterface::Start();
-	
-	// ZONE DE TEST
-	/*while (true)
-	{
-	}*/
-	// FIN DE ZONE DE TEST
 
 	vector<string> hello3;
 
@@ -57,7 +51,7 @@ void MyUI::Start()
 	string hello_ = hello[0] + hello[1] + hello[2] + hello[3] + hello[4];
 	string hello2_ = hello2[0] + hello2[1] + hello2[2] + hello2[3] + hello2[4];
 
-	CreateWidgetWait(new trWidget(100, -1, 22, 5, MiddleCenter, hello_, "Hello"));
+	CreateWidget/*Wait*/(new trWidget(100, -1, 22, 5, MiddleCenter, hello_, "Hello"));
 
 	for (int i = 0; i < 115; i++)
 	{
@@ -70,16 +64,15 @@ void MyUI::Start()
 
 	DestroyWidget("Hello");
 
-	CreateWidgetWait(new trWidget(0, -1, 52, 5, MiddleCenter, hello2_, "Hello2"));
+	CreateWidget/*Wait*/(new trWidget(0, -1, 52, 5, MiddleCenter, hello2_, "Hello2"));
 
 	Sleep(20 * 100); 
 
 	DestroyWidget("Hello2");
 
-	CreateWidgetWait(new trWidget(1, -1, 54, 5, MiddleCenter, hello3_, "Hello3"));
+	CreateWidget/*Wait*/(new trWidget(1, -1, 54, 5, MiddleCenter, hello3_, "Hello3"));
 
 	SetWidget("Hello3", &trWidget::SetColor, 11);
-
 
 	Sleep(1000);
 
@@ -105,36 +98,27 @@ void MyUI::Start()
 
 	trSize<int>* size_ = new trSize<int>(GetConsoleSize());
 
-	CreateWidgetWait(new trWidget(0, 0, 120, 6, MiddleCenter, "", "Paragraphe")); // BUG Je ne peux pas mettre de content vide
-
+	CreateWidget/*Wait*/(new trWidget(0, 0, 120, 6, MiddleCenter, "", "Paragraphe"));
+	
 	for (int i = 0; i < parag.size(); i++)
 	{
-		SetWidget("Paragraphe", &trWidget::AddToContent, string(1, parag[i])); // BUG arriver aux \n ça "carche"
+		SetWidget("Paragraphe", &trWidget::AddToContent, string(1, parag[i])); 
 		Sleep(25);
 	}
 
-	while (true)
-	{
-	}
+	Sleep(3500);
 
-	//Sleep(3500);
 
-/*
 	for (int i = 0; i < 6; i++)
 	{
-		/ *Widgets[WidgetResearch("Paragraphe")]->new_size_y = Widgets[WidgetResearch("Paragraphe")]->size_y;
-
-		Widgets[WidgetResearch("Paragraphe")]->new_size_y += -1;* /
+		SetWidget("Paragraphe", &trWidget::AddToSize, 0, -1);
 
 		Sleep(800);
-	}*/
+	}
 
-	// DestroyWidget("Paragraphe"); // bug ?
+	DestroyWidget("Paragraphe");
 
-	// Menu1();
-
-	while (true)
-	{ }
+	Menu1();
 }
 
 void MyUI::Menu1()
@@ -192,6 +176,10 @@ void MyUI::Menu1()
 	{
 
 	} */
+
+	while (true)
+	{
+	}
 }
 
 void MyUI::CreateWidgetWait(trWidget* WIDG)

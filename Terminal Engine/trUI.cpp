@@ -53,12 +53,12 @@ void trUserInterface::Update()
 
 	std::lock_guard<std::mutex> lock(*mtx);
 
-	UpdateWidget();
-
 	if (RefreshVerification()) 
 	{
 		Refresh();
 	}
+	
+	UpdateWidget();
 
 	for (auto& widg : *Widgets)
 	{
@@ -76,15 +76,17 @@ void trUserInterface::Update()
 
 	if (RenderType == RENDER_SYSTEM)
 	{
+		// system("cls");
 		Render();
 	}
-	
 
 	KB->ActionBTN();
 }
 
 void trUserInterface::Refresh()
 {
+	Render_->clear();
+
 	Border();
 
 	for (auto& widg : *Widgets)
@@ -341,7 +343,7 @@ int trUserInterface::DisplayWidget(trWidget* WIDG)
 
 					output << content;
 
-					output << WIDG->GetContent().GetDataActual().substr(min(c, WIDG->GetContent().GetDataActual().size() - 1), WIDG->GetSize().GetSizeX().GetDataActual() - max(WIDG->GetRelativePosition().GetX().GetDataActual() + WIDG->GetSize().GetSizeX().GetDataActual() - GetConsoleSize(BorderWidth).GetSizeX().GetDataActual(), 0));
+					output << WIDG->GetContent().GetDataActual().substr(min(c, WIDG->GetContent().GetDataActual().size()), WIDG->GetSize().GetSizeX().GetDataActual() - max(WIDG->GetRelativePosition().GetX().GetDataActual() + WIDG->GetSize().GetSizeX().GetDataActual() - GetConsoleSize(BorderWidth).GetSizeX().GetDataActual(), 0));
 
 					content = output.str();
 
