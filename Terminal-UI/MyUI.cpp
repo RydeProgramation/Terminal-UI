@@ -105,32 +105,33 @@ void MyUI::Start()
 
 	trSize<int>* size_ = new trSize<int>(GetConsoleSize());
 
-	CreateWidgetWait(new trWidget(0, 0, 120, 6, MiddleCenter, "S", "Paragraphe")); // BUB
+	CreateWidgetWait(new trWidget(0, 0, 120, 6, MiddleCenter, "", "Paragraphe")); // BUG Je ne peux pas mettre de content vide
 
-	for (int i = 1; i < parag.size(); i++)
+	for (int i = 0; i < parag.size(); i++)
 	{
-		SetWidget("Paragraphe", &trWidget::AddToContent, string(1, parag[i])); // BUB
-		Sleep(25); // BUB
+		SetWidget("Paragraphe", &trWidget::AddToContent, string(1, parag[i])); // BUG arriver aux \n ça "carche"
+		Sleep(25);
 	}
 
-	/*while (Widgets[WidgetResearch("Paragraphe")]->delay_caractere != 0)
+	while (true)
 	{
-	}*/
+	}
 
-	Sleep(3500);
+	//Sleep(3500);
 
+/*
 	for (int i = 0; i < 6; i++)
 	{
-		/*Widgets[WidgetResearch("Paragraphe")]->new_size_y = Widgets[WidgetResearch("Paragraphe")]->size_y;
+		/ *Widgets[WidgetResearch("Paragraphe")]->new_size_y = Widgets[WidgetResearch("Paragraphe")]->size_y;
 
-		Widgets[WidgetResearch("Paragraphe")]->new_size_y += -1;*/
+		Widgets[WidgetResearch("Paragraphe")]->new_size_y += -1;* /
 
 		Sleep(800);
-	}
+	}*/
 
-	DestroyWidget("Paragraphe"); // bug ?
+	// DestroyWidget("Paragraphe"); // bug ?
 
-	Menu1();
+	// Menu1();
 
 	while (true)
 	{ }

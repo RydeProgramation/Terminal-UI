@@ -300,14 +300,26 @@ int trUserInterface::DisplayWidget(trWidget* WIDG)
 
 		for (int j = WIDG->GetRelativePosition().GetY().GetDataActual(); j < WIDG->GetRelativePosition().GetY().GetDataActual() + WIDG->GetSize().GetSizeY().GetDataActual(); j++)
 		{
-			output << WIDG->GetContent().GetDataActual().substr(min(c, WIDG->GetContent().GetDataActual().size() - 1), WIDG->GetSize().GetSizeX().GetDataActual() - max(WIDG->GetRelativePosition().GetX().GetDataActual() + WIDG->GetSize().GetSizeX().GetDataActual() - GetConsoleSize(BorderWidth).GetSizeX().GetDataActual(), 0));
+			output << WIDG->GetContent().GetDataActual().substr(min(c, WIDG->GetContent().GetDataActual().size()/* - 1*/), WIDG->GetSize().GetSizeX().GetDataActual() - max(WIDG->GetRelativePosition().GetX().GetDataActual() + WIDG->GetSize().GetSizeX().GetDataActual() - GetConsoleSize(BorderWidth).GetSizeX().GetDataActual(), 0));
 
 			std::string content = output.str();
 
 			auto Cherche = content.find('\n');
 
+			int Security = 0;
+
 			while (Cherche != std::string::npos)
 			{
+				if (Security >= 1500)
+				{
+					MessageBox(
+						NULL,                           // Pas de fenêtre parente
+						L"Il y a trop d'itérations ! dans le system de graphique avec les slash n (saut de ligne)",  // Message
+						L"Erreur",                      // Titre de la boîte
+						MB_ICONERROR | MB_OK           // Icône d'erreur + bouton OK
+					);
+				}
+
 				MoveCursorToOstream(trCoordinate<int>(WIDG->GetRelativePosition().GetX().GetDataActual(), j), Render_, *SizeWindow, BorderWidth);
 
 				if (!IsOutSide(trCoordinate<int>(WIDG->GetRelativePosition().GetX().GetDataActual(), j), BorderWidth))
@@ -335,6 +347,8 @@ int trUserInterface::DisplayWidget(trWidget* WIDG)
 
 					Cherche = content.find('\n');
 				}
+
+				Security++;
 			}
 
 			MoveCursorToOstream(trCoordinate<int>(WIDG->GetRelativePosition().GetX().GetDataActual(), j), Render_, *SizeWindow, BorderWidth);
