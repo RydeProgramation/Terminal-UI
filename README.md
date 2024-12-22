@@ -14,11 +14,11 @@ Tu rêve de pouvoir faire des widget a ta sauce ?
 | Séquence/Caractère | Description ou Problème potentiel                             |
 |--------------------|--------------------------------------------------------------|
 | \n                 | Saut de ligne. Peut perturber la mise en forme en ajoutant des sauts. |
+| \f                 | Saut de page.                                                |
+| \v                 | Tabulation verticale.                                        |
 | \r                 | Retour chariot. Peut causer des comportements différents selon l'OS. |
 | \t                 | Tabulation horizontale. Les tabulations peuvent varier selon l'éditeur. |
-| \v                 | Tabulation verticale.                                        |
 | \b                 | Retour arrière (backspace). Difficulté visuelle, car invisible. |
-| \f                 | Saut de page.                                                |
 | \\\                 | Barre oblique inversée (\\). Doit être échappée pour éviter des erreurs. |
 
 
