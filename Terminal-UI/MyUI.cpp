@@ -1,4 +1,4 @@
-#include "Header.h"
+﻿#include "Header.h"
 
 #include "MyUI.h"
 
@@ -23,35 +23,35 @@ void MyUI::Start()
 {
 	trUserInterface::Start();
 
-	vector<string> hello3;
+	vector<wstring> hello3;
 
-	hello3.push_back(" _   _      _ _        __        __         _     _ _ "); // 54
-	hello3.push_back("| | | | ___| | | ___   \\ \\      / /__  _ __| | __| | |"); // 54
-	hello3.push_back("| |_| |/ _ \\ | |/ _ \\   \\ \\ /\\ / / _ \\| '__| |/ _` | |"); // 54
-	hello3.push_back("|  _  |  __/ | | (_) |   \\ V  V / (_) | |  | | (_| |_|"); // 54
-	hello3.push_back("|_| |_|\\___|_|_|\\___/     \\_/\\_/ \\___/|_|  |_|\\__,_(_)"); // 54
+	hello3.push_back(L" _   _      _ _        __        __         _     _ _ "); // 54
+	hello3.push_back(L"| | | | ___| | | ___   \\ \\      / /__  _ __| | __| | |"); // 54
+	hello3.push_back(L"| |_| |/ _ \\ | |/ _ \\   \\ \\ /\\ / / _ \\| '__| |/ _` | |"); // 54
+	hello3.push_back(L"|  _  |  __/ | | (_) |   \\ V  V / (_) | |  | | (_| |_|"); // 54
+	hello3.push_back(L"|_| |_|\\___|_|_|\\___/     \\_/\\_/ \\___/|_|  |_|\\__,_(_)"); // 54
 
-	vector<string> hello2;
+	vector<wstring> hello2;
 
-	hello2.push_back(" _   _      _ _        __        __         _     _ "); // 52
-	hello2.push_back("| | | | ___| | | ___   \\ \\      / /__  _ __| | __| |"); // 52
-	hello2.push_back("| |_| |/ _ \\ | |/ _ \\   \\ \\ /\\ / / _ \\| '__| |/ _` |"); // 52
-	hello2.push_back("|  _  |  __/ | | (_) |   \\ V  V / (_) | |  | | (_| |"); // 52
-	hello2.push_back("|_| |_|\\___|_|_|\\___/     \\_/\\_/ \\___/|_|  |_|\\__,_|"); // 52
+	hello2.push_back(L" _   _      _ _        __        __         _     _ "); // 52
+	hello2.push_back(L"| | | | ___| | | ___   \\ \\      / /__  _ __| | __| |"); // 52
+	hello2.push_back(L"| |_| |/ _ \\ | |/ _ \\   \\ \\ /\\ / / _ \\| '__| |/ _` |"); // 52
+	hello2.push_back(L"|  _  |  __/ | | (_) |   \\ V  V / (_) | |  | | (_| |"); // 52
+	hello2.push_back(L"|_| |_|\\___|_|_|\\___/     \\_/\\_/ \\___/|_|  |_|\\__,_|"); // 52
 
-	vector<string> hello;
+	vector<wstring> hello;
 
-	hello.push_back(" _   _      _ _       "); // 22
-	hello.push_back("| | | | ___| | | ___  "); // 22
-	hello.push_back("| |_| |/ _ \\ | |/ _ \\ "); // 22
-	hello.push_back("|  _  |  __/ | | (_) |"); // 22
-	hello.push_back("|_| |_|\\___|_|_|\\___/ "); // 22
+	hello.push_back(L" _   _      _ _       "); // 22
+	hello.push_back(L"| | | | ___| | | ___  "); // 22
+	hello.push_back(L"| |_| |/ _ \\ | |/ _ \\ "); // 22
+	hello.push_back(L"|  _  |  __/ | | (_) |"); // 22
+	hello.push_back(L"|_| |_|\\___|_|_|\\___/ "); // 22
 
-	string hello3_ = hello3[0] + hello3[1] + hello3[2] + hello3[3] + hello3[4];
-	string hello_ = hello[0] + hello[1] + hello[2] + hello[3] + hello[4];
-	string hello2_ = hello2[0] + hello2[1] + hello2[2] + hello2[3] + hello2[4];
+	wstring hello3_ = hello3[0] + hello3[1] + hello3[2] + hello3[3] + hello3[4];
+	wstring hello_ = hello[0] + hello[1] + hello[2] + hello[3] + hello[4];
+	wstring hello2_ = hello2[0] + hello2[1] + hello2[2] + hello2[3] + hello2[4];
 
-	CreateWidget/*Wait*/(new trWidget(100, -1, 22, 5, MiddleCenter, hello_, "Hello"));
+	CreateWidgetWait(new trWidget(100, -1, 22, 5, MiddleCenter, hello_, "Hello"));
 
 	for (int i = 0; i < 115; i++)
 	{
@@ -64,13 +64,13 @@ void MyUI::Start()
 
 	DestroyWidget("Hello");
 
-	CreateWidget/*Wait*/(new trWidget(0, -1, 52, 5, MiddleCenter, hello2_, "Hello2"));
+	CreateWidgetWait(new trWidget(0, -1, 52, 5, MiddleCenter, hello2_, "Hello2"));
 
 	Sleep(20 * 100); 
 
 	DestroyWidget("Hello2");
 
-	CreateWidget/*Wait*/(new trWidget(1, -1, 54, 5, MiddleCenter, hello3_, "Hello3"));
+	CreateWidgetWait(new trWidget(1, -1, 54, 5, MiddleCenter, hello3_, "Hello3"));
 
 	SetWidget("Hello3", &trWidget::SetColor, 11);
 
@@ -94,24 +94,28 @@ void MyUI::Start()
 
 	DestroyWidget("Hello3");
 
-	string parag = "Salutations, brave aventurier ! Mon projet est une application magique qui ouvre les portes des marches financiers.\nA l'aide de la puissante technique de Monte-Carlo, je simule des trajectoire aleatoire pour les options (calls et puts).\nImagine-toi chevauchant un dragon volant au-dessus des courbes de prix, scrutant les volatilites et les risques.\nLes prix d'options se revelent tels des tresors caches dans les profondeurs du marche. Que la probabilites soit avec toi !\nJe te propose donc cette application pour que tu fasses tes propres simulations et decouvres les secrets enfouis dans\nles volutes des courbes financieres.";
-
+	wstring parag = L"Salutations, brave lache\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\bons, brave aventurier ! Mon projet est une application maléfique\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\bapplication magique qui ouvre les portes des marchés financiers.\nÀ l'aide de la puissante technique de DiCaprio\b\b\b\b\b\b\b\bMonte-Carlo, je simule des trajectoire connu\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\btrajectoire aléatoire pour les options (calls et putain\b\b\bs).\nImagine-toi chevauchant un dragon volant au-dessus des courbes de prix, scrutant les volaille\b\b\b\b\b\b\b\b\b volatilités et les risques.\nLes prix d'opinion\b\b\b\b\b\b\b\b\bd'options se révèlent tels des tresors cachés dans les profondeurs du marché. Que la probabilites soit sans toi !\b\b\b\b\b\b\b\b\b\bavec toi !\nJe te propose donc cette application pour que tu fasses tes propres simulations et découvre les secrets enfouis dans\fles volutés des cccccc\b\b\b\b\bourbes financières.";
+	
 	trSize<int>* size_ = new trSize<int>(GetConsoleSize());
 
-	CreateWidget/*Wait*/(new trWidget(0, 0, 120, 6, MiddleCenter, "", "Paragraphe"));
+	CreateWidgetWait(new trWidget(0, 0, 123, 6, MiddleCenter, parag, "Paragraphe"));
+
+	while (true)
+	{
+
+	}
 	
 	for (int i = 0; i < parag.size(); i++)
 	{
-		SetWidget("Paragraphe", &trWidget::AddToContent, string(1, parag[i])); 
-		Sleep(25);
+		SetWidget("Paragraphe", &trWidget::AddToContent, wstring(1, parag[i])); 
+		Sleep(35);
 	}
 
-	Sleep(3500);
-
+	Sleep(2500);
 
 	for (int i = 0; i < 6; i++)
 	{
-		SetWidget("Paragraphe", &trWidget::AddToSize, 0, -1);
+		SetWidget("Paragraphe", &trWidget::AddToSize, 0, -1); // BUG
 
 		Sleep(800);
 	}
@@ -176,16 +180,12 @@ void MyUI::Menu1()
 	{
 
 	} */
-
-	while (true)
-	{
-	}
 }
 
 void MyUI::CreateWidgetWait(trWidget* WIDG)
 {
 	CreateWidget(WIDG);
 
-	while (WIDG->GetChange().GetDataActual()) {}
+	while (WIDG->GetChange().GetDataActual()) {} // faire attention ici
 }
 

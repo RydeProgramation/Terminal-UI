@@ -1,4 +1,4 @@
-#pragma once
+﻿#pragma once
 
 #include "include.h"
 
@@ -19,7 +19,7 @@ public:
 	virtual ~trObject() = default;
 
 private:
-	void destroy_() { delete this; } // Peut causer des probl�mes NE PAS APPELER
+	void destroy_() { delete this; } // Peut causer des problèmes NE PAS APPELER
 };
 
 #endif

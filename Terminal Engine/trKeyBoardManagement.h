@@ -1,4 +1,4 @@
-#pragma once
+﻿#pragma once
 
 #include "include.h"
 #include "trBTN_Key.h"
@@ -23,7 +23,7 @@ public:
 
 	// FNC
 	/// <summary>
-	/// Permet de g�rer l'action sur les boutons
+	/// Permet de gérer l'action sur les boutons
 	/// </summary>
 	void ActionBTN() /*override*/;
 

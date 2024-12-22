@@ -1,4 +1,4 @@
-#include "trUI.h"
+ï»¿#include "trUI.h"
 
 // UI
 
@@ -16,7 +16,7 @@ trUserInterface* CreateUserInterface()
 
 // INI
 
-trUserInterface::trUserInterface(int RenderType_) : SizeWindow(new trSize((0), int(0))), CursorSelector(new trData(int(0))), BorderWidth(int(5)), mtx(new std::mutex), KB(new trKeyBoardManagement()), Widgets(new std::unordered_map<std::string, trWidget*>()), Render_(new std::ostringstream()), T(new std::thread()), T2(new std::thread())
+trUserInterface::trUserInterface(int RenderType_) : SizeWindow(new trSize((0), int(0))), CursorSelector(new trData(int(0))), BorderWidth(int(5)), mtx(new std::mutex), KB(new trKeyBoardManagement()), Widgets(new std::unordered_map<std::string, trWidget*>()), Render_(new std::wostringstream()), T(new std::thread()), T2(new std::thread())
 {
 	switch (RenderType_)
 	{
@@ -27,7 +27,12 @@ trUserInterface::trUserInterface(int RenderType_) : SizeWindow(new trSize((0), i
 		RenderType = RenderType_;
 		break;
 	default:
-		std::cerr << "AUCUN NE CORESPOND";
+		MessageBox(
+			NULL,                           // Pas de fenÃªtre parente
+			L"Aucun RenderType ne correspond",  // Message
+			L"Erreur",                      // Titre de la boÃ®te
+			MB_ICONERROR | MB_OK           // IcÃ´ne d'erreur + bouton OK
+		);
 		std::exit(1);
 	}
 }
@@ -38,10 +43,6 @@ void trUserInterface::Start()
 {
 	SetupConsole();
 
-	/*T = new thread(&trUserInterface::Loop, this);
-
-	T2 = new thread(&trKeyBoardManagement::Start, &KB);*/
-
 	T = new std::thread([this]() { this->Loop(); });
 	T2 = new std::thread([this]() { this->KB->Start(); });
 }
@@ -51,7 +52,7 @@ void trUserInterface::Update()
 	SizeWindow->SetSize(GetConsoleSize().GetSizeX().GetDataActual(), GetConsoleSize().GetSizeY().GetDataActual());
 	SizeWindow->Update();
 
-	std::lock_guard<std::mutex> lock(*mtx);
+	std::lock_guard<std::mutex> lock(*mtx); // je sais pas si Ã§a sert vrm mddrrrr
 
 	if (RefreshVerification()) 
 	{
@@ -76,11 +77,10 @@ void trUserInterface::Update()
 
 	if (RenderType == RENDER_SYSTEM)
 	{
-		// system("cls");
 		Render();
 	}
 
-	KB->ActionBTN();
+	KB->ActionBTN(); // a voir lors du changement pour le traitement du clavier et souris
 }
 
 void trUserInterface::Refresh()
@@ -114,9 +114,7 @@ void trUserInterface::Render()
 {
 	MoveCursorTo(trCoordinate<int>(0, 0));
 
-	// CleanOstreamSize(Render_, *SizeWindow); que si bug
-
-	cout << Render_->str();
+	cout << WstringToUtf8(Render_->str());
 }
 
 void trUserInterface::Border()
@@ -152,13 +150,14 @@ void trUserInterface::Border()
 	{
 		MoveCursorToOstream(trCoordinate<int>(0, 0), Render_, *SizeWindow);
 
-		string topBottomBorder(SizeWindow->GetSizeX().GetDataActual() * BorderWidth, '*');
-		string sideBorder(BorderWidth * 2, '*');
-		string emptyLine(SizeWindow->GetSizeX().GetDataActual() - BorderWidth * 4, ' ');
+		wstring topBottomBorder(SizeWindow->GetSizeX().GetDataActual() * BorderWidth, '*');
+		wstring sideBorder(BorderWidth * 2, '*');
+		wstring emptyLine(SizeWindow->GetSizeX().GetDataActual() - BorderWidth * 4, ' ');
 
  		(*Render_) << topBottomBorder;
 
-		string middleLine = sideBorder + emptyLine + sideBorder;
+		wstring middleLine = sideBorder + emptyLine + sideBorder;
+
 		for (int i = BorderWidth; i < SizeWindow->GetSizeY().GetDataActual() - BorderWidth; ++i) 
         {
 			(*Render_) << middleLine;
@@ -202,6 +201,12 @@ bool trUserInterface::CreateWidget(trWidget* WIDG)
 
 	else
 	{
+		MessageBox(
+			NULL,                           // Pas de fenÃªtre parente
+			L"Widget already created",      // Message
+			L"Erreur",                      // Titre de la boÃ®te
+			MB_ICONERROR | MB_OK            // IcÃ´ne d'erreur + bouton OK
+		);
 		return false;
 	}
 
@@ -236,7 +241,14 @@ bool trUserInterface::DestroyWidget(const string& name) // VERIF SI BUG
 		return true;
 	}
 
-	throw std::out_of_range("ERROR N'EXISTE PAS");
+	// throw std::out_of_range("ERROR N'EXISTE PAS");
+
+	MessageBox(
+		NULL,                           // Pas de fenÃªtre parente
+		L"Widget Not found for destroying",  // Message
+		L"Erreur",                      // Titre de la boÃ®te
+		MB_ICONERROR | MB_OK           // IcÃ´ne d'erreur + bouton OK
+	);
 
 	return false;
 }
@@ -252,17 +264,23 @@ const trWidget trUserInterface::GetWidget(const string& Name) const
 
 	else 
 	{
-		throw std::out_of_range("Widget not found");
+		MessageBox(
+			NULL,                           // Pas de fenÃªtre parente
+			L"Widget Not found",            // Message
+			L"Erreur",                      // Titre de la boÃ®te
+			MB_ICONERROR | MB_OK            // IcÃ´ne d'erreur + bouton OK
+		);
 	}
 }
 
 int trUserInterface::DisplayWidget(trWidget* WIDG)
 {
+	// amÃ©liorer pour direct_terminal a voir quoi faire
 	if (RenderType == DIRECT_TERMINAL)
 	{
 		CleanWidget(WIDG);
 
-		std::ostringstream output;
+		std::wostringstream output;
 
 		int c = 0;
 
@@ -279,89 +297,36 @@ int trUserInterface::DisplayWidget(trWidget* WIDG)
 				WIDG->Display(output);
 			}
 
-			output.str("");
+			output.str(L"");
 
 			c += WIDG->GetSize().GetSizeX().GetDataActual();
 		}
 
 		WIDG->SetChange(false);
-
-		if (WIDG->GetDelayCaractere().GetDataActual() != 0) // <-- jsp si ça sert a qqchose
-		{                                                   // <-- jsp si ça sert a qqchose
-			WIDG->SetDelayCaractere(0);                     // <-- jsp si ça sert a qqchose
-		}                                                   // <-- jsp si ça sert a qqchose
 	}
 
 	else if (RenderType == RENDER_SYSTEM)
 	{
 		CleanWidget(WIDG);
 
-		std::ostringstream output;
+		std::wostringstream output;
 
 		int c = 0;
 
 		for (int j = WIDG->GetRelativePosition().GetY().GetDataActual(); j < WIDG->GetRelativePosition().GetY().GetDataActual() + WIDG->GetSize().GetSizeY().GetDataActual(); j++)
 		{
-			output << WIDG->GetContent().GetDataActual().substr(min(c, WIDG->GetContent().GetDataActual().size()/* - 1*/), WIDG->GetSize().GetSizeX().GetDataActual() - max(WIDG->GetRelativePosition().GetX().GetDataActual() + WIDG->GetSize().GetSizeX().GetDataActual() - GetConsoleSize(BorderWidth).GetSizeX().GetDataActual(), 0));
-
-			std::string content = output.str();
-
-			auto Cherche = content.find('\n');
-
-			int Security = 0;
-
-			while (Cherche != std::string::npos)
-			{
-				if (Security >= 1500)
-				{
-					MessageBox(
-						NULL,                           // Pas de fenêtre parente
-						L"Il y a trop d'itérations ! dans le system de graphique avec les slash n (saut de ligne)",  // Message
-						L"Erreur",                      // Titre de la boîte
-						MB_ICONERROR | MB_OK           // Icône d'erreur + bouton OK
-					);
-				}
-
-				MoveCursorToOstream(trCoordinate<int>(WIDG->GetRelativePosition().GetX().GetDataActual(), j), Render_, *SizeWindow, BorderWidth);
-
-				if (!IsOutSide(trCoordinate<int>(WIDG->GetRelativePosition().GetX().GetDataActual(), j), BorderWidth))
-				{
-					SetColorConsole(WIDG->GetColor().GetDataActual());
-					*Render_ << content.substr(0, Cherche);
-					content.erase(0, Cherche + 1);
-				}
-
-				j++;
-
-				Cherche = content.find('\n');
-
-				if (Cherche == std::string::npos)
-				{
-					output.str("");
-
-					c += WIDG->GetSize().GetSizeX().GetDataActual();
-
-					output << content;
-
-					output << WIDG->GetContent().GetDataActual().substr(min(c, WIDG->GetContent().GetDataActual().size()), WIDG->GetSize().GetSizeX().GetDataActual() - max(WIDG->GetRelativePosition().GetX().GetDataActual() + WIDG->GetSize().GetSizeX().GetDataActual() - GetConsoleSize(BorderWidth).GetSizeX().GetDataActual(), 0));
-
-					content = output.str();
-
-					Cherche = content.find('\n');
-				}
-
-				Security++;
-			}
+			output << WIDG->GetContent().GetDataActual().substr(min(c, WIDG->GetContent().GetDataActual().size()), WIDG->GetSize().GetSizeX().GetDataActual() - max(WIDG->GetRelativePosition().GetX().GetDataActual() + WIDG->GetSize().GetSizeX().GetDataActual() - GetConsoleSize(BorderWidth).GetSizeX().GetDataActual(), 0));
 
 			MoveCursorToOstream(trCoordinate<int>(WIDG->GetRelativePosition().GetX().GetDataActual(), j), Render_, *SizeWindow, BorderWidth);
 
 			if (!IsOutSide(trCoordinate<int>(WIDG->GetRelativePosition().GetX().GetDataActual(), j), BorderWidth))
 			{
-				SetColorConsole(WIDG->GetColor().GetDataActual());
+				// SetColorConsole(WIDG->GetColor().GetDataActual());
+
 				*Render_ << output.str();
 			}
 
-			output.str("");
+			output.str(L"");
 
 			c += WIDG->GetSize().GetSizeX().GetDataActual();
 		}
@@ -372,12 +337,12 @@ int trUserInterface::DisplayWidget(trWidget* WIDG)
 	return 0;
 }
 
-void trUserInterface::MoveCursorToOstream(const trCoordinate<int> &Pos, std::ostringstream* output, const trSize<int>& SizeOutput)
+void trUserInterface::MoveCursorToOstream(const trCoordinate<int> &Pos, std::wostringstream* output, const trSize<int>& SizeOutput)
 {
 	output->seekp(Pos.GetX().GetDataActual() + Pos.GetY().GetDataActual() * SizeOutput.GetSizeX().GetDataActual());
 }
 
-void trUserInterface::MoveCursorToOstream(const trCoordinate<int>& Pos, std::ostringstream* output, const trSize<int>& SizeOutput, int BorderW)
+void trUserInterface::MoveCursorToOstream(const trCoordinate<int>& Pos, std::wostringstream* output, const trSize<int>& SizeOutput, int BorderW)
 {
 	int adjustedX = Pos.GetX().GetDataActual() + (BorderW * 2);
 	int adjustedY = Pos.GetY().GetDataActual() + BorderW;
@@ -387,7 +352,7 @@ void trUserInterface::MoveCursorToOstream(const trCoordinate<int>& Pos, std::ost
 	output->seekp(position);
 }
 
-void trUserInterface::CleanOstreamSize(std::ostringstream* output, const trSize<int>& SizeOutput)
+void trUserInterface::CleanOstreamSize(std::wostringstream* output, const trSize<int>& SizeOutput)
 {
 	output->str(output->str().substr(0, SizeOutput.GetSizeX().GetDataActual() * SizeOutput.GetSizeY().GetDataActual()));
 }
@@ -408,6 +373,8 @@ void trUserInterface::HideWidget(trWidget* WIDG) // < ----- BUUUG
 		}
 	}*/
 
+	CleanWidget(WIDG);
+
 	throw std::out_of_range("code pas fait (utiliser cleanwidget ?)"); // jsp pas pk j'utilise out of range ;(((((((((((((((((
 }
 
@@ -415,26 +382,26 @@ void trUserInterface::CleanWidget(trWidget* WIDG)
 {
 	if (RenderType == DIRECT_TERMINAL)
 	{
-		for (int j = WIDG->GetRelativePosition().GetY().GetDataOld(); j <= WIDG->GetRelativePosition().GetY().GetDataOld() + WIDG->GetSize().GetSizeY().GetDataOld(); j++)
+		for (int j = WIDG->GetRelativePosition().GetY().GetDataOld() - 1; j < WIDG->GetRelativePosition().GetY().GetDataOld() + WIDG->GetSize().GetSizeY().GetDataOld(); j++)
 		{
 			if (!IsOutSide(trCoordinate<int>(WIDG->GetRelativePosition().GetX().GetDataOld(), j), BorderWidth))
 			{
 				SetColorConsole(15);
-				string clean(WIDG->GetSize().GetSizeX().GetDataOld() - max(WIDG->GetRelativePosition().GetX().GetDataOld() + WIDG->GetSize().GetSizeX().GetDataOld() - GetConsoleSize(BorderWidth).GetSizeX().GetDataActual(), 0), ' ');
+				wstring clean(WIDG->GetSize().GetSizeX().GetDataOld() - max(WIDG->GetRelativePosition().GetX().GetDataOld() + WIDG->GetSize().GetSizeX().GetDataOld() - GetConsoleSize(BorderWidth).GetSizeX().GetDataActual(), 0), ' ');
 				MoveCursorTo(trCoordinate<int>(WIDG->GetRelativePosition().GetX().GetDataOld(), j), BorderWidth);
-				cout << clean;
+				cout << WstringToUtf8(clean);
 			}
 		}
 	}
 
 	else if (RenderType == RENDER_SYSTEM)
 	{
-		for (int j = WIDG->GetRelativePosition().GetY().GetDataOld(); j <= WIDG->GetRelativePosition().GetY().GetDataOld() + WIDG->GetSize().GetSizeY().GetDataOld(); j++)
+		for (int j = WIDG->GetRelativePosition().GetY().GetDataOld() - 1; j < WIDG->GetRelativePosition().GetY().GetDataOld() + WIDG->GetSize().GetSizeY().GetDataOld(); j++)
 		{
 			if (!IsOutSide(trCoordinate<int>(WIDG->GetRelativePosition().GetX().GetDataOld(), j), BorderWidth))
 			{
 				SetColorConsole(15);
-				string clean(WIDG->GetSize().GetSizeX().GetDataOld() - max(WIDG->GetRelativePosition().GetX().GetDataOld() + WIDG->GetSize().GetSizeX().GetDataOld() - GetConsoleSize(BorderWidth).GetSizeX().GetDataActual(), 0), ' ');
+				wstring clean(WIDG->GetSize().GetSizeX().GetDataOld() - max((WIDG->GetRelativePosition().GetX().GetDataOld() + WIDG->GetSize().GetSizeX().GetDataOld() - GetConsoleSize(BorderWidth).GetSizeX().GetDataActual()), 0), ' ');
 				MoveCursorToOstream(trCoordinate<int>(WIDG->GetRelativePosition().GetX().GetDataOld(), j), Render_, *SizeWindow, BorderWidth);
 				*Render_ << clean;
 			}

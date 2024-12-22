@@ -1,4 +1,4 @@
-#pragma once
+ï»¿#pragma once
 
 #include "include.h"
 
@@ -54,9 +54,9 @@ public:
 	bool RefreshVerification();
 
 	/// <summary>
-	/// Crée une bordure
+	/// CrÃ©e une bordure
 	/// </summary>
-	/// <param name="BorderWidth">Nombre de pixel sur le coté</param>
+	/// <param name="BorderWidth">Nombre de pixel sur le cotÃ©</param>
 	void Border();
 
 	/// <summary>
@@ -71,7 +71,7 @@ public:
 	/// </summary>
 	/// <param name="name"></param>
 	/// <returns></returns>
-	void Select(const std::string& name); // a changer la méthode
+	void Select(const std::string& name); // a changer la mÃ©thode
 
 	/// <summary>
 	/// /
@@ -134,26 +134,26 @@ private: // FNC
 	int DisplayWidget(trWidget* WIDG); // pas fini
 
 	/// <summary>
-	/// Permet de déplacer pour un ostrinstream donnée la position du curseur
+	/// Permet de dÃ©placer pour un ostrinstream donnÃ©e la position du curseur
 	/// </summary>
 	/// <param name="Pos"></param>
 	/// <param name="output"></param>
-	void MoveCursorToOstream(const trCoordinate<int> &Pos, std::ostringstream *output, const trSize<int> &SizeOutput);
+	void MoveCursorToOstream(const trCoordinate<int> &Pos, std::wostringstream *output, const trSize<int> &SizeOutput);
 
 	/// <summary>
-	/// Permet de déplacer pour un ostrinstream donnée la position du curseur en prenant compte de la bordure
+	/// Permet de dÃ©placer pour un ostrinstream donnÃ©e la position du curseur en prenant compte de la bordure
 	/// </summary>
 	/// <param name="Pos"></param>
 	/// <param name="output"></param>
 	/// <param name="BorderW"></param>
-	void MoveCursorToOstream(const trCoordinate<int>& Pos, std::ostringstream* output, const trSize<int>& SizeOutput, int BorderW);
+	void MoveCursorToOstream(const trCoordinate<int>& Pos, std::wostringstream* output, const trSize<int>& SizeOutput, int BorderW);
 
 	/// <summary>
-	/// Permet de déplacer pour un ostrinstream donnée la position du curseur
+	/// Permet de dÃ©placer pour un ostrinstream donnÃ©e la position du curseur
 	/// </summary>
 	/// <param name="Pos"></param>
 	/// <param name="output"></param>
-	void CleanOstreamSize(std::ostringstream* output, const trSize<int>& SizeOutput);
+	void CleanOstreamSize(std::wostringstream* output, const trSize<int>& SizeOutput);
 
 	/// <summary>
 	/// 
@@ -208,7 +208,7 @@ private:
 
 	trData<int> *CursorSelector;
 
-	std::ostringstream *Render_;
+	std::wostringstream *Render_;
 
 	int RenderType;
 };

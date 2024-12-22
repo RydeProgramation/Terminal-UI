@@ -1,4 +1,4 @@
-#pragma once
+ï»¿#pragma once
 
 #include "include.h"
 
@@ -31,7 +31,7 @@ public:
 
 	// CONSTR
 
-	trWidget(int x_, int y_, int size_x_, int size_y_, int RelativePosition_, std::string content_, std::string name_);
+	trWidget(int x_, int y_, int size_x_, int size_y_, int RelativePosition_, std::wstring content_, std::string name_);
 
 	// SET
 
@@ -39,7 +39,7 @@ public:
 
 	void SetSize(int x_, int y_);
 
-	void SetContent(const std::string& content_);
+	void SetContent(const std::wstring& content_);
 
 	void SetName(const std::string& name_);
 
@@ -47,7 +47,7 @@ public:
 
 	void SetProtecte(bool prtc);
 
-	void SetDelayCaractere(int Delay);
+	// void SetDelayCaractere(int Delay); INUTILE
 
 	void SetColor(int color_);
 
@@ -63,8 +63,7 @@ public:
 
 	void AddToSize(int x_, int y_);
 
-	void AddToContent(const std::string& content_);
-	//void AddToContent(const char& content_);
+	void AddToContent(const std::wstring& content_);
 
 	void AddToColor(int color_);
 
@@ -76,7 +75,7 @@ public:
 
 	const trSize<int>& GetSize() const;
 
-	const trData<std::string>& GetContent() const;
+	const trData<std::wstring>& GetContent() const;
 
 	const trData<std::string>& GetName() const;
 
@@ -84,7 +83,7 @@ public:
 
 	const trData<bool>& GetProtecte() const;
 
-	const trData<int>& GetDelayCaractere() const;
+	// const trData<int>& GetDelayCaractere() const; INUTILE
 
 	const trData<int>& GetColor() const;
 
@@ -100,13 +99,19 @@ public:
 
 	void UpdateRelativePosition();
 
-	virtual void APPLY(const trSize<int> SizeWindow_);
+	virtual void APPLY(const trSize<int>& SizeWindow_);
 
 	// FNC
 
 	bool VerificationProprety();
 
-	virtual void Display(std::ostringstream& output_line);
+	virtual void Display(std::wostringstream& output_line);
+
+private:
+
+	std::wstring ContentReorganisation(std::wstring _content, const trSize<int>& SizeWidget) const;
+
+public:
 
 	// DESTRUCTEUR
 
@@ -124,7 +129,7 @@ private:
 
 	trData<bool> *protecte;
 
-	trData<int> *delayCaractere;
+	// trData<int> *delayCaractere; INUTILE
 
 	trData<int> *color;
 
@@ -132,9 +137,9 @@ private:
 
 	trData<int> *RP;
 
-	trData<std::string> *content; // peut etre utilisé des pointeurs
+	trData<std::wstring> *content; // peut etre utilisÃ© des pointeurs
 
-	trData<std::string> *name; // peut etre utilisé des pointeurs
+	trData<std::string> *name; // peut etre utilisÃ© des pointeurs
 
 	trData<bool> *destroy;
 

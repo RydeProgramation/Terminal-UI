@@ -1,4 +1,4 @@
-#include "trUI_Tools.h"
+﻿#include "trUI_Tools.h"
 
 using namespace std;
 
@@ -94,6 +94,19 @@ trSize<int> UITools::GetConsoleSize(int BorderWitdh)
 	return trSize<int>(Conlumns, Rows);
 }
 
+std::string UITools::WstringToUtf8(const std::wstring& wstr)
+{
+	// Calculer la taille nécessaire pour la chaîne UTF-8
+	int size_needed = WideCharToMultiByte(CP_UTF8, 0, wstr.c_str(), -1, NULL, 0, NULL, NULL);
+
+	// Convertir la chaîne wchar_t en UTF-8
+	std::string utf8_str(size_needed, 0);
+	WideCharToMultiByte(CP_UTF8, 0, wstr.c_str(), -1, &utf8_str[0], size_needed, NULL, NULL);
+
+	return utf8_str;
+}
+
+
 trSize<int> UITools::GetConsoleSize()
 {
 	HANDLE hConsole = GetStdHandle(STD_OUTPUT_HANDLE);
@@ -106,3 +119,4 @@ trSize<int> UITools::GetConsoleSize()
 
 	return trSize<int>(Conlumns, Rows);
 }
+

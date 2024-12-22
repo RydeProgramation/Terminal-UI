@@ -7,6 +7,8 @@
 #include <vector>
 #include <fcntl.h>
 #include <string>
+#include <io.h>
+#include <fcntl.h>
 #include <optional>
 #include <conio.h> 
 #include <limits>
@@ -17,6 +19,8 @@
 #include <algorithm>
 #include <functional>
 #include <unordered_map>
+#include <locale>
+#include <codecvt>
 
 #include "trUI.h"
 #include "trSize.h"

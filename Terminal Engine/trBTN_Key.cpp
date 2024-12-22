@@ -1,4 +1,4 @@
-#include "trBTN_Key.h"
+﻿#include "trBTN_Key.h"
 
 using namespace std;
 
@@ -36,7 +36,7 @@ int trBTN_Key::GetKey() const
 
 // UPDATE
 
-void trBTN_Key::Update() // FAUT CHANGER LA METHODE Il faut faire en sorte que quand on clique �a appele le bouton avec un map par ce que fait une verif pour chaque bouton c'est aps opti
+void trBTN_Key::Update() // FAUT CHANGER LA METHODE Il faut faire en sorte que quand on clique ça appele le bouton avec un map par ce que fait une verif pour chaque bouton c'est aps opti
 {
 	if (!protect) // <--- NE MARCHE PAS MDR
 	{

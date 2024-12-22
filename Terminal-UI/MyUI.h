@@ -1,4 +1,4 @@
-#pragma once
+﻿#pragma once
 
 #include "Header.h"
 
@@ -20,8 +20,8 @@ public:
 
 private:
 
-	void CreateWidgetWait(trWidget* WIDG);
-
+	// attendre qu'il s'affiche au moins une fois pour éviter d'être trop rapide dans l'execution
+	void CreateWidgetWait(trWidget* WIDG); 
 };
 
 #endif

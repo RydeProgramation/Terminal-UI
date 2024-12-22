@@ -6,7 +6,7 @@ using namespace UITools;
 
 // INI
 
-trSelector::trSelector(int x_, int y_, int size_x_, int size_y_, int RelativePosition_, string content_, string name_) : trWidget(x_, y_, size_x_, size_y_, RelativePosition_, content_, name_), selected(true), colorSelected(14)
+trSelector::trSelector(int x_, int y_, int size_x_, int size_y_, int RelativePosition_, wstring content_, string name_) : trWidget(x_, y_, size_x_, size_y_, RelativePosition_, content_, name_), selected(true), colorSelected(14)
 {
 
 }
@@ -37,24 +37,24 @@ const trData<int> trSelector::GetColorSelected() const
 
 // APPLY
 
-void trSelector::APPLY(trSize<int> SizeWindow_)
+void trSelector::APPLY(const trSize<int>& SizeWindow_)
 {
 	trWidget::APPLY(SizeWindow_);
 	selected.Update();
 	colorSelected.Update();
 }
 
-void trSelector::Display(ostringstream& output_line)
+void trSelector::Display(wostringstream& output_line)
 {
 	if (IsSelected().GetDataActual())
 	{
 		SetColorConsole(GetColorSelected().GetDataActual());
-		cout << output_line.str();
+		cout << WstringToUtf8(output_line.str());
 	}
 
 	if (!IsSelected().GetDataActual())
 	{
 		SetColorConsole(trWidget::GetColor().GetDataActual());
-		cout << output_line.str();
+		cout << WstringToUtf8(output_line.str());
 	}
 }

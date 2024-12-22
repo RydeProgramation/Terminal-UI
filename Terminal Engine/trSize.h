@@ -26,7 +26,7 @@ public:
 
 	// SET
 
-	void SetSize(const SIZE_T& x_, const SIZE_T& y_) /*override*/
+	void SetSize(const SIZE_T& x_, const SIZE_T& y_)
 	{
 		x->SetData(x_);
 		y->SetData(y_);

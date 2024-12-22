@@ -22,7 +22,7 @@ public:
 
 	// INI
 
-	trSelector(int x_, int y_, int size_x_, int size_y_, int RelativePosition_, std::string content_, std::string name_);
+	trSelector(int x_, int y_, int size_x_, int size_y_, int RelativePosition_, std::wstring content_, std::string name_);
 
 	// SET
 
@@ -38,9 +38,9 @@ public:
 
 	// APPLY
 
-	void APPLY(trSize<int>SizeWindow_) override;
+	void APPLY(const trSize<int>& SizeWindow_) override;
 
-	void Display(std::ostringstream& output_line) override;
+	void Display(std::wostringstream& output_line) override;
 
 	// DESTRUCTEUR
 

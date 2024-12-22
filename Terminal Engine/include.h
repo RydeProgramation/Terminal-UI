@@ -12,9 +12,13 @@
 #include <limits>
 #include <random>
 #include <sstream>
+#include <io.h>
+#include <fcntl.h>
 #include <mutex>
 #include <thread>
 #include <algorithm>
 #include <functional>
+#include <locale>
+#include <codecvt>
 #include <memory>
 #include <unordered_map>
