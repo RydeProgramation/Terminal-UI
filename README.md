@@ -13,13 +13,13 @@ Tu rêve de pouvoir faire des widget a ta sauce ?
 
 | Séquence/Caractère | Description ou Problème potentiel                             |
 |--------------------|--------------------------------------------------------------|
-| \n                 | Saut de ligne. Peut perturber la mise en forme en ajoutant des sauts. |
-| \f                 | Saut de page.                                                | fait
-| \v                 | Tabulation verticale.                                        | fait
-| \r                 | Retour chariot. Peut causer des comportements différents selon l'OS. | fait
-| \t                 | Tabulation horizontale. Les tabulations peuvent varier selon l'éditeur. | fait
-| \b                 | Retour arrière (backspace). Difficulté visuelle, car invisible. | fait
-| \\\                 | Barre oblique inversée (\\). Doit être échappée pour éviter des erreurs. | PAS fait
+| \n fait                | Saut de ligne. Peut perturber la mise en forme en ajoutant des sauts. |
+| \f fait               | Saut de page.                                                |
+| \v fait                | Tabulation verticale.                                        | 
+| \r fait                | Retour chariot. Peut causer des comportements différents selon l'OS. | 
+| \t fait                | Tabulation horizontale. Les tabulations peuvent varier selon l'éditeur. |
+| \b fait                | Retour arrière (backspace). Difficulté visuelle, car invisible. | 
+| \\\                 | Barre oblique inversée (\\). Doit être échappée pour éviter des erreurs. |
 
 
 # Pour le futur
