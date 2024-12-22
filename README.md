@@ -19,10 +19,10 @@ Tu rêve de pouvoir faire des widget a ta sauce ?
 | \v                 | Tabulation verticale.                                        |
 | \b                 | Retour arrière (backspace). Difficulté visuelle, car invisible. |
 | \f                 | Saut de page.                                                |
-| \\                 | Barre oblique inversée (\\). Doit être échappée pour éviter des erreurs. |
-| \'                 | Apostrophe (dans les littéraux de caractère).                |
-| \"                 | Guillemet (dans les chaînes). Peut perturber si mal échappé. |
-| \?                 | Point d'interrogation pour éviter ?? (trigraphes).           |
+| \\\                 | Barre oblique inversée (\\). Doit être échappée pour éviter des erreurs. |
+| \\'                 | Apostrophe (dans les littéraux de caractère).                |
+| \\"                 | Guillemet (dans les chaînes). Peut perturber si mal échappé. |
+| \\?                 | Point d'interrogation pour éviter ?? (trigraphes).           |
 | Caractères invisibles | Espaces insécables (\u00A0), etc., difficiles à repérer visuellement. |
 
 
