@@ -37,7 +37,8 @@ Tu rêve de pouvoir faire des widget a ta sauce ?
 | \UXXXXXXXX  | Code point Unicode sur 32 bits (UTF-32)   |
 
 
-
-
-# Plus tard
+# Pour le futur
+## Plus tard
 - améliorer ce read.me avec des images
+## ajout
+- Pourvoir créer/utiliser des ficher par exemple .widget pour avoir des widgets
