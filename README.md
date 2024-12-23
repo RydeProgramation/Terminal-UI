@@ -9,6 +9,7 @@ Tu rêve de pouvoir faire des widget a ta sauce ?
 - Il faut gérer le fait de pouvoir "hide" un widget.
 - Il faut recrée le system de keyboardmanagment et crée un système pour la souris.
 - FAIRE une meilleur documentation des fonction
+- J'ai un trPair, il faut implémenter un trMulti
 - Il faut gérer tout les code/séquence :
 
 | Séquence/Caractère | Description ou Problème potentiel                             |
