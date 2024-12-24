@@ -29,3 +29,4 @@ Tu rêve de pouvoir faire des widget a ta sauce ?
 - améliorer ce read.me avec des images
 ## ajout
 - Pourvoir créer/utiliser des ficher par exemple .widget pour avoir des widgets
+- Pouvoir gérer le son !
