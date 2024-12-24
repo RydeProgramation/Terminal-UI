@@ -6,7 +6,7 @@ Tu rêve de pouvoir faire des widget a ta sauce ?
 - Réorganiser l'orde des fonction de le fichier trWidget.cpp
 - Il faut gérer les différentes couleurs.
 - BUG pour le cleanWidget
-- ~~Il faut mieux gérer les problèmes de clean d'un widget.~~
+- Il faut mieux gérer les problèmes de clean d'un widget.
 - Il faut gérer le fait de pouvoir "hide" un widget.
 - Il faut recrée le system de keyboardmanagment et crée un système pour la souris.
 - FAIRE une meilleur documentation des fonction
