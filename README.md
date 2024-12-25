@@ -10,6 +10,8 @@ Tu rêve de pouvoir faire des widget a ta sauce ?
 - Il faut recrée le system de keyboardmanagment et crée un système pour la souris.
 - FAIRE une meilleur documentation des fonction
 - J'ai un trPair, il faut implémenter un trMulti
+- La mémoire ne fait qu'augmenter ?
+- ![image](https://github.com/user-attachments/assets/13648a60-4fb6-4188-bc11-3bef1952be6e)
 - Il faut gérer tout les code/séquence :
 
 | Séquence/Caractère | Description ou Problème potentiel                             |
