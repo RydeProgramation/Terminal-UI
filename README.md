@@ -9,6 +9,7 @@ Tu rêve de pouvoir faire des widget a ta sauce ?
 - Il faut gérer le fait de pouvoir "hide" un widget.
 - Il faut recrée le system de keyboardmanagment et crée un système pour la souris.
 - FAIRE une meilleur documentation des fonction
+- bug map quand on l'utilise dans trDATA
 - J'ai un trPair, il faut implémenter un trMulti
 - La mémoire ne fait qu'augmenter ?
 - ![image](https://github.com/user-attachments/assets/13648a60-4fb6-4188-bc11-3bef1952be6e)
