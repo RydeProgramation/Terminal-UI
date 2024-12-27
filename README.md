@@ -4,7 +4,9 @@ Tu rêve de pouvoir faire des widget a ta sauce ?
 # BUG-PROBLEM
 - ~~Il faut gérer les caractère UTF-8~~.
 - Réorganiser l'orde des fonction de le fichier trWidget.cpp
-- Il faut gérer les différentes couleurs.
+- Il faut gérer les différentes couleurs. (presque fini)
+- -- Il faut géréer le problème de fuite de couleur
+- ![image](https://github.com/user-attachments/assets/5733e42f-105e-4432-bd86-e11bd2dcc17f)
 - Il faut mieux gérer les problèmes de clean d'un widget.
 - Il faut gérer le fait de pouvoir "hide" un widget.
 - Il faut recrée le system de keyboardmanagment et crée un système pour la souris.
