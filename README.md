@@ -4,11 +4,18 @@ Tu rêve de pouvoir faire des widget a ta sauce ?
 # BUG-PROBLEM
 - ~~Il faut gérer les caractère UTF-8~~.
 - Réorganiser l'orde des fonction de le fichier trWidget.cpp
-- Il faut gérer les différentes couleurs.
-- ~~Il faut mieux gérer les problèmes de clean d'un widget.~~
+- Il faut gérer les différentes couleurs. (presque fini)
+- -- Il faut géréer le problème de fuite de couleur
+- ![image](https://github.com/user-attachments/assets/5733e42f-105e-4432-bd86-e11bd2dcc17f)
+- Il faut mieux gérer les problèmes de clean d'un widget.
 - Il faut gérer le fait de pouvoir "hide" un widget.
 - Il faut recrée le system de keyboardmanagment et crée un système pour la souris.
 - FAIRE une meilleur documentation des fonction
+- bug map quand on l'utilise dans trDATA
+- J'ai un trPair, il faut implémenter un trMulti
+- Améliorer trMap, éviter d'utiliser un vector est crée un truc moi-même
+- La mémoire ne fait qu'augmenter ?
+- ![image](https://github.com/user-attachments/assets/13648a60-4fb6-4188-bc11-3bef1952be6e)
 - Il faut gérer tout les code/séquence :
 
 | Séquence/Caractère | Description ou Problème potentiel                             |
@@ -27,3 +34,4 @@ Tu rêve de pouvoir faire des widget a ta sauce ?
 - améliorer ce read.me avec des images
 ## ajout
 - Pourvoir créer/utiliser des ficher par exemple .widget pour avoir des widgets
+- Pouvoir gérer le son !
