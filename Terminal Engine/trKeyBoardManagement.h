@@ -18,54 +18,63 @@ class TERMINAL_ENGINE_API trKeyBoardManagement : trObject
 {
 public:
 
-	// INI
+	// INI && default
 	trKeyBoardManagement();
+
+	// INI deep copy
+	trKeyBoardManagement(const trKeyBoardManagement& other);
+
+	// copy
+	trKeyBoardManagement& operator=(const trKeyBoardManagement& other);
 
 	// FNC
 	/// <summary>
 	/// Permet de gérer l'action sur les boutons
 	/// </summary>
-	void ActionBTN() /*override*/;
+	void ActionBTN();
 
 	// Create
 	/// <summary>
 	/// 
 	/// </summary>
-	bool CreateBTN(trBTN_Key* Btns) /*override*/;
+	bool CreateBTN(trBTN_Key* Btns);
 
 	// SET
-	void SetActionBtnKey(int key, void (*action)()) /*override*/;
+	void SetActionBtnKey(int key, void (*action)());
 
 	// GET
-	const std::vector<trBTN_Key*>& GetBTNS() const /*override*/; // PROBLEME JE PENSE
+	const std::vector<trBTN_Key*>& GetBTNS() const; // PROBLEME JE PENSE
 
 	// Update
 	/// <summary>
 	/// Traitement du Clavier
 	/// </summary>
-	virtual void Update() /*override*/;
+	virtual void Update();
 
 	// FNC
 	/// <summary>
 	/// 
 	/// </summary>
 	/// <param name="key"></param>
-	/// <returns> Position in the vector BTNS </returns>
-	int BtnResearch(int key) /*override*/;
+	/// <returns> PositionRelative in the vector BTNS </returns>
+	int BtnResearch(int key);
 
 	// START
-	void Start() /*override*/;
+	void Start();
 
 	// DESTRUCTEUR
 	~trKeyBoardManagement();
 
 private:
+
 	void Loop();
 
 protected:
+
 	std::vector<trBTN_Key*> *BTNS; // Je sais pas quoi choisir entre vector et unoredered_map...
 
 private:
+
 	bool start;
 };
 

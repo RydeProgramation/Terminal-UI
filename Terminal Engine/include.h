@@ -13,7 +13,6 @@
 #include <random>
 #include <sstream>
 #include <io.h>
-#include <fcntl.h>
 #include <mutex>
 #include <thread>
 #include <algorithm>
@@ -21,4 +20,5 @@
 #include <locale>
 #include <codecvt>
 #include <memory>
+#include <map>
 #include <unordered_map>

@@ -20,9 +20,21 @@ struct TERMINAL_ENGINE_API trSelector : trWidget
 {
 public:
 
+	// INI default
+
+	trSelector();
+
 	// INI
 
 	trSelector(int x_, int y_, int size_x_, int size_y_, int RelativePosition_, std::wstring content_, std::string name_);
+
+	// INI deep copy
+
+	trSelector(const trSelector& other);
+
+	// Copy
+
+	trSelector& operator=(const trSelector& other);
 
 	// SET
 
@@ -44,13 +56,13 @@ public:
 
 	// DESTRUCTEUR
 
-	~trSelector() = default;
+	~trSelector();
 
 private:
 
-	trData<bool> selected;
+	trData<bool> *selected;
 
-	trData<int> colorSelected;
+	trData<int> *colorSelected;
 };
 
 #endif

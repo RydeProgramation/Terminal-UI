@@ -29,3 +29,5 @@
 #include "trSelector.h"
 #include "trUI_Tools.h"
 #include "trData.h"
+#include "trMap.h"
+#include "trPair.h"

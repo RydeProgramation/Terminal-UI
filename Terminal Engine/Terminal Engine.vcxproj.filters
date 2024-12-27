@@ -18,9 +18,6 @@
     <ClCompile Include="trBTN_Key.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="trCoordinate.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="trData.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
@@ -42,20 +39,15 @@
     <ClCompile Include="trWidget.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="trCoordinate.inl">
+    <ClCompile Include="trPair.cpp">
       <Filter>Source Files</Filter>
-    </None>
-    <None Include="trData.inl">
+    </ClCompile>
+    <ClCompile Include="trMap.cpp">
       <Filter>Source Files</Filter>
-    </None>
-    <None Include="trSize.inl">
+    </ClCompile>
+    <ClCompile Include="trCoordinate.cpp">
       <Filter>Source Files</Filter>
-    </None>
-    <None Include="trUI.inl">
-      <Filter>Source Files</Filter>
-    </None>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="trBTN_Key.h">
@@ -89,6 +81,12 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="trWidget.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="trPair.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="trMap.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

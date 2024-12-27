@@ -11,15 +11,12 @@
 #define TERMINAL_ENGINE_API __declspec(dllimport)
 #endif
 
-class TERMINAL_ENGINE_API trObject // object simple : JE VAIS ESSAYER D'ARRETER LES PROBLEMES AVEC CA
+class TERMINAL_ENGINE_API trObject 
 {
 public:
 	trObject() = default;
 
 	virtual ~trObject() = default;
-
-private:
-	void destroy_() { delete this; } // Peut causer des problèmes NE PAS APPELER
 };
 
 #endif

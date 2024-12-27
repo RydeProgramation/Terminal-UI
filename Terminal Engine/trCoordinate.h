@@ -1,4 +1,4 @@
-#pragma once
+﻿#pragma once
 
 #include "include.h"
 #include "trData.h"
@@ -13,14 +13,40 @@
 #endif
 
 template <class COORD_T>
-struct TERMINAL_ENGINE_API trCoordinate : trObject
+struct trCoordinate : trObject
 {
 public:
 
-	// INI
-	trCoordinate(const COORD_T& x_, const COORD_T& y_) : x(new trData<COORD_T>(x_)), y(new trData<COORD_T>(y_)) /*x(std::make_unique<trData<COORD_T>>(x_)), y(std::make_unique<trData<COORD_T>>(y_))*/
+	// INI default
+	trCoordinate() : x(new trData<COORD_T>()), y(new trData<COORD_T>())
 	{
 
+	}
+
+	// INI
+	trCoordinate(const COORD_T& x_, const COORD_T& y_) : x(new trData<COORD_T>(x_)), y(new trData<COORD_T>(y_))
+	{
+
+	}
+
+	// INI deep copy
+	trCoordinate(const trCoordinate& other) : x(new trData<COORD_T>(*other.x)), y(new trData<COORD_T>(*other.y))
+	{
+
+	}
+
+	// Copy
+	trCoordinate& operator=(const trCoordinate& other)
+	{
+		if (this == &other) 
+		{ 
+			return *this; 
+		}
+
+		x = new trData<COORD_T>(*other.x);
+		y = new trData<COORD_T>(*other.y);
+
+		return *this;
 	}
 
 	// SET
@@ -61,7 +87,5 @@ private:
 	trData<COORD_T> *x;
 	trData<COORD_T> *y;
 };
-
-//#include "Coordinate.inl" // <-- Inutile
 
 #endif

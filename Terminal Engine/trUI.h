@@ -7,6 +7,7 @@
 #include "trCoordinate.h"
 #include "trWidget.h"
 #include "trData.h"
+#include "trPair.h"
 #include "trSelector.h"
 #include "trUI_Tools.h"
 
@@ -25,10 +26,22 @@
 class TERMINAL_ENGINE_API trUserInterface : trObject // RANGER LES FONCTINON C'EST DANS UN BORDEL PAS POSSIBLE
 {
 public: 
+
+	// INI default
+
+	trUserInterface();
 	
 	// INI
 
-	trUserInterface(int RenderType_);
+	trUserInterface(int RenderType_, int BordW_, std::wstring RstClr);
+
+	// INI deep copy
+
+	trUserInterface(const trUserInterface& other);
+
+	// Copy
+
+	trUserInterface& operator=(const trUserInterface& other);
 	
 	// FNC
 
@@ -118,6 +131,12 @@ public:
 	/// <param name="WIDG"></param>
 	const trWidget GetWidget(const std::string& name) const;
 
+	/// <summary>
+	/// Pour éxécuter une fonciton sur un Widget
+	/// </summary>
+	/// <param name="name">Le nom du Widget</param>
+	/// <param name="func">L'adresse de la fonction par exemple (&trWidget::AddToContent)</param>
+	/// <param name="...args">Les argument</param>
 	template <typename Func, typename... Args>
 	void SetWidget(const std::string& name, Func&& func, Args&&... args) 
 	{
@@ -131,29 +150,12 @@ private: // FNC
 	/// </summary>
 	/// <param name="WIDG"></param>
 	/// <returns></returns>
-	int DisplayWidget(trWidget* WIDG); // pas fini
+	void DisplayWidget(trWidget* WIDG); // à vérifier
 
 	/// <summary>
-	/// Permet de déplacer pour un ostrinstream donnée la position du curseur
+	/// Aplique les couleurs
 	/// </summary>
-	/// <param name="Pos"></param>
-	/// <param name="output"></param>
-	void MoveCursorToOstream(const trCoordinate<int> &Pos, std::wostringstream *output, const trSize<int> &SizeOutput);
-
-	/// <summary>
-	/// Permet de déplacer pour un ostrinstream donnée la position du curseur en prenant compte de la bordure
-	/// </summary>
-	/// <param name="Pos"></param>
-	/// <param name="output"></param>
-	/// <param name="BorderW"></param>
-	void MoveCursorToOstream(const trCoordinate<int>& Pos, std::wostringstream* output, const trSize<int>& SizeOutput, int BorderW);
-
-	/// <summary>
-	/// Permet de déplacer pour un ostrinstream donnée la position du curseur
-	/// </summary>
-	/// <param name="Pos"></param>
-	/// <param name="output"></param>
-	void CleanOstreamSize(std::wostringstream* output, const trSize<int>& SizeOutput);
+	void DisplayColor(); // à verifier
 
 	/// <summary>
 	/// 
@@ -182,6 +184,30 @@ private: // FNC
 	/// </summary>
 	void Render();
 
+	// Fonciton utilise (à deplacer dans trUiTools je pense)
+
+	/// <summary>
+	/// Permet de déplacer pour un ostrinstream donnée la position du curseur
+	/// </summary>
+	/// <param name="Pos"></param>
+	/// <param name="output"></param>
+	void MoveCursorToOstream(const trCoordinate<int>& Pos, std::wostringstream* output, const trSize<int>& SizeOutput);
+
+	/// <summary>
+	/// Permet de déplacer pour un ostrinstream donnée la position du curseur en prenant compte de la bordure
+	/// </summary>
+	/// <param name="Pos"></param>
+	/// <param name="output"></param>
+	/// <param name="BorderW"></param>
+	void MoveCursorToOstream(const trCoordinate<int>& Pos, std::wostringstream* output, const trSize<int>& SizeOutput, int BorderW);
+
+	/// <summary>
+	/// Permet de déplacer pour un ostrinstream donnée la position du curseur
+	/// </summary>
+	/// <param name="Pos"></param>
+	/// <param name="output"></param>
+	void CleanOstreamSize(std::wostringstream* output, const trSize<int>& SizeOutput);
+
 public:
 
 	// DESTRUCTEUR
@@ -193,6 +219,8 @@ protected:
 	trKeyBoardManagement *KB;
 
 	int BorderWidth;
+
+	std::wstring *BaseColor;
 
 	std::mutex *mtx;
 
@@ -210,7 +238,11 @@ private:
 
 	std::wostringstream *Render_;
 
+	std::wostringstream *RenderColor_;
+
 	int RenderType;
+
+	bool Refreshed = false;
 };
 
 TERMINAL_ENGINE_API trUserInterface* CreateUserInterface();

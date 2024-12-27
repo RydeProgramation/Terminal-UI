@@ -50,8 +50,56 @@ namespace UITools
 	/// </summary>
 	/// <param name="WIDG"></param>
 	/// <param name="trCoordinate"></param>
+	/// <param name="CountTouch"></param>
+	/// <returns></returns>
+	TERMINAL_ENGINE_API bool IsOutSide(trCoordinate<int> xy, int BorderWidth, bool CountTouch);
+
+	/// <summary>
+	/// Permet de verifier si c'est en dehors juste avec les coord 1 dimensions
+	/// </summary>
+	/// <param name="z"></param>
+	/// <param name="BorderWidth"></param>
+	/// <returns></returns>
+	TERMINAL_ENGINE_API bool IsOutSide(int z, int BorderWidth, bool CountTouch);
+
+	/// <summary>
+	/// Permet de verifier si c'est en dehors juste avec les coord 1 dimensions
+	/// </summary>
+	/// <param name="z"></param>
+	/// <param name="BorderWidth"></param>
+	/// <returns></returns>
+	TERMINAL_ENGINE_API bool IsOutSide(int z, int BorderWidth);
+
+	/// <summary>
+	/// Permet de verfier si les coordonnées données sont en dehors de la fenêtre
+	/// </summary>
+	/// <param name="WIDG"></param>
+	/// <param name="trCoordinate"></param>
 	/// <returns></returns>
 	TERMINAL_ENGINE_API bool IsOutSide(trCoordinate<int> xy);
+
+	/// <summary>
+	/// Permet de verfier si les coordonnées données sont en dehors de la fenêtre
+	/// </summary>
+	/// <param name="WIDG"></param>
+	/// <param name="trCoordinate"></param>
+	/// <param name="CountTouch"></param>
+	/// <returns></returns>
+	TERMINAL_ENGINE_API bool IsOutSide(trCoordinate<int> xy, bool CountTouch);
+
+	/// <summary>
+	/// Permet de verifier si c'est en dehors juste avec les coord 1 dimensions
+	/// </summary>
+	/// <param name="z"></param>
+	/// <returns></returns>
+	TERMINAL_ENGINE_API bool IsOutSide(int z);
+	
+	/// <summary>
+	/// Permet de verifier si c'est en dehors juste avec les coord 1 dimensions
+	/// </summary>
+	/// <param name="z"></param>
+	/// <returns></returns>
+	TERMINAL_ENGINE_API bool IsOutSide(int z, bool CountTouch);
 
 	/// <summary>
 	/// 
@@ -86,6 +134,13 @@ namespace UITools
 	/// <param name="wstr"></param>
 	/// <returns></returns>
 	TERMINAL_ENGINE_API std::string WstringToUtf8(const std::wstring& wstr);
+
+	/// <summary>
+	/// comme le nom l'indique
+	/// </summary>
+	/// <param name="input"></param>
+	/// <returns></returns>
+	TERMINAL_ENGINE_API bool IsPureColor(const std::wstring& input);
 
 	/// <summary>
 	/// FONCTION VIDE

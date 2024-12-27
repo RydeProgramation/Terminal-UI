@@ -8,6 +8,23 @@ trKeyBoardManagement::trKeyBoardManagement() : start(false), BTNS(new vector<trB
 	
 }
 
+// INI deep copy
+trKeyBoardManagement::trKeyBoardManagement(const trKeyBoardManagement& other) : start(other.start), BTNS(new vector<trBTN_Key*>(*other.BTNS))
+{
+
+}
+
+// copy
+trKeyBoardManagement& trKeyBoardManagement::operator=(const trKeyBoardManagement& other)
+{
+	if (this == &other) { return *this; }
+
+	start = other.start;
+	BTNS = new vector<trBTN_Key*>(*other.BTNS);
+
+	return *this;
+}
+
 // FNC
 void trKeyBoardManagement::ActionBTN() // PAS OTPI DU TOUT
 {

@@ -2,17 +2,44 @@
 
 using namespace std;
 
-//  INI
+// INI default
+
+trBTN_Key::trBTN_Key() : key(0), pressed(false), detachKey(false), action(new std::function<void()>()), protect(false)
+{
+}
+
+// INI
 
 trBTN_Key::trBTN_Key(int key_, std::function<void()> action_) : key(key_), pressed(false), detachKey(false), action(new std::function<void()>(action_)), protect(false)
 {
 
 }
 
+// INI deep copy
+
+trBTN_Key::trBTN_Key(const trBTN_Key& other) : key(other.key), pressed(other.pressed), detachKey(other.detachKey), action(new std::function<void()>(*other.action)), protect(false)
+{
+}
+
+// Copy
+
+trBTN_Key& trBTN_Key::operator=(const trBTN_Key& other)
+{
+	if (this == &other) { return *this; }
+
+	key = other.key;
+	pressed = other.pressed;
+	detachKey = other.detachKey;
+	action = new std::function<void()>(*other.action);
+	protect = other.protect;
+
+	return *this;
+}
+
 // SET / RESET
 
 void trBTN_Key::Reset()
-{
+{	
 	detachKey = false;
 	pressed = false;
 }

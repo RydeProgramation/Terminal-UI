@@ -2,6 +2,15 @@
 
 #include "MyUI.h"
 
+#pragma comment(lib, "Terminal Engine.lib")
+
+/*
+
+SI JAMAIS IL Y A UNE ERREUR LNK 2019, c'est qu'il faut initialiser au moins une fois pour que se soit compiler dans Terminal Engine.lib
+SI C'EST UN TEMPLATE IL NE FAUT PAS METTRE EN IMPORT/EXPORT CAR IL FAUT INITIAILISER POUR CHAQUE TYPE
+
+*/
+
 using namespace std;
 using namespace UITools;
 
@@ -9,35 +18,15 @@ int main()
 {
 	SetConsoleOutputCP(CP_UTF8);
 
-	srand((unsigned)time(nullptr));
-
 	cout << WstringToUtf8(L"Clique sur F11, pour une meilleur experience (sans bug) 😊🎉") << endl << endl << endl;
-
-	Sleep(1000);
 
 	cout << WstringToUtf8(L"Ensuite clique sur n'importe quelle touche (entrée)") << endl;
 
-	std::wstring text = L"\033[31m1234\033[0m"; // size 13
-	std::wstring text2 = L"1234"; // size 4
-
-	wostringstream test;
-	test << text;
-
-	cout << WstringToUtf8(text) << endl;
-	cout << text.size() << endl;
-	cout << text.length();
-
 	cin.ignore();
 
-	std::unique_ptr<MyUI> UI = std::make_unique<MyUI>();
+	MyUI UI;
 
-	UI->Start();
-
-	// C'est un thread perdu pourquoi pas faire qqchose ici
-
-	while (true)
-	{
-	}
+	UI.Start();
 }
 
 /*

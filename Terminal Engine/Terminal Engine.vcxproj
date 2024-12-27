@@ -133,6 +133,8 @@
     <ClCompile Include="trCoordinate.cpp" />
     <ClCompile Include="trData.cpp" />
     <ClCompile Include="trKeyBoardManagement.cpp" />
+    <ClCompile Include="trMap.cpp" />
+    <ClCompile Include="trPair.cpp" />
     <ClCompile Include="trSelector.cpp" />
     <ClCompile Include="trSize.cpp" />
     <ClCompile Include="trUI.cpp" />
@@ -140,17 +142,13 @@
     <ClCompile Include="trWidget.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="trCoordinate.inl" />
-    <None Include="trData.inl" />
-    <None Include="trSize.inl" />
-    <None Include="trUI.inl" />
-  </ItemGroup>
-  <ItemGroup>
     <ClInclude Include="trBTN_Key.h" />
     <ClInclude Include="trCoordinate.h" />
     <ClInclude Include="trData.h" />
     <ClInclude Include="include.h" />
     <ClInclude Include="trKeyBoardManagement.h" />
+    <ClInclude Include="trMap.h" />
+    <ClInclude Include="trPair.h" />
     <ClInclude Include="trSelector.h" />
     <ClInclude Include="trSize.h" />
     <ClInclude Include="trObject.h" />

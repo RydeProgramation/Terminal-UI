@@ -5,6 +5,8 @@
 #include "trSize.h"
 #include "trCoordinate.h"
 #include "trData.h"
+#include "trPair.h"
+#include "trMap.h"
 
 #ifndef __TR_WIDGET__
 #define __TR_WIDGET__
@@ -29,17 +31,31 @@ struct TERMINAL_ENGINE_API trWidget : trObject
 {
 public:
 
-	// CONSTR
+	// INI default
+
+	trWidget();
+
+	// INI
 
 	trWidget(int x_, int y_, int size_x_, int size_y_, int RelativePosition_, std::wstring content_, std::string name_);
 
+	// INI deep copy
+
+	trWidget(const trWidget& other);
+
+	// Copy
+
+	trWidget& operator=(const trWidget& other);
+
 	// SET
 
-	void SetPosition(int x_, int y_);
+	void SetPosition(int x_, int y_); 
 
 	void SetSize(int x_, int y_);
 
 	void SetContent(const std::wstring& content_);
+
+	void SetResetColor(const std::vector<trPair<std::wstring, trCoordinate<int>>>& RstColor);
 
 	void SetName(const std::string& name_);
 
@@ -47,9 +63,7 @@ public:
 
 	void SetProtecte(bool prtc);
 
-	// void SetDelayCaractere(int Delay); INUTILE
-
-	void SetColor(int color_);
+	void SetColor(int color_); // a voir quoi faire avec ça frR
 
 	bool SetRelativePosition(int rp);
 
@@ -69,7 +83,7 @@ public:
 
 	// GET
 
-	const trCoordinate<int>& GetPostion() const;
+	const trCoordinate<int>& GetPosition() const;  // n'est jamais utiliser
 
 	const trCoordinate<int>& GetRelativePosition() const;
 
@@ -77,13 +91,17 @@ public:
 
 	const trData<std::wstring>& GetContent() const;
 
+	const trData<std::wstring>& GetRawContent() const;
+
+	const trData<trMap<int, trPair<std::wstring, trCoordinate<int>>>>& GetColoredContent() const;
+
+	const std::vector<trPair<std::wstring, trCoordinate<int>>>& GetResetColor() const;
+
 	const trData<std::string>& GetName() const;
 
 	const trData<bool>& GetActivate() const;
 
 	const trData<bool>& GetProtecte() const;
-
-	// const trData<int>& GetDelayCaractere() const; INUTILE
 
 	const trData<int>& GetColor() const;
 
@@ -104,7 +122,7 @@ public:
 	// FNC
 
 	bool VerificationProprety();
-
+	
 	virtual void Display(std::wostringstream& output_line);
 
 private:
@@ -113,15 +131,21 @@ private:
 
 public:
 
+	// Empty Widget (Static)
+	static const trWidget& EmptyWidget();
+
 	// DESTRUCTEUR
 
 	~trWidget();
 
 private:
 
-	trCoordinate<int> *Position;
+	static trWidget* emptyWidgetInstance; // Pointeur pour l'instance unique
 
-	trCoordinate<int> *RelativePosition;
+	trCoordinate<int> *PositionRelative; 
+
+	// par rapport au terminal mais ca commence aux bordure, ducoup pas absolue a 100%
+	trCoordinate<int> *PositionAbsolue;
 
 	trSize<int> *size;
 
@@ -129,21 +153,28 @@ private:
 
 	trData<bool> *protecte;
 
-	// trData<int> *delayCaractere; INUTILE
-
-	trData<int> *color;
+	trData<int> *color; // a voir si utiliser ??????
 
 	trData<bool> *change;
 
-	trData<int> *RP;
+	trData<int> *RpType;
 
-	trData<std::wstring> *content; // peut etre utilisé des pointeurs
+	trData<std::wstring>* RawContent;
 
-	trData<std::string> *name; // peut etre utilisé des pointeurs
+	/// <summary>
+	/// L'index correspond aux coordonnées de l'info en 1 dimensions par rapport aux widget PAS a la fenêtre (merci de bien vouloir lire ;) )
+	/// </summary>
+	trData<trMap<int, trPair<std::wstring, trCoordinate<int>>>>*ColoredContent;
+
+	std::vector<trPair<std::wstring, trCoordinate<int>>> *BaseColor;
+
+	trData<std::string> *name; 
 
 	trData<bool> *destroy;
 
 	trCoordinate<int> *RelativePositionPoint;
+
+	trData<std::wstring>* content;
 
 };
 

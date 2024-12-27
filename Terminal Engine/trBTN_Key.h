@@ -19,9 +19,21 @@ struct TERMINAL_ENGINE_API trBTN_Key : trObject
 {
 public:
 
+	// INI default
+
+	trBTN_Key();
+
 	// INI
 
 	trBTN_Key(int key_, std::function<void()> action_);
+
+	// INI deep copy
+
+	trBTN_Key(const trBTN_Key& other);
+
+	// Copy
+
+	trBTN_Key& operator=(const trBTN_Key& other);
 
 	// SET
 

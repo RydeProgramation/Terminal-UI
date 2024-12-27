@@ -1,4 +1,4 @@
-#pragma once
+﻿#pragma once
 
 #include "trObject.h"
 
@@ -11,35 +11,62 @@
 #define TERMINAL_ENGINE_API __declspec(dllimport)
 #endif
 
-template <class trData_T>
-struct TERMINAL_ENGINE_API trData : trObject
+template <class DATA_T>
+struct trData : trObject
 {
 public:
 
-	// INI
-	trData(const trData_T& Actual_) : Old(new trData_T(Actual_)), Actual(new trData_T(Actual_)), New(new trData_T(Actual_))
+	// INI default
+	trData() : Old(new DATA_T()), Actual(new DATA_T()), New(new DATA_T())
 	{
 
 	}
 
+	// INI
+	trData(const DATA_T& Actual_) : Old(new DATA_T(Actual_)), Actual(new DATA_T(Actual_)), New(new DATA_T(Actual_))
+	{
+
+	}
+
+	// INI deep copy
+	trData(const trData& other) : Old(new DATA_T(*other.Old)), Actual(new DATA_T(*other.Actual)), New(new DATA_T(*other.New))
+	{
+
+	}
+
+	// Copy
+	trData& operator=(const trData& other)
+	{
+		if (this == &other)
+		{
+			return *this;
+		}
+
+		Old = new DATA_T(*other.Old);
+		Actual = new DATA_T(*other.Actual);
+		New = new DATA_T(*other.New);
+
+		return *this;
+	}
+
 	// SET
-	void SetData(const trData_T& newValue)
+	void SetData(const DATA_T& newValue)
 	{
 		*New = newValue;
 	}
 
 	// GET
-	const trData_T& GetDataNew() const
+	const DATA_T& GetDataNew() const
 	{
 		return *New;
 	}
 
-	const trData_T& GetDataOld() const
+	const DATA_T& GetDataOld() const
 	{
 		return *Old;
 	}
 
-	const trData_T& GetDataActual() const
+	const DATA_T& GetDataActual() const
 	{
 		return *Actual;
 	}
@@ -61,12 +88,10 @@ public:
 
 private:
 
-	trData_T *New;
-	trData_T *Old;
-	trData_T *Actual;
+	DATA_T* New;
+	DATA_T* Actual;
+	DATA_T* Old;
 
 };
-
-// #include "Data.inl" // INUTILE
 
 #endif

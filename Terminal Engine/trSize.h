@@ -13,15 +13,44 @@
 #endif
 
 template <class SIZE_T>
-struct TERMINAL_ENGINE_API trSize : trObject
+struct trSize : trObject
 {
 public:
+
+	// INI default
+
+	trSize() : x(new trData<SIZE_T>()), y(new trData<SIZE_T>())
+	{
+
+	}
 
 	// INI
 
 	trSize(const SIZE_T& x_, const SIZE_T& y_) : x(new trData<SIZE_T>(x_)), y(new trData<SIZE_T>(y_))
 	{
 		
+	}
+
+	// INI deep copy
+
+	trSize(const trSize& other) : x(new trData<SIZE_T>(*other.x)), y(new trData<SIZE_T>(*other.y))
+	{
+
+	}
+
+	// Copy
+
+	trSize& operator=(const trSize& other)
+	{
+		if (this == &other) 
+		{ 
+			return *this; 
+		}
+
+		x = new trData<SIZE_T>(*other.x);
+		y = new trData<SIZE_T>(*other.y);
+
+		return *this;
 	}
 
 	// SET
@@ -45,6 +74,7 @@ public:
 	}
 
 	// Update
+
 	void Update() 
 	{
 		x->Update();
@@ -64,7 +94,5 @@ private:
 	trData<SIZE_T> *x;
 	trData<SIZE_T> *y;
 };
-
-// #include "Size.inl" // <-- Inutile
 
 #endif

@@ -7,7 +7,7 @@ using namespace UITools;
 
 // INI
 
-MyUI::MyUI() : trUserInterface(1)
+MyUI::MyUI() : trUserInterface(1, 6, L"\033[0m")
 {
 
 }
@@ -25,15 +25,15 @@ void MyUI::Start()
 
 	vector<wstring> hello3;
 
-	hello3.push_back(L" _   _      _ _        __        __         _     _ _ "); // 54
-	hello3.push_back(L"| | | | ___| | | ___   \\ \\      / /__  _ __| | __| | |"); // 54
-	hello3.push_back(L"| |_| |/ _ \\ | |/ _ \\   \\ \\ /\\ / / _ \\| '__| |/ _` | |"); // 54
-	hello3.push_back(L"|  _  |  __/ | | (_) |   \\ V  V / (_) | |  | | (_| |_|"); // 54
-	hello3.push_back(L"|_| |_|\\___|_|_|\\___/     \\_/\\_/ \\___/|_|  |_|\\__,_(_)"); // 54
+	hello3.push_back(L"\033[38;2;50;100;125m _   _      _ _        \033[38;2;50;100;150m__        __         _     _\033[38;2;50;100;255m _\n"); // 54
+	hello3.push_back(L"\033[38;2;50;100;125m| | | | ___| | | ___   \033[38;2;50;100;150m\\ \\      / /__  _ __| | __| \033[38;2;50;100;255m| |"); // 54
+	hello3.push_back(L"\033[38;2;50;100;125m| |_| |/ _ \\ | |/ _ \\\033[38;2;50;100;150m   \\ \\ /\\ / / _ \\| '__| |/ _` \033[38;2;50;100;255m| |"); // 54
+	hello3.push_back(L"\033[38;2;50;100;125m|  _  |  __/ | | (_) | \033[38;2;50;100;150m  \\ V  V / (_) | |  | | (_| \033[38;2;50;100;255m|_|"); // 54
+	hello3.push_back(L"\033[38;2;50;100;125m|_| |_|\\___|_|_|\\___/\033[38;2;50;100;150m     \\_/\\_/ \\___/|_|  |_|\\__,_\033[38;2;50;100;255m(_)"); // 54
 
 	vector<wstring> hello2;
 
-	hello2.push_back(L" _   _      _ _        __        __         _     _ "); // 52
+	hello2.push_back(L" _   _      _ _        __        __         _     _\n"); // 52
 	hello2.push_back(L"| | | | ___| | | ___   \\ \\      / /__  _ __| | __| |"); // 52
 	hello2.push_back(L"| |_| |/ _ \\ | |/ _ \\   \\ \\ /\\ / / _ \\| '__| |/ _` |"); // 52
 	hello2.push_back(L"|  _  |  __/ | | (_) |   \\ V  V / (_) | |  | | (_| |"); // 52
@@ -41,11 +41,11 @@ void MyUI::Start()
 
 	vector<wstring> hello;
 
-	hello.push_back(L" _   _      _ _       "); // 22
-	hello.push_back(L"| | | | ___| | | ___  "); // 22
-	hello.push_back(L"| |_| |/ _ \\ | |/ _ \\ "); // 22
+	hello.push_back(L" _   _      _ _\n"); // 22
+	hello.push_back(L"| | | | ___| | | ___\n"); // 22
+	hello.push_back(L"| |_| |/ _ \\ | |/ _ \\\n"); // 22
 	hello.push_back(L"|  _  |  __/ | | (_) |"); // 22
-	hello.push_back(L"|_| |_|\\___|_|_|\\___/ "); // 22
+	hello.push_back(L"|_| |_|\\___|_|_|\\___/\n"); // 22
 
 	wstring hello3_ = hello3[0] + hello3[1] + hello3[2] + hello3[3] + hello3[4];
 	wstring hello_ = hello[0] + hello[1] + hello[2] + hello[3] + hello[4];
@@ -72,8 +72,6 @@ void MyUI::Start()
 
 	CreateWidgetWait(new trWidget(1, -1, 54, 5, MiddleCenter, hello3_, "Hello3"));
 
-	SetWidget("Hello3", &trWidget::SetColor, 11);
-
 	Sleep(1000);
 
 	for (int i = 0; i < 10; i++)
@@ -87,27 +85,47 @@ void MyUI::Start()
 	{
 		SetWidget("Hello3", &trWidget::AddToSize, 0, -1);
 
-		SetWidget("Hello3", &trWidget::AddToColor, 1);
+		// SetWidget("Hello3", &trWidget::AddToColor, 1);
 
 		Sleep(50);
 	}
 
 	DestroyWidget("Hello3");
 
-	wstring parag = L"Salutations, brave lache\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\bons, brave aventurier ! Mon projet est une application maléfique\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\bapplication magique qui ouvre les portes des marchés financiers.\nÀ l'aide de la puissante technique de DiCaprio\b\b\b\b\b\b\b\bMonte-Carlo, je simule des trajectoire connu\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\btrajectoire aléatoire pour les options (calls et putain\b\b\bs).\nImagine-toi chevauchant un dragon volant au-dessus des courbes de prix, scrutant les volaille\b\b\b\b\b\b\b\b\b volatilités et les risques.\nLes prix d'opinion\b\b\b\b\b\b\b\b\bd'options se révèlent tels des tresors cachés dans les profondeurs du marché. Que la probabilites soit sans toi !\b\b\b\b\b\b\b\b\b\bavec toi !\nJe te propose donc cette application pour que tu fasses tes propres simulations et découvre les secrets enfouis dans\fles volutés des cccccc\b\b\b\b\bourbes financières.";
+	wstring parag = L"Salutations, brave lache\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\bons, brave aventurier ! Mon projet est une application maléfique\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\bapplication magique qui ouvre les portes des marchés financiers.\nÀ l'aide de la puissante technique de DiCaprio\b\b\b\b\b\b\b\bMonte-Carlo, je simule des trajectoire connu\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\btrajectoire aléatoire pour les options (calls et putain\b\b\bs).\nImagine-toi chevauchant un dragon volant au-dessus des courbes de prix, scrutant les volaille\b\b\b\b\b\b\b\b\b volatilités et les risques.\nLes prix d'opinion\b\b\b\b\b\b\b\b\bd'options se révèlent tels des tresors cachés dans les profondeurs du marché. Que la probabilites soit sans toi !\b\b\b\b\b\b\b\b\b\bavec toi !\nJe te propose donc cette application pour que tu fasses tes propres simulations et découvre les secrets enfouis dans\fles volutés des cccccc\b\b\b\b\bourbes financières. 🎉";
+	wstring paragColor = L"\033[38;2;255;182;193mSalutations, brave lache\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\bons, brave aventurier !\033[0m\033[38;2;176;224;230m Mon projet est une application maléfique\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\033[0m\033[38;2;152;251;152mapplication magique qui ouvre les portes des marchés financiers.\033[0m\nÀ l'aide de la puissante technique de \033[38;2;216;191;216mDiCaprio\b\b\b\b\b\b\b\bMonte-Carlo\033[0m, \033[38;2;240;230;140mje simule des trajectoires aléatoires\033[0m pour les options (calls et \033[38;2;250;235;215mputain\b\b\bs\033[0m).\n\033[38;2;255;222;173mImagine-toi chevauchant un dragon volant au-dessus des courbes de prix, scrutant les volatilités et les risques.\033[0m\nLes prix d'\033[38;2;255;228;196moptions\033[0m se révèlent tels des trésors cachés dans les profondeurs du marché. \033[38;2;240;255;255mQue la probabilités soit avec toi !\033[0m\n\033[38;2;245;222;179mJe te propose donc cette application pour que tu fasses tes propres simulations et découvre les secrets enfouis\033[0m dans\f\033[38;2;216;191;216mles volutes des courbes financières.\033[0m 🎉";
+
+	trSize<int>* size_ = new trSize<int>(GetConsoleSize()); 
 	
-	trSize<int>* size_ = new trSize<int>(GetConsoleSize());
+	CreateWidgetWait(new trWidget(0, 4, 123, 6, MiddleCenter, parag, "Paragraphe")); // a enlever
 
-	CreateWidgetWait(new trWidget(0, 0, 123, 6, MiddleCenter, parag, "Paragraphe"));
+	CreateWidgetWait(new trWidget(0, -4, 123, 6, MiddleCenter, L"", "Paragraphe2"));
 
-	while (true)
+	for (int i = 0; i < paragColor.size(); i++)
 	{
+		if (paragColor[i] == L'\033')
+		{
+			// Trouve la fin de la séquence ANSI (caractère 'm' à la fin)
+			size_t endSeq = paragColor.find(L'm', i);
 
-	}
-	
-	for (int i = 0; i < parag.size(); i++)
-	{
-		SetWidget("Paragraphe", &trWidget::AddToContent, wstring(1, parag[i])); 
+			if (endSeq != std::wstring::npos) {
+				// On prend toute la séquence ANSI, en incluant le 'm'
+				std::wstring ansiSeq = paragColor.substr(i, endSeq - i + 1);  // +1 pour inclure 'm'
+
+				// On ajoute la séquence ANSI à l'interface
+				SetWidget("Paragraphe2", &trWidget::AddToContent, ansiSeq);
+
+				// On saute l'indice de la séquence ANSI pour ne pas la traiter à nouveau
+				i += static_cast<int>(ansiSeq.size() - 1); // -1 car on a déjà ajouté un caractère
+			}
+		}
+
+		else
+		{
+			// Si ce n'est pas une séquence ANSI, on ajoute un seul caractère
+			SetWidget("Paragraphe2", &trWidget::AddToContent, wstring(1, paragColor[i]));
+		}
+		
 		Sleep(35);
 	}
 
@@ -115,12 +133,18 @@ void MyUI::Start()
 
 	for (int i = 0; i < 6; i++)
 	{
-		SetWidget("Paragraphe", &trWidget::AddToSize, 0, -1); // BUG
+		SetWidget("Paragraphe", &trWidget::AddToSize, 0, -1);
+		SetWidget("Paragraphe2", &trWidget::AddToSize, 0, -1);
 
-		Sleep(800);
+		Sleep(250);
 	}
 
 	DestroyWidget("Paragraphe");
+	DestroyWidget("Paragraphe2");
+
+	while (true)
+	{
+	}
 
 	Menu1();
 }
