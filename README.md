@@ -25,6 +25,7 @@ Tu rêve de pouvoir faire des widget a ta sauce ?
 | \r fait                | Retour chariot. Peut causer des comportements différents selon l'OS. | 
 | \t fait                | Tabulation horizontale. Les tabulations peuvent varier selon l'éditeur. |
 | \b fait                | Retour arrière (backspace). Difficulté visuelle, car invisible. | 
+| \0x                 | Vide |
 | \\\                 | Barre oblique inversée (\\). Doit être échappée pour éviter des erreurs. |
 
 
