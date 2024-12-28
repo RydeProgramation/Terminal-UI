@@ -6,15 +6,17 @@ using namespace UITools;
 
 // INI default
 
-trWidget::trWidget() : trWidget(0, 0, 0, 0, MiddleCenter, L"", "default")
+trWidget::trWidget() : trWidget(0, 0, 0, 0, TopLeft, L"", "default")
 {
 }
 
 // INI
 
-trWidget::trWidget(int x_, int y_, int size_x_, int size_y_, int RelativePosition_, wstring content_, string name_) : PositionRelative(new trCoordinate<int>(x_, y_)), size(new trSize<int>(size_x_, size_y_)), ColoredContent(new trData<trMap<int, trPair<std::wstring, trCoordinate<int>>>>()), BaseColor(new std::vector<trPair<std::wstring, trCoordinate<int>>>()), RawContent(new trData<wstring>(content_)), name(new trData<string>(name_)), activate(new trData<bool>(true)), color(new trData<int>(15)), protecte(new trData<bool>(false)), change(new trData<bool>(true)), RpType(new trData<int>(RelativePosition_)), destroy(new trData<bool>(false)), RelativePositionPoint(new trCoordinate<int>(0, 0)), PositionAbsolue(new trCoordinate<int>(0, 0)), content(new trData<wstring>(ContentReorganisation(content_, trSize<int>(size_x_, size_y_))))
+trWidget::trWidget(int x_, int y_, int size_x_, int size_y_, int RelativePosition_, wstring content_, string name_) : PositionRelative(new trCoordinate<int>(x_, y_)), size(new trSize<int>(size_x_, size_y_)), ColoredContent(new trData<trMap<int, trPair<std::wstring, trCoordinate<int>>>>()), BaseColor(new std::vector<trPair<std::wstring, trCoordinate<int>>>()), RawContent(new trData<wstring>(content_)), name(new trData<string>(name_)), activate(new trData<bool>(true)), color(new trData<int>(15)), protecte(new trData<bool>(false)), change(new trData<bool>(true)), RpType(new trData<int>(RelativePosition_)), destroy(new trData<bool>(false)), RelativePositionPoint(new trCoordinate<int>(0, 0)), content(new trData<wstring>(ContentReorganisation(content_, trSize<int>(size_x_, size_y_))))
 {
+	UpdateRelativePositionPoint(GetConsoleSize().GetSizeX().GetDataActual(), GetConsoleSize().GetSizeY().GetDataActual());
 
+	PositionAbsolue = new trCoordinate<int>(max(PositionRelative->GetX().GetDataNew() + RelativePositionPoint->GetX().GetDataActual(), 0), max(PositionRelative->GetY().GetDataNew() + RelativePositionPoint->GetY().GetDataActual(), 0));
 }
 
 // INI deep copy
@@ -93,7 +95,7 @@ void trWidget::SetColor(int color_)
 	color->SetData(max(color_, 0));
 }
 
-bool trWidget::SetRelativePosition(int rp)
+bool trWidget::SetTypeRelativePosition(int rp)
 {
 	if (rp < 0 || rp > 9)
 	{
@@ -146,7 +148,7 @@ const trCoordinate<int>& trWidget::GetPosition() const
 	return *PositionRelative;
 }
 
-const trCoordinate<int>& trWidget::GetRelativePosition() const
+const trCoordinate<int>& trWidget::GetAbsolutePosition() const
 {
 	return *PositionAbsolue;
 }

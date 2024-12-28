@@ -261,9 +261,9 @@ void UITools::hideCursor()
 
 bool UITools::IsInWidget(trWidget* WIDG, trCoordinate<int> crd)
 {
-	if (crd.GetX().GetDataActual() >= WIDG->GetRelativePosition().GetX().GetDataActual() && crd.GetX().GetDataActual() <= WIDG->GetRelativePosition().GetX().GetDataActual() + WIDG->GetSize().GetSizeX().GetDataActual())
+	if (crd.GetX().GetDataActual() >= WIDG->GetAbsolutePosition().GetX().GetDataActual() && crd.GetX().GetDataActual() <= WIDG->GetAbsolutePosition().GetX().GetDataActual() + WIDG->GetSize().GetSizeX().GetDataActual())
 	{
-		if (crd.GetY().GetDataActual() >= WIDG->GetRelativePosition().GetY().GetDataActual() && crd.GetY().GetDataActual() <= WIDG->GetRelativePosition().GetY().GetDataActual() + WIDG->GetSize().GetSizeY().GetDataActual())
+		if (crd.GetY().GetDataActual() >= WIDG->GetAbsolutePosition().GetY().GetDataActual() && crd.GetY().GetDataActual() <= WIDG->GetAbsolutePosition().GetY().GetDataActual() + WIDG->GetSize().GetSizeY().GetDataActual())
 		{
 			return true;
 		}

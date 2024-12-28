@@ -65,7 +65,7 @@ public:
 
 	void SetColor(int color_); // a voir quoi faire avec ça frR
 
-	bool SetRelativePosition(int rp);
+	bool SetTypeRelativePosition(int rp);
 
 	void SetChange(bool chng);
 
@@ -85,7 +85,7 @@ public:
 
 	const trCoordinate<int>& GetPosition() const;  // n'est jamais utiliser
 
-	const trCoordinate<int>& GetRelativePosition() const;
+	const trCoordinate<int>& GetAbsolutePosition() const;
 
 	const trSize<int>& GetSize() const;
 
@@ -144,9 +144,6 @@ private:
 
 	trCoordinate<int> *PositionRelative; 
 
-	// par rapport au terminal mais ca commence aux bordure, ducoup pas absolue a 100%
-	trCoordinate<int> *PositionAbsolue;
-
 	trSize<int> *size;
 
 	trData<bool> *activate;
@@ -175,6 +172,9 @@ private:
 	trCoordinate<int> *RelativePositionPoint;
 
 	trData<std::wstring>* content;
+
+	// par rapport au terminal mais ca commence aux bordure, ducoup pas absolue a 100%
+	trCoordinate<int>* PositionAbsolue;
 
 };
 

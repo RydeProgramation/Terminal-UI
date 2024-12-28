@@ -246,6 +246,8 @@ private:
 	int RenderType;
 
 	bool Refreshed = false;
+
+	bool ForceRefresh = false;
 };
 
 TERMINAL_ENGINE_API trUserInterface* CreateUserInterface();

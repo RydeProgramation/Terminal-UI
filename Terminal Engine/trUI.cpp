@@ -98,7 +98,6 @@ void trUserInterface::Update()
 	if (RefreshVerification()) 
 	{
 		Refresh();
-		Refreshed = true;
 	}
 	
 	UpdateWidget();
@@ -132,6 +131,9 @@ void trUserInterface::Refresh()
 	Render_->clear();
 	RenderColor_->clear();
 
+	Refreshed = true;
+	ForceRefresh = false;
+
 	Border();
 
 	for (auto& widg : *Widgets)
@@ -144,7 +146,7 @@ void trUserInterface::Refresh()
 
 bool trUserInterface::RefreshVerification()
 {
-	return (SizeWindow->GetSizeX().GetDataActual() != SizeWindow->GetSizeX().GetDataOld() || SizeWindow->GetSizeY().GetDataActual() != SizeWindow->GetSizeY().GetDataOld()) ? true : false;
+	return (SizeWindow->GetSizeX().GetDataActual() != SizeWindow->GetSizeX().GetDataOld() || SizeWindow->GetSizeY().GetDataActual() != SizeWindow->GetSizeY().GetDataOld() || ForceRefresh) ? true : false;
 }
 
 void trUserInterface::Border()
@@ -337,39 +339,29 @@ bool trUserInterface::CreateWidget(trWidget* WIDG)
 
 bool trUserInterface::DestroyWidget(trWidget* WIDG)
 {
-	std::lock_guard<std::mutex> lock(*mtx);
-
-	CleanWidget(WIDG);
+	std::lock_guard<std::mutex> lock(*mtx); // jsp si ça sert a qqchose mdr
 
 	Widgets->erase(WIDG->GetName().GetDataActual());
 
 	delete WIDG;
 
-	return false;
+	ForceRefresh = true;
+
+	return true; 
 }
 
 bool trUserInterface::DestroyWidget(const string& name) // VERIF SI BUG
 {
-	std::lock_guard<std::mutex> lock(*mtx);
-
 	if ((*Widgets)[name])
 	{
-		CleanWidget((*Widgets)[name]);
-
-		delete (*Widgets)[name];
-
-		Widgets->erase(name);
-
-		return true;
+		return DestroyWidget((*Widgets)[name]);
 	}
 
-	// throw std::out_of_range("ERROR N'EXISTE PAS");
-
 	MessageBox(
-		NULL,                           // Pas de fenêtre parente
-		L"Widget Not found for destroying",  // Message
-		L"Erreur",                      // Titre de la boîte
-		MB_ICONERROR | MB_OK           // Icône d'erreur + bouton OK
+		NULL,
+		L"Widget Not found for destroying",
+		L"Erreur",
+		MB_ICONERROR | MB_OK 
 	);
 
 	return false;
@@ -410,13 +402,13 @@ void trUserInterface::DisplayWidget(trWidget* WIDG)
 
 		int col = 0;
 
-		for (int ln = WIDG->GetRelativePosition().GetY().GetDataActual(); ln < WIDG->GetRelativePosition().GetY().GetDataActual() + WIDG->GetSize().GetSizeY().GetDataActual(); ln++)
+		for (int ln = WIDG->GetAbsolutePosition().GetY().GetDataActual(); ln < WIDG->GetAbsolutePosition().GetY().GetDataActual() + WIDG->GetSize().GetSizeY().GetDataActual(); ln++)
 		{
-			output << WIDG->GetContent().GetDataActual().substr(min(col, WIDG->GetContent().GetDataActual().size() - 1), WIDG->GetSize().GetSizeX().GetDataActual() - max(WIDG->GetRelativePosition().GetX().GetDataActual() + WIDG->GetSize().GetSizeX().GetDataActual() - GetConsoleSize(BorderWidth).GetSizeX().GetDataActual(), 0));
+			output << WIDG->GetContent().GetDataActual().substr(min(col, WIDG->GetContent().GetDataActual().size() - 1), WIDG->GetSize().GetSizeX().GetDataActual() - max(WIDG->GetAbsolutePosition().GetX().GetDataActual() + WIDG->GetSize().GetSizeX().GetDataActual() - GetConsoleSize(BorderWidth).GetSizeX().GetDataActual(), 0));
 
-			MoveCursorTo(trCoordinate<int>(WIDG->GetRelativePosition().GetX().GetDataActual(), ln), BorderWidth);
+			MoveCursorTo(trCoordinate<int>(WIDG->GetAbsolutePosition().GetX().GetDataActual(), ln), BorderWidth);
 
-			if (!IsOutSide(trCoordinate<int>(WIDG->GetRelativePosition().GetX().GetDataActual(), ln), BorderWidth))
+			if (!IsOutSide(trCoordinate<int>(WIDG->GetAbsolutePosition().GetX().GetDataActual(), ln), BorderWidth))
 			{
 				WIDG->Display(output);
 			}
@@ -442,17 +434,17 @@ void trUserInterface::DisplayWidget(trWidget* WIDG)
 
 		std::vector<trPair<std::wstring, trCoordinate<int>>> rstColortemp;
 
-		for (int ln = WIDG->GetRelativePosition().GetY().GetDataActual(); ln < WIDG->GetRelativePosition().GetY().GetDataActual() + WIDG->GetSize().GetSizeY().GetDataActual(); ln++)
+		for (int ln = WIDG->GetAbsolutePosition().GetY().GetDataActual(); ln < WIDG->GetAbsolutePosition().GetY().GetDataActual() + WIDG->GetSize().GetSizeY().GetDataActual(); ln++)
 		{
-			output << WIDG->GetContent().GetDataActual().substr(min(col, WIDG->GetContent().GetDataActual().size()), WIDG->GetSize().GetSizeX().GetDataActual() - max(WIDG->GetRelativePosition().GetX().GetDataActual() + WIDG->GetSize().GetSizeX().GetDataActual() - GetConsoleSize(BorderWidth).GetSizeX().GetDataActual(), 0));
+			output << WIDG->GetContent().GetDataActual().substr(min(col, WIDG->GetContent().GetDataActual().size()), WIDG->GetSize().GetSizeX().GetDataActual() - max(WIDG->GetAbsolutePosition().GetX().GetDataActual() + WIDG->GetSize().GetSizeX().GetDataActual() - GetConsoleSize(BorderWidth).GetSizeX().GetDataActual(), 0));
 
-			MoveCursorToOstream(trCoordinate<int>(WIDG->GetRelativePosition().GetX().GetDataActual(), ln), Render_, *SizeWindow, BorderWidth);
+			MoveCursorToOstream(trCoordinate<int>(WIDG->GetAbsolutePosition().GetX().GetDataActual(), ln), Render_, *SizeWindow, BorderWidth);
 
-			if (!IsOutSide(trCoordinate<int>(WIDG->GetRelativePosition().GetX().GetDataActual(), ln), BorderWidth))
+			if (!IsOutSide(trCoordinate<int>(WIDG->GetAbsolutePosition().GetX().GetDataActual(), ln), BorderWidth))
 			{
 				// PROTOTYPE COULEUR
 
-				rstColortemp.push_back(trPair<wstring, trCoordinate<int>>(L"\033[0m" + *BaseColor, trCoordinate<int>(WIDG->GetRelativePosition().GetX().GetDataActual() + static_cast<int>(output.str().size()), ln)));
+				rstColortemp.push_back(trPair<wstring, trCoordinate<int>>(L"\033[0m" + *BaseColor, trCoordinate<int>(WIDG->GetAbsolutePosition().GetX().GetDataActual() + static_cast<int>(output.str().size()), ln)));
 
 				// fin PROTOTYPE COULEUR
 
@@ -479,11 +471,11 @@ void trUserInterface::DisplayColor()
 		for (auto& it_ : it.second->GetColoredContent().GetDataActual())
 		{
 			// La condition en dessous est juste watafak, pourquoi ça marche (je sais pas)... Mais est-ce ça marche ? (Du tonnerre, enfaite pas de fou)
-			if (!IsOutSide(*it_.second->second, BorderWidth, false) && !IsOutSide(trCoordinate<int>(it_.second->second->GetY().GetDataActual() + it.second->GetRelativePosition().GetY().GetDataActual(), it_.second->second->GetY().GetDataActual() + it.second->GetRelativePosition().GetY().GetDataActual()), BorderWidth, false))
+			if (!IsOutSide(*it_.second->second, BorderWidth, false) && !IsOutSide(trCoordinate<int>(it_.second->second->GetY().GetDataActual() + it.second->GetAbsolutePosition().GetY().GetDataActual(), it_.second->second->GetY().GetDataActual() + it.second->GetAbsolutePosition().GetY().GetDataActual()), BorderWidth, false))
 			{
-				if (it_.second->second->GetY().GetDataActual() + it.second->GetRelativePosition().GetY().GetDataActual() < it.second->GetSize().GetSizeY().GetDataActual() + it.second->GetRelativePosition().GetY().GetDataActual()) // verifier si la couelur n'est pas en dehors du widget en taille
+				if (it_.second->second->GetY().GetDataActual() + it.second->GetAbsolutePosition().GetY().GetDataActual() < it.second->GetSize().GetSizeY().GetDataActual() + it.second->GetAbsolutePosition().GetY().GetDataActual()) // verifier si la couelur n'est pas en dehors du widget en taille
 				{
-					MoveCursorToOstream(trCoordinate<int>(it_.second->second->GetX().GetDataActual() + it.second->GetRelativePosition().GetX().GetDataActual(), it_.second->second->GetY().GetDataActual() + it.second->GetRelativePosition().GetY().GetDataActual()), Render_, *SizeWindow, BorderWidth);
+					MoveCursorToOstream(trCoordinate<int>(it_.second->second->GetX().GetDataActual() + it.second->GetAbsolutePosition().GetX().GetDataActual(), it_.second->second->GetY().GetDataActual() + it.second->GetAbsolutePosition().GetY().GetDataActual()), Render_, *SizeWindow, BorderWidth);
 					Color[static_cast<int>(Render_->tellp())] = *it_.second->first;
 				}
 			}
@@ -513,9 +505,9 @@ void trUserInterface::DisplayColor()
 
 void trUserInterface::HideWidget(trWidget* WIDG) // < ----- BUUUG
 {
-	/*for (int ln = min(WIDG->GetRelativePosition().GetY().GetDataActual(), WIDG->GetRelativePosition().GetY().GetDataOld()); ln < max(WIDG->GetRelativePosition().GetY().GetDataActual(), WIDG->GetRelativePosition().GetY().GetDataOld()) + max(WIDG->GetSize().GetSizeY().GetDataOld(), WIDG->GetSize().GetSizeY().GetDataActual()); ln++)
+	/*for (int ln = min(WIDG->GetAbsolutePosition().GetY().GetDataActual(), WIDG->GetAbsolutePosition().GetY().GetDataOld()); ln < max(WIDG->GetAbsolutePosition().GetY().GetDataActual(), WIDG->GetAbsolutePosition().GetY().GetDataOld()) + max(WIDG->GetSize().GetSizeY().GetDataOld(), WIDG->GetSize().GetSizeY().GetDataActual()); ln++)
 	{
-		for (int i = min(WIDG->GetRelativePosition().GetX().GetDataActual(), WIDG->GetRelativePosition().GetX().GetDataOld()); i < max(WIDG->GetRelativePosition().GetX().GetDataActual(), WIDG->GetRelativePosition().GetX().GetDataOld()) + max(WIDG->GetSize().GetSizeX().GetDataOld(), WIDG->GetSize().GetSizeX().GetDataActual()); i++)
+		for (int i = min(WIDG->GetAbsolutePosition().GetX().GetDataActual(), WIDG->GetAbsolutePosition().GetX().GetDataOld()); i < max(WIDG->GetAbsolutePosition().GetX().GetDataActual(), WIDG->GetAbsolutePosition().GetX().GetDataOld()) + max(WIDG->GetSize().GetSizeX().GetDataOld(), WIDG->GetSize().GetSizeX().GetDataActual()); i++)
 		{
 			if (IsOutSide(trCoordinate<int>(i, ln), false))
 			{
@@ -536,13 +528,13 @@ void trUserInterface::CleanWidget(trWidget* WIDG)
 {
 	if (RenderType == DIRECT_TERMINAL)
 	{
-		for (int ln = WIDG->GetRelativePosition().GetY().GetDataOld(); ln <= WIDG->GetRelativePosition().GetY().GetDataOld() + WIDG->GetSize().GetSizeY().GetDataOld(); ln++)
+		for (int ln = WIDG->GetAbsolutePosition().GetY().GetDataOld(); ln <= WIDG->GetAbsolutePosition().GetY().GetDataOld() + WIDG->GetSize().GetSizeY().GetDataOld(); ln++)
 		{
-			if (!IsOutSide(trCoordinate<int>(WIDG->GetRelativePosition().GetX().GetDataOld(), ln), BorderWidth))
+			if (!IsOutSide(trCoordinate<int>(WIDG->GetAbsolutePosition().GetX().GetDataOld(), ln), BorderWidth))
 			{
 				SetColorConsole(15);
-				wstring clean(WIDG->GetSize().GetSizeX().GetDataOld() - max(WIDG->GetRelativePosition().GetX().GetDataOld() + WIDG->GetSize().GetSizeX().GetDataOld() - GetConsoleSize(BorderWidth).GetSizeX().GetDataActual(), 0), ' ');
-				MoveCursorTo(trCoordinate<int>(WIDG->GetRelativePosition().GetX().GetDataOld(), ln), BorderWidth);
+				wstring clean(WIDG->GetSize().GetSizeX().GetDataOld() - max(WIDG->GetAbsolutePosition().GetX().GetDataOld() + WIDG->GetSize().GetSizeX().GetDataOld() - GetConsoleSize(BorderWidth).GetSizeX().GetDataActual(), 0), ' ');
+				MoveCursorTo(trCoordinate<int>(WIDG->GetAbsolutePosition().GetX().GetDataOld(), ln), BorderWidth);
 				cout << WstringToUtf8(clean);
 			}
 		}
@@ -550,12 +542,12 @@ void trUserInterface::CleanWidget(trWidget* WIDG)
 
 	else if (RenderType == RENDER_SYSTEM)
 	{
-		for (int ln = WIDG->GetRelativePosition().GetY().GetDataOld(); ln <= WIDG->GetRelativePosition().GetY().GetDataOld() + WIDG->GetSize().GetSizeY().GetDataOld(); ln++)
+		for (int ln = WIDG->GetAbsolutePosition().GetY().GetDataOld(); ln <= WIDG->GetAbsolutePosition().GetY().GetDataOld() + WIDG->GetSize().GetSizeY().GetDataOld(); ln++)
 		{
-			if (!IsOutSide(trCoordinate<int>(WIDG->GetRelativePosition().GetX().GetDataOld(), ln), BorderWidth))
+			if (!IsOutSide(trCoordinate<int>(WIDG->GetAbsolutePosition().GetX().GetDataOld(), ln), BorderWidth))
 			{
-				wstring clean(WIDG->GetSize().GetSizeX().GetDataOld() - max((WIDG->GetRelativePosition().GetX().GetDataOld() + WIDG->GetSize().GetSizeX().GetDataOld() - GetConsoleSize(BorderWidth).GetSizeX().GetDataActual()), 0), ' ');
-				MoveCursorToOstream(trCoordinate<int>(WIDG->GetRelativePosition().GetX().GetDataOld(), ln), Render_, *SizeWindow, BorderWidth);
+				wstring clean(WIDG->GetSize().GetSizeX().GetDataOld() - max((WIDG->GetAbsolutePosition().GetX().GetDataOld() + WIDG->GetSize().GetSizeX().GetDataOld() - GetConsoleSize(BorderWidth).GetSizeX().GetDataActual()), 0), ' ');
+				MoveCursorToOstream(trCoordinate<int>(WIDG->GetAbsolutePosition().GetX().GetDataOld(), ln), Render_, *SizeWindow, BorderWidth);
 				*Render_ << clean;
 			}
 		}
