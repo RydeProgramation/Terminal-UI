@@ -16,7 +16,7 @@ Tu rêve de pouvoir faire des widget a ta sauce ?
 - J'ai un trPair, il faut implémenter un trMulti
 - Améliorer trMap, éviter d'utiliser un vector est crée un truc moi-même
 - La mémoire ne fait qu'augmenter ?
-![image](https://github.com/user-attachments/assets/13648a60-4fb6-4188-bc11-3bef1952be6e)
+- ![image](https://github.com/user-attachments/assets/13648a60-4fb6-4188-bc11-3bef1952be6e)
 - Il faut gérer tout les code/séquence :
 
 | Séquence/Caractère | Description ou Problème potentiel                             |
