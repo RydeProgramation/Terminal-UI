@@ -9,14 +9,14 @@ Tu rêve de pouvoir faire des widget a ta sauce ?
 - ~~Il faut mieux gérer les problèmes de clean d'un widget.~~
 - Il faut gérer le fait de pouvoir "hide" un widget.
 - Il y a un bug lorsqu'on destroy un widget
-- ![image](https://github.com/user-attachments/assets/43398bc3-1860-4acb-b2bf-2c6eff0ee346)
+![image](https://github.com/user-attachments/assets/43398bc3-1860-4acb-b2bf-2c6eff0ee346)
 - Il faut recrée le system de keyboardmanagment et crée un système pour la souris.
 - FAIRE une meilleur documentation des fonction
 - ~~bug map quand on l'utilise dans trDATA~~
 - J'ai un trPair, il faut implémenter un trMulti
 - Améliorer trMap, éviter d'utiliser un vector est crée un truc moi-même
 - La mémoire ne fait qu'augmenter ?
-- ![image](https://github.com/user-attachments/assets/13648a60-4fb6-4188-bc11-3bef1952be6e)
+![image](https://github.com/user-attachments/assets/13648a60-4fb6-4188-bc11-3bef1952be6e)
 - Il faut gérer tout les code/séquence :
 
 | Séquence/Caractère | Description ou Problème potentiel                             |
