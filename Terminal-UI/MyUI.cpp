@@ -172,16 +172,14 @@ void MyUI::Start()
 
 	DestroyWidget("Hello3");
 
-	wstring parag = L"Salutations, brave lache\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\bons, brave aventurier ! Mon projet est une application maléfique\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\bapplication magique qui ouvre les portes des marchés financiers.\nÀ l'aide de la puissante technique de DiCaprio\b\b\b\b\b\b\b\bMonte-Carlo, je simule des trajectoire connu\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\btrajectoire aléatoire pour les options (calls et putain\b\b\bs).\nImagine-toi chevauchant un dragon volant au-dessus des courbes de prix, scrutant les volaille\b\b\b\b\b\b\b\b\b volatilités et les risques.\nLes prix d'opinion\b\b\b\b\b\b\b\b\bd'options se révèlent tels des tresors cachés dans les profondeurs du marché. Que la probabilites soit sans toi !\b\b\b\b\b\b\b\b\b\bavec toi !\nJe te propose donc cette application pour que tu fasses tes propres simulations et découvre les secrets enfouis dans\fles volutés des cccccc\b\b\b\b\bourbes financières. 🎉";
+	// wstring parag = L"Salutations, brave lache\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\bons, brave aventurier ! Mon projet est une application maléfique\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\bapplication magique qui ouvre les portes des marchés financiers.\nÀ l'aide de la puissante technique de DiCaprio\b\b\b\b\b\b\b\bMonte-Carlo, je simule des trajectoire connu\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\btrajectoire aléatoire pour les options (calls et putain\b\b\bs).\nImagine-toi chevauchant un dragon volant au-dessus des courbes de prix, scrutant les volaille\b\b\b\b\b\b\b\b\b volatilités et les risques.\nLes prix d'opinion\b\b\b\b\b\b\b\b\bd'options se révèlent tels des tresors cachés dans les profondeurs du marché. Que la probabilites soit sans toi !\b\b\b\b\b\b\b\b\b\bavec toi !\nJe te propose donc cette application pour que tu fasses tes propres simulations et découvre les secrets enfouis dans\fles volutés des cccccc\b\b\b\b\bourbes financières. 🎉";
 	wstring paragColor = L"\033[38;2;255;182;193mSalutations, brave lache\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\bons, brave aventurier !\033[0m\033[38;2;176;224;230m Mon projet est une application maléfique\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\033[0m\033[38;2;152;251;152mapplication magique qui ouvre les portes des marchés financiers.\033[0m\nÀ l'aide de la puissante technique de \033[38;2;216;191;216mDiCaprio\b\b\b\b\b\b\b\bMonte-Carlo\033[0m, \033[38;2;240;230;140mje simule des trajectoires aléatoires\033[0m pour les options (calls et \033[38;2;250;235;215mputain\b\b\bs\033[0m).\n\033[38;2;255;222;173mImagine-toi chevauchant un dragon volant au-dessus des courbes de prix, scrutant les volatilités et les risques.\033[0m\nLes prix d'\033[38;2;255;228;196moptions\033[0m se révèlent tels des trésors cachés dans les profondeurs du marché. \033[38;2;240;255;255mQue la probabilités soit avec toi !\033[0m\n\033[38;2;245;222;179mJe te propose donc cette application pour que tu fasses tes propres simulations et découvre les secrets enfouis\033[0m dans\f\033[38;2;216;191;216mles volutes des courbes financières.\033[0m 🎉";
 
 	trSize<int>* size_ = new trSize<int>(GetConsoleSize()); 
-	
-	CreateWidgetWait(new trWidget(0, 4, 123, 6, MiddleCenter, parag, "Paragraphe")); // a enlever
 
-	CreateWidgetWait(new trWidget(0, -4, 123, 6, MiddleCenter, L"", "Paragraphe2"));
+	CreateWidgetWait(new trWidget(0, 0, 123, 6, MiddleCenter, L"", "Paragraphe"));
 
-	/*for (int i = 0; i < paragColor.size(); i++)
+	for (int i = 0; i < paragColor.size(); i++)
 	{
 		if (paragColor[i] == L'\033')
 		{
@@ -193,7 +191,7 @@ void MyUI::Start()
 				std::wstring ansiSeq = paragColor.substr(i, endSeq - i + 1);  // +1 pour inclure 'm'
 
 				// On ajoute la séquence ANSI à l'interface
-				SetWidget("Paragraphe2", &trWidget::AddToContent, ansiSeq);
+				SetWidget("Paragraphe", &trWidget::AddToContent, ansiSeq);
 
 				// On saute l'indice de la séquence ANSI pour ne pas la traiter à nouveau
 				i += static_cast<int>(ansiSeq.size() - 1); // -1 car on a déjà ajouté un caractère
@@ -203,24 +201,22 @@ void MyUI::Start()
 		else
 		{
 			// Si ce n'est pas une séquence ANSI, on ajoute un seul caractère
-			SetWidget("Paragraphe2", &trWidget::AddToContent, wstring(1, paragColor[i]));
+			SetWidget("Paragraphe", &trWidget::AddToContent, wstring(1, paragColor[i]));
 		}
 		
 		Sleep(35);
-	}*/
+	}
 
 	Sleep(2500);
 
 	for (int i = 0; i < 6; i++)
 	{
 		SetWidget("Paragraphe", &trWidget::AddToSize, 0, -1);
-		SetWidget("Paragraphe2", &trWidget::AddToSize, 0, -1);
 
 		Sleep(250);
 	}
 
 	DestroyWidget("Paragraphe");
-	DestroyWidget("Paragraphe2");
 
 	Menu1();
 }

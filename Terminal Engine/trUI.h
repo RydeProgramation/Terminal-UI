@@ -140,7 +140,10 @@ public:
 	template <typename Func, typename... Args>
 	void SetWidget(const std::string& name, Func&& func, Args&&... args) 
 	{
-		std::invoke(std::forward<Func>(func), (*Widgets)[name], std::forward<Args>(args)...);
+		if ((*Widgets)[name] != nullptr)
+		{
+			std::invoke(std::forward<Func>(func), (*Widgets)[name], std::forward<Args>(args)...);
+		}
 	}
 
 private: // FNC
