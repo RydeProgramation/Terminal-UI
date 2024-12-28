@@ -61,7 +61,7 @@ public:
 
 	// GET
 
-	const size_t& GetSize() const
+	size_t GetSize() const 
 	{
 		return _map->size();
 	}

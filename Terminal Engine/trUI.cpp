@@ -130,6 +130,7 @@ void trUserInterface::Update()
 void trUserInterface::Refresh()
 {
 	Render_->clear();
+	RenderColor_->clear();
 
 	Border();
 
@@ -471,13 +472,13 @@ void trUserInterface::DisplayWidget(trWidget* WIDG)
 
 void trUserInterface::DisplayColor()
 {
-	std::map<int, trData<wstring>> Color;
+	std::map<int, wstring> Color;
 
 	for (auto& it : *Widgets)
 	{
 		for (auto& it_ : it.second->GetColoredContent().GetDataActual())
 		{
-			// La condition en dessous est juste watafak, pourquoi ça marche (je sais pas)... Mais est-ce ça marche ? (Du tonnerre)
+			// La condition en dessous est juste watafak, pourquoi ça marche (je sais pas)... Mais est-ce ça marche ? (Du tonnerre, enfaite pas de fou)
 			if (!IsOutSide(*it_.second->second, BorderWidth, false) && !IsOutSide(trCoordinate<int>(it_.second->second->GetY().GetDataActual() + it.second->GetRelativePosition().GetY().GetDataActual(), it_.second->second->GetY().GetDataActual() + it.second->GetRelativePosition().GetY().GetDataActual()), BorderWidth, false))
 			{
 				if (it_.second->second->GetY().GetDataActual() + it.second->GetRelativePosition().GetY().GetDataActual() < it.second->GetSize().GetSizeY().GetDataActual() + it.second->GetRelativePosition().GetY().GetDataActual()) // verifier si la couelur n'est pas en dehors du widget en taille
@@ -493,7 +494,7 @@ void trUserInterface::DisplayColor()
 			if (!IsOutSide(*it_.second, BorderWidth, false))
 			{
 				MoveCursorToOstream(*it_.second, Render_, *SizeWindow, BorderWidth);
-				Color[static_cast<int>(Render_->tellp())] = trData<wstring>(*it_.first);
+				Color[static_cast<int>(Render_->tellp())] = *it_.first;
 			}
 		}
 	}
@@ -502,11 +503,11 @@ void trUserInterface::DisplayColor()
 	{
 		if (it->first <= RenderColor_->str().size())
 		{
-			RenderColor_->str(RenderColor_->str().insert(it->first, it->second.GetDataActual()));
+			RenderColor_->str(RenderColor_->str().insert(it->first, it->second));
 		}
 	}
 
-	// reset les color a la fin de la lignte
+	// reset les color a la fin de la ligne
 	RenderColor_->str(RenderColor_->str().insert(0, L"\033[0m" + *BaseColor));
 }
 
@@ -589,7 +590,13 @@ void trUserInterface::Render()
 
 	MoveCursorTo(trCoordinate<int>(0, 0));
 
-	cout << WstringToUtf8(RenderColor_->str());
+	// cout << WstringToUtf8(RenderColor_->str());
+
+	string temp = WstringToUtf8(RenderColor_->str());
+
+	Sleep(10); // je suis obliger sinon y'a des bugs quand on pousse le truc loin (100 fps)
+
+	cout << temp;
 }
 
 // Fonciton utilise (à deplacer dans trUiTools je pense)

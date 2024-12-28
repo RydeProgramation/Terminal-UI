@@ -65,7 +65,7 @@ void trWidget::SetSize(int x_, int y_)
 void trWidget::SetContent(const wstring& content_)
 {
 	RawContent->SetData(content_);
-	content->SetData(ContentReorganisation(RawContent->GetDataNew(), *size));
+	content->SetData(ContentReorganisation(content_, *size));
 }
 
 void trWidget::SetResetColor(const vector<trPair<std::wstring, trCoordinate<int>>>& RstColor)
@@ -433,7 +433,7 @@ std::wstring trWidget::ContentReorganisation(std::wstring _content, const trSize
 		}
 
 		// securité pas important je pense
-		if (i > _content.size() / 2 && i > 150)
+		if (i > _content.size() / 2 && i > 350 && coloredtemp.GetSize() < i)
 		{
 			MessageBox(
 				NULL,
