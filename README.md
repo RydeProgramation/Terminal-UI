@@ -8,8 +8,7 @@ Tu rêve de pouvoir faire des widget a ta sauce ?
 - ~~-- Il faut géréer le problème de fuite de couleur~~
 - ~~Il faut mieux gérer les problèmes de clean d'un widget.~~
 - Il faut gérer le fait de pouvoir "hide" un widget.
-- Il y a un bug lorsqu'on destroy un widget
-![image](https://github.com/user-attachments/assets/43398bc3-1860-4acb-b2bf-2c6eff0ee346)
+- Il faut gérer quand on reste cliquait sur une touche. Comme sur un jeu quand on veut avancer.
 - Il faut recrée le system de keyboardmanagment et crée un système pour la souris.
 - FAIRE une meilleur documentation des fonction
 - ~~bug map quand on l'utilise dans trDATA~~
