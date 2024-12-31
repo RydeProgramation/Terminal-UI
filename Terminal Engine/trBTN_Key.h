@@ -42,8 +42,8 @@ public:
 
 	// GET
 
-	bool GetDetachKey() const;
-	int GetKey() const;
+	const bool IsKeyDetached() const;
+	const int GetKey() const;
 
 	// UPDATE
 
@@ -51,7 +51,7 @@ public:
 
 	// FNC
 
-	void Action();
+	void DoAction();
 
 	// DESTRUCTEUR
 
@@ -59,10 +59,11 @@ public:
 
 private:
 
-	int key;
-	bool protect;
-	bool pressed;
-	bool detachKey; // Une action peut se faire
+	bool Protect;
+
+	int Key;
+	bool Pressed;
+	bool KeyDetached; // Une action peut se faire
 
 	std::function<void()> *action; // a voir belek bug
 };

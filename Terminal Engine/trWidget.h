@@ -140,19 +140,19 @@ public:
 
 private:
 
-	static trWidget* emptyWidgetInstance; // Pointeur pour l'instance unique
+	static trWidget* EmptyWidgetInstance; // Pointeur pour l'instance unique
 
 	trCoordinate<int> *PositionRelative; 
 
-	trSize<int> *size;
+	trSize<int> *Size;
 
-	trData<bool> *activate;
+	trData<bool> *Activate;
 
-	trData<bool> *protecte;
+	trData<bool> *Protecte;
 
-	trData<int> *color; // a voir si utiliser ??????
+	trData<int> *Color; // a voir si utiliser ??????
 
-	trData<bool> *change;
+	trData<bool> *Change;
 
 	trData<int> *RpType;
 
@@ -165,13 +165,13 @@ private:
 
 	std::vector<trPair<std::wstring, trCoordinate<int>>> *BaseColor;
 
-	trData<std::string> *name; 
+	trData<std::string> *Name; 
 
-	trData<bool> *destroy;
+	trData<bool> *Destroy;
 
 	trCoordinate<int> *RelativePositionPoint;
 
-	trData<std::wstring>* content;
+	trData<std::wstring>* Content;
 
 	// par rapport au terminal mais ca commence aux bordure, ducoup pas absolue a 100%
 	trCoordinate<int>* PositionAbsolue;

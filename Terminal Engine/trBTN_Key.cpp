@@ -4,20 +4,20 @@ using namespace std;
 
 // INI default
 
-trBTN_Key::trBTN_Key() : key(0), pressed(false), detachKey(false), action(new std::function<void()>()), protect(false)
+trBTN_Key::trBTN_Key() : Key(0), Pressed(false), KeyDetached(false), action(new std::function<void()>()), Protect(false)
 {
 }
 
 // INI
 
-trBTN_Key::trBTN_Key(int key_, std::function<void()> action_) : key(key_), pressed(false), detachKey(false), action(new std::function<void()>(action_)), protect(false)
+trBTN_Key::trBTN_Key(int key_, std::function<void()> action_) : Key(key_), Pressed(false), KeyDetached(false), action(new std::function<void()>(action_)), Protect(false)
 {
 
 }
 
 // INI deep copy
 
-trBTN_Key::trBTN_Key(const trBTN_Key& other) : key(other.key), pressed(other.pressed), detachKey(other.detachKey), action(new std::function<void()>(*other.action)), protect(false)
+trBTN_Key::trBTN_Key(const trBTN_Key& other) : Key(other.Key), Pressed(other.Pressed), KeyDetached(other.KeyDetached), action(new std::function<void()>(*other.action)), Protect(false)
 {
 }
 
@@ -27,11 +27,11 @@ trBTN_Key& trBTN_Key::operator=(const trBTN_Key& other)
 {
 	if (this == &other) { return *this; }
 
-	key = other.key;
-	pressed = other.pressed;
-	detachKey = other.detachKey;
+	Key = other.Key;
+	Pressed = other.Pressed;
+	KeyDetached = other.KeyDetached;
 	action = new std::function<void()>(*other.action);
-	protect = other.protect;
+	Protect = other.Protect;
 
 	return *this;
 }
@@ -40,8 +40,8 @@ trBTN_Key& trBTN_Key::operator=(const trBTN_Key& other)
 
 void trBTN_Key::Reset()
 {	
-	detachKey = false;
-	pressed = false;
+	KeyDetached = false;
+	Pressed = false;
 }
 
 void trBTN_Key::SetAction(std::function<void()> action_)
@@ -51,42 +51,39 @@ void trBTN_Key::SetAction(std::function<void()> action_)
 
 // GET
 
-bool trBTN_Key::GetDetachKey() const
+const bool trBTN_Key::IsKeyDetached() const
 {
-	return detachKey;
+	return KeyDetached;
 }
 
-int trBTN_Key::GetKey() const
+const int trBTN_Key::GetKey() const
 {
-	return key;
+	return Key;
 }
 
 // UPDATE
 
-void trBTN_Key::Update() // FAUT CHANGER LA METHODE Il faut faire en sorte que quand on clique ça appele le bouton avec un map par ce que fait une verif pour chaque bouton c'est aps opti
+void trBTN_Key::Update() // ne sert a rien pour l'instant
 {
-	if (!protect) // <--- NE MARCHE PAS MDR
-	{
-		detachKey = (pressed && !(GetAsyncKeyState(key) & 0x8000)) ? true : detachKey;
-
-		pressed = (GetAsyncKeyState(key) & 0x8000 && !detachKey) ? true : pressed;
-	}
-
+	
 }
 
 // FNC
 
-void trBTN_Key::Action()
+void trBTN_Key::DoAction()
 {
 	if (action)
 	{
-		protect = true; // <--- NE MARCHE PAS MDR
-		if (detachKey)
+		Protect = true; // <--- NE MARCHE PAS MDR
+
+		if (KeyDetached)
 		{
 			(*action)();
 		}
+
 		Reset();
-		protect = false; // <--- NE MARCHE PAS MDR
+
+		Protect = false; // <--- NE MARCHE PAS MDR
 	}
 }
 

@@ -31,19 +31,23 @@ public:
 	/// <summary>
 	/// Permet de gérer l'action sur les boutons
 	/// </summary>
-	void ActionBTN();
+	void ActionBTN(); // Pas utilise je pense
 
 	// Create
 	/// <summary>
 	/// 
 	/// </summary>
-	bool CreateBTN(trBTN_Key* Btns);
+	bool CreateBTN(const trBTN_Key& Btns);
 
 	// SET
-	void SetActionBtnKey(int key, void (*action)());
+	void SetActionBtnKey(int Key, void (*action)());
 
 	// GET
-	const std::vector<trBTN_Key*>& GetBTNS() const; // PROBLEME JE PENSE
+	/// <summary>
+	/// 
+	/// </summary>
+	/// <returns></returns>
+	const std::unordered_map<int, trBTN_Key>& GetBTNS() const; // PROBLEME JE PENSE
 
 	// Update
 	/// <summary>
@@ -52,12 +56,7 @@ public:
 	virtual void Update();
 
 	// FNC
-	/// <summary>
-	/// 
-	/// </summary>
-	/// <param name="key"></param>
-	/// <returns> PositionRelative in the vector BTNS </returns>
-	int BtnResearch(int key);
+	
 
 	// START
 	void Start();
@@ -71,11 +70,11 @@ private:
 
 protected:
 
-	std::vector<trBTN_Key*> *BTNS; // Je sais pas quoi choisir entre vector et unoredered_map...
+	std::unordered_map<int, trBTN_Key> *BTNS; // Je sais pas quoi choisir entre vector et unoredered_map...
 
 private:
 
-	bool start;
+	bool Start_ = false;
 };
 
 #endif

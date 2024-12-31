@@ -231,9 +231,9 @@ private:
 
 	std::unordered_map<std::string, trWidget*> *Widgets;
 
-	std::thread *T;
+	std::thread *Thr_UI;
 
-	std::thread *T2;
+	std::thread *Thr_KB;
 
 	trSize<int> *SizeWindow;
 

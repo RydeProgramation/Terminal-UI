@@ -21,7 +21,7 @@ MyUI::~MyUI()
 
 void hsvToRgb(float h, float s, float v, int& r, int& g, int& b) {
 	float c = v * s;
-	float x = c * (1 - fabs(fmod(h / 60.0, 2) - 1));
+	float x = static_cast<float>(c * (1 - fabs(fmod(h / 60.0, 2) - 1)));
 	float m = v - c;
 
 	float rPrime, gPrime, bPrime;
@@ -138,16 +138,16 @@ void MyUI::Start()
 	
 	int i = 0;
 
-	for (int i = 0; i <= 360; i += 5)
+	for (int i = 0; i <= 500; i += 5)
 	{
 		i += 5;
 		hello3.clear();
 
-		hello3.push_back(applyColorToText(L" _   _      _ _        __        __         _     _ _ ", i)); // 54
-		hello3.push_back(applyColorToText(L"| | | | ___| | | ___   \\ \\      / /__  _ __| | __| | |", i)); // 54
-		hello3.push_back(applyColorToText(L"| |_| |/ _ \\ | |/ _ \\   \\ \\ /\\ / / _ \\| '__| |/ _` | |", i)); // 54
-		hello3.push_back(applyColorToText(L"|  _  |  __/ | | (_) |   \\ V  V / (_) | |  | | (_| |_|", i)); // 54
-		hello3.push_back(applyColorToText(L"|_| |_|\\___|_|_|\\___/     \\_/\\_/ \\___/|_|  |_|\\__,_(_)", i)); // 54
+		hello3.push_back(applyColorToText(L" _   _      _ _        __        __         _     _ _ ", float(i))); // 54
+		hello3.push_back(applyColorToText(L"| | | | ___| | | ___   \\ \\      / /__  _ __| | __| | |", float(i))); // 54
+		hello3.push_back(applyColorToText(L"| |_| |/ _ \\ | |/ _ \\   \\ \\ /\\ / / _ \\| '__| |/ _` | |", float(i))); // 54
+		hello3.push_back(applyColorToText(L"|  _  |  __/ | | (_) |   \\ V  V / (_) | |  | | (_| |_|", float(i))); // 54
+		hello3.push_back(applyColorToText(L"|_| |_|\\___|_|_|\\___/     \\_/\\_/ \\___/|_|  |_|\\__,_(_)", float(i))); // 54
 
 		hello3_ = hello3[0] + hello3[1] + hello3[2] + hello3[3] + hello3[4];
 
@@ -257,17 +257,11 @@ void MyUI::Menu1()
 
 	CreateSelectorWait(new trSelector(-25, 5, static_cast<int>(SimCarlo[0].size()), 5, MiddleCenter, SimCarlo_, "SimCarlo"));
 
-	/*CreateSelectorWait(200 - Diff[0].size(), 25, Diff[0].size(), 5, Diff_, "SimDiffusion");
+	// je vais tenter d'abord de pouvoir déplacer le bloc "SimCarlo" pour voir si mon trKeyBoardManagment fonctionne
 
-	Selector* sltr = dynamic_cast<Selector*>(Widgets[WidgetResearch("SimCarlo")]);
+	// ICI
 
-	sltr->color_selected = 11;
-
-	sltr = nullptr;
-
-	sltr = dynamic_cast<Selector*>(Widgets[WidgetResearch("SimDiffusion")]);
-
-	sltr->color_selected = 11;*/
+	// CreateSelectorWait(new trSelector(25, 5, static_cast<int>(Diff[0].size()), 5, MiddleCenter, Diff_, "SimDiffusion"));
 
 	while (true)
 	{

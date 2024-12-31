@@ -52,7 +52,7 @@ public:
 
 	void APPLY(const trSize<int>& SizeWindow_) override;
 
-	void Display(std::wostringstream& output_line) override;
+	void Display(std::wostringstream& OutputLine) override;
 
 	// DESTRUCTEUR
 
@@ -60,9 +60,9 @@ public:
 
 private:
 
-	trData<bool> *selected;
+	trData<bool> *Selected;
 
-	trData<int> *colorSelected;
+	trData<int> *ColorSelected;
 };
 
 #endif

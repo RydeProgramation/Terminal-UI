@@ -12,7 +12,7 @@ trWidget::trWidget() : trWidget(0, 0, 0, 0, TopLeft, L"", "default")
 
 // INI
 
-trWidget::trWidget(int x_, int y_, int size_x_, int size_y_, int RelativePosition_, wstring content_, string name_) : PositionRelative(new trCoordinate<int>(x_, y_)), size(new trSize<int>(size_x_, size_y_)), ColoredContent(new trData<trMap<int, trPair<std::wstring, trCoordinate<int>>>>()), BaseColor(new std::vector<trPair<std::wstring, trCoordinate<int>>>()), RawContent(new trData<wstring>(content_)), name(new trData<string>(name_)), activate(new trData<bool>(true)), color(new trData<int>(15)), protecte(new trData<bool>(false)), change(new trData<bool>(true)), RpType(new trData<int>(RelativePosition_)), destroy(new trData<bool>(false)), RelativePositionPoint(new trCoordinate<int>(0, 0)), content(new trData<wstring>(ContentReorganisation(content_, trSize<int>(size_x_, size_y_))))
+trWidget::trWidget(int x_, int y_, int size_x_, int size_y_, int RelativePosition_, wstring content_, string name_) : PositionRelative(new trCoordinate<int>(x_, y_)), Size(new trSize<int>(size_x_, size_y_)), ColoredContent(new trData<trMap<int, trPair<std::wstring, trCoordinate<int>>>>()), BaseColor(new std::vector<trPair<std::wstring, trCoordinate<int>>>()), RawContent(new trData<wstring>(content_)), Name(new trData<string>(name_)), Activate(new trData<bool>(true)), Color(new trData<int>(15)), Protecte(new trData<bool>(false)), Change(new trData<bool>(true)), RpType(new trData<int>(RelativePosition_)), Destroy(new trData<bool>(false)), RelativePositionPoint(new trCoordinate<int>(0, 0)), Content(new trData<wstring>(ContentReorganisation(content_, trSize<int>(size_x_, size_y_))))
 {
 	UpdateRelativePositionPoint(GetConsoleSize().GetSizeX().GetDataActual(), GetConsoleSize().GetSizeY().GetDataActual());
 
@@ -21,7 +21,7 @@ trWidget::trWidget(int x_, int y_, int size_x_, int size_y_, int RelativePositio
 
 // INI deep copy
 
-trWidget::trWidget(const trWidget& other) : PositionRelative(new trCoordinate<int>(*other.PositionRelative)), size(new trSize<int>(*other.size)), ColoredContent(new trData<trMap<int, trPair<std::wstring, trCoordinate<int>>>>(*other.ColoredContent)), BaseColor(new std::vector<trPair<std::wstring, trCoordinate<int>>>(*other.BaseColor)), RawContent(new trData<wstring>(*other.RawContent)), name(new trData<string>(*other.name)), activate(new trData<bool>(*other.activate)), color(new trData<int>(*other.color)), protecte(new trData<bool>(*other.protecte)), change(new trData<bool>(true)), RpType(new trData<int>(*other.RpType)), destroy(new trData<bool>(*other.destroy)), RelativePositionPoint(new trCoordinate<int>(*other.RelativePositionPoint)), PositionAbsolue(new trCoordinate<int>(*other.PositionAbsolue)), content(new trData<wstring>(*other.content))
+trWidget::trWidget(const trWidget& other) : PositionRelative(new trCoordinate<int>(*other.PositionRelative)), Size(new trSize<int>(*other.Size)), ColoredContent(new trData<trMap<int, trPair<std::wstring, trCoordinate<int>>>>(*other.ColoredContent)), BaseColor(new std::vector<trPair<std::wstring, trCoordinate<int>>>(*other.BaseColor)), RawContent(new trData<wstring>(*other.RawContent)), Name(new trData<string>(*other.Name)), Activate(new trData<bool>(*other.Activate)), Color(new trData<int>(*other.Color)), Protecte(new trData<bool>(*other.Protecte)), Change(new trData<bool>(true)), RpType(new trData<int>(*other.RpType)), Destroy(new trData<bool>(*other.Destroy)), RelativePositionPoint(new trCoordinate<int>(*other.RelativePositionPoint)), PositionAbsolue(new trCoordinate<int>(*other.PositionAbsolue)), Content(new trData<wstring>(*other.Content))
 {
 
 }
@@ -33,20 +33,20 @@ trWidget& trWidget::operator=(const trWidget& other)
 	if (this == &other) { return *this; }
 
 	PositionRelative = new trCoordinate<int>(*other.PositionRelative);
-	size = new trSize<int>(*other.size);
+	Size = new trSize<int>(*other.Size);
 	ColoredContent = new trData<trMap<int, trPair<std::wstring, trCoordinate<int>>>>(*other.ColoredContent);
 	BaseColor = new std::vector<trPair<std::wstring, trCoordinate<int>>>(*other.BaseColor);
 	RawContent = new trData<wstring>(*other.RawContent);
-	name = new trData<string>(*other.name);
-	activate = new trData<bool>(*other.activate);
-	color = new trData<int>(*other.color);
-	protecte = new trData<bool>(*other.protecte);
-	change = new trData<bool>(true);
+	Name = new trData<string>(*other.Name);
+	Activate = new trData<bool>(*other.Activate);
+	Color = new trData<int>(*other.Color);
+	Protecte = new trData<bool>(*other.Protecte);
+	Change = new trData<bool>(true);
 	RpType = new trData<int>(*other.RpType);
-	destroy = new trData<bool>(*other.destroy);
+	Destroy = new trData<bool>(*other.Destroy);
 	RelativePositionPoint = new trCoordinate<int>(*other.RelativePositionPoint);
 	PositionAbsolue = new trCoordinate<int>(*other.PositionAbsolue);
-	content = new trData<wstring>(*other.content);
+	Content = new trData<wstring>(*other.Content);
 
 	return *this;
 }
@@ -60,14 +60,14 @@ void trWidget::SetPosition(int x_, int y_)
 
 void trWidget::SetSize(int x_, int y_)
 {
-	size->SetSize(x_, y_);
-	content->SetData(ContentReorganisation(RawContent->GetDataNew(), trSize<int>(x_, y_)));
+	Size->SetSize(x_, y_);
+	Content->SetData(ContentReorganisation(RawContent->GetDataNew(), trSize<int>(x_, y_)));
 }
 
 void trWidget::SetContent(const wstring& content_)
 {
 	RawContent->SetData(content_);
-	content->SetData(ContentReorganisation(content_, *size));
+	Content->SetData(ContentReorganisation(content_, *Size));
 }
 
 void trWidget::SetResetColor(const vector<trPair<std::wstring, trCoordinate<int>>>& RstColor)
@@ -77,22 +77,22 @@ void trWidget::SetResetColor(const vector<trPair<std::wstring, trCoordinate<int>
 
 void trWidget::SetName(const string& name_)
 {
-	name->SetData(name_);
+	Name->SetData(name_);
 }
 
 void trWidget::SetActivate(bool actv)
 {
-	activate->SetData(actv);
+	Activate->SetData(actv);
 }
 
 void trWidget::SetProtecte(bool prtc)
 {
-	protecte->SetData(prtc);
+	Protecte->SetData(prtc);
 }
 
 void trWidget::SetColor(int color_)
 {
-	color->SetData(max(color_, 0));
+	Color->SetData(max(color_, 0));
 }
 
 bool trWidget::SetTypeRelativePosition(int rp)
@@ -109,12 +109,12 @@ bool trWidget::SetTypeRelativePosition(int rp)
 
 void trWidget::SetChange(bool chng)
 {
-	change->SetData(chng);
+	Change->SetData(chng);
 }
 
 void trWidget::SetDestroy(bool dstr)
 {
-	destroy->SetData(dstr);
+	Destroy->SetData(dstr);
 }
 
 // ADD
@@ -126,19 +126,19 @@ void trWidget::AddToPosition(int x_, int y_)
 
 void trWidget::AddToSize(int x_, int y_)
 {
-	size->SetSize(size->GetSizeX().GetDataNew() + x_, size->GetSizeY().GetDataNew() + y_);
-	content->SetData(ContentReorganisation(RawContent->GetDataNew(), trSize<int>(size->GetSizeX().GetDataNew(), size->GetSizeY().GetDataNew())));
+	Size->SetSize(Size->GetSizeX().GetDataNew() + x_, Size->GetSizeY().GetDataNew() + y_);
+	Content->SetData(ContentReorganisation(RawContent->GetDataNew(), trSize<int>(Size->GetSizeX().GetDataNew(), Size->GetSizeY().GetDataNew())));
 }
 
 void trWidget::AddToContent(const wstring& content_)
 {
 	RawContent->SetData(RawContent->GetDataNew() + content_);
-	content->SetData(ContentReorganisation(RawContent->GetDataNew(), *size));
+	Content->SetData(ContentReorganisation(RawContent->GetDataNew(), *Size));
 }
 
 void trWidget::AddToColor(int color_)
 {
-	color->SetData(color->GetDataNew() + color_);
+	Color->SetData(Color->GetDataNew() + color_);
 }
 
 // GET
@@ -155,12 +155,12 @@ const trCoordinate<int>& trWidget::GetAbsolutePosition() const
 
 const trSize<int>& trWidget::GetSize() const
 {
-	return *size;
+	return *Size;
 }
 
 const trData<wstring>& trWidget::GetContent() const
 {
-	return *content;
+	return *Content;
 }
 
 const trData<wstring>& trWidget::GetRawContent() const
@@ -180,22 +180,22 @@ const std::vector<trPair<std::wstring, trCoordinate<int>>>& trWidget::GetResetCo
 
 const trData<string>& trWidget::GetName() const
 {
-	return *name;
+	return *Name;
 }
 
 const trData<bool>& trWidget::GetActivate() const
 {
-	return *activate;
+	return *Activate;
 }
 
 const trData<bool>& trWidget::GetProtecte() const
 {
-	return *protecte;
+	return *Protecte;
 }
 
 const trData<int>& trWidget::GetColor() const
 {
-	return *color;
+	return *Color;
 }
 
 const trData<int>& trWidget::GetRP() const
@@ -205,12 +205,12 @@ const trData<int>& trWidget::GetRP() const
 
 const trData<bool>& trWidget::GetChange() const
 {
-	return *change;
+	return *Change;
 }
 
 const trData<bool>& trWidget::GetDestroy() const
 {
-	return *destroy;
+	return *Destroy;
 }
 
 // APPLY
@@ -223,28 +223,28 @@ void trWidget::UpdateRelativePositionPoint(int ConsoleSize_x, int ConsoleSize_y)
 		RelativePositionPoint->SetCoord(0, 0);
 		break;
 	case TopCenter:
-		RelativePositionPoint->SetCoord((ConsoleSize_x / 2) - (size->GetSizeX().GetDataActual() / 2), 0);
+		RelativePositionPoint->SetCoord((ConsoleSize_x / 2) - (Size->GetSizeX().GetDataActual() / 2), 0);
 		break;
 	case TopRight:
-		RelativePositionPoint->SetCoord(ConsoleSize_x - size->GetSizeX().GetDataActual(), 0);
+		RelativePositionPoint->SetCoord(ConsoleSize_x - Size->GetSizeX().GetDataActual(), 0);
 		break;
 	case MiddleLeft:
-		RelativePositionPoint->SetCoord(0, (ConsoleSize_y / 2) - (size->GetSizeY().GetDataActual() / 2));
+		RelativePositionPoint->SetCoord(0, (ConsoleSize_y / 2) - (Size->GetSizeY().GetDataActual() / 2));
 		break;
 	case MiddleCenter:
-		RelativePositionPoint->SetCoord((ConsoleSize_x / 2) - (size->GetSizeX().GetDataActual() / 2), (ConsoleSize_y / 2) - (size->GetSizeY().GetDataActual() / 2));
+		RelativePositionPoint->SetCoord((ConsoleSize_x / 2) - (Size->GetSizeX().GetDataActual() / 2), (ConsoleSize_y / 2) - (Size->GetSizeY().GetDataActual() / 2));
 		break;
 	case MiddleRight:
-		RelativePositionPoint->SetCoord(ConsoleSize_x - size->GetSizeX().GetDataActual(), (ConsoleSize_y / 2) - (size->GetSizeY().GetDataActual() / 2));
+		RelativePositionPoint->SetCoord(ConsoleSize_x - Size->GetSizeX().GetDataActual(), (ConsoleSize_y / 2) - (Size->GetSizeY().GetDataActual() / 2));
 		break;
 	case BottomLeft:
-		RelativePositionPoint->SetCoord(0, ConsoleSize_y - size->GetSizeY().GetDataActual());
+		RelativePositionPoint->SetCoord(0, ConsoleSize_y - Size->GetSizeY().GetDataActual());
 		break;
 	case BottomCenter:
-		RelativePositionPoint->SetCoord((ConsoleSize_x / 2) - (size->GetSizeX().GetDataActual() / 2), ConsoleSize_y - size->GetSizeY().GetDataActual());
+		RelativePositionPoint->SetCoord((ConsoleSize_x / 2) - (Size->GetSizeX().GetDataActual() / 2), ConsoleSize_y - Size->GetSizeY().GetDataActual());
 		break;
 	case BottomRight:
-		RelativePositionPoint->SetCoord(ConsoleSize_x - size->GetSizeX().GetDataActual(), ConsoleSize_y - size->GetSizeY().GetDataActual());
+		RelativePositionPoint->SetCoord(ConsoleSize_x - Size->GetSizeX().GetDataActual(), ConsoleSize_y - Size->GetSizeY().GetDataActual());
 		break;
 	default:
 		std::cerr << "AUCUN NE CORESPOND";
@@ -261,32 +261,32 @@ void trWidget::UpdateRelativePosition()
 
 void trWidget::APPLY(const trSize<int>& SizeWindow_)
 {
-	size->Update();
+	Size->Update();
 
 	UpdateRelativePositionPoint(SizeWindow_.GetSizeX().GetDataActual(), SizeWindow_.GetSizeY().GetDataActual());
 	UpdateRelativePosition();
 	
 	PositionAbsolue->Update();
 	PositionRelative->Update();
-	activate->Update();
-	protecte->Update();
-	content->Update();
+	Activate->Update();
+	Protecte->Update();
+	Content->Update();
 	RawContent->Update();
 	ColoredContent->Update();
-	color->Update();
-	name->Update();
+	Color->Update();
+	Name->Update();
 	RpType->Update();
-	destroy->Update();
+	Destroy->Update();
 
-	change->SetData(VerificationProprety() ? true : change->GetDataNew());
-	change->Update();
+	Change->SetData(VerificationProprety() ? true : Change->GetDataNew());
+	Change->Update();
 }
 
 // FNC
 
 bool trWidget::VerificationProprety()
 {
-	return (PositionRelative->GetX().GetDataOld() != PositionRelative->GetX().GetDataActual() || PositionRelative->GetY().GetDataOld() != PositionRelative->GetY().GetDataActual() || size->GetSizeX().GetDataOld() != size->GetSizeX().GetDataActual() || size->GetSizeY().GetDataOld() != size->GetSizeY().GetDataActual() || activate->GetDataOld() != activate->GetDataActual() || color->GetDataOld() != color->GetDataActual() || content->GetDataOld() != content->GetDataActual() || RpType->GetDataOld() != RpType->GetDataActual());
+	return (PositionRelative->GetX().GetDataOld() != PositionRelative->GetX().GetDataActual() || PositionRelative->GetY().GetDataOld() != PositionRelative->GetY().GetDataActual() || Size->GetSizeX().GetDataOld() != Size->GetSizeX().GetDataActual() || Size->GetSizeY().GetDataOld() != Size->GetSizeY().GetDataActual() || Activate->GetDataOld() != Activate->GetDataActual() || Color->GetDataOld() != Color->GetDataActual() || Content->GetDataOld() != Content->GetDataActual() || RpType->GetDataOld() != RpType->GetDataActual());
 }
 
 void trWidget::Display(wostringstream& output_line)
@@ -453,10 +453,10 @@ std::wstring trWidget::ContentReorganisation(std::wstring _content, const trSize
 
 const trWidget& trWidget::EmptyWidget()
 {
-	if (!emptyWidgetInstance)
+	if (!EmptyWidgetInstance)
 	{
 		// Initialise le widget vide avec des valeurs par défaut
-		emptyWidgetInstance = new trWidget(
+		EmptyWidgetInstance = new trWidget(
 			0, 0,                      // PositionRelative par défaut (x, y)
 			0, 0,                      // Taille par défaut (width, height)
 			MiddleCenter,              // PositionRelative relative par défaut
@@ -464,17 +464,17 @@ const trWidget& trWidget::EmptyWidget()
 			""                         // Nom vide
 		);
 
-		emptyWidgetInstance->SetActivate(false);   // Désactivé
-		emptyWidgetInstance->SetProtecte(false);   // Non protégé
-		emptyWidgetInstance->SetColor(0);          // Couleur par défaut
-		emptyWidgetInstance->SetDestroy(false);    // Pas détruit
+		EmptyWidgetInstance->SetActivate(false);   // Désactivé
+		EmptyWidgetInstance->SetProtecte(false);   // Non protégé
+		EmptyWidgetInstance->SetColor(0);          // Couleur par défaut
+		EmptyWidgetInstance->SetDestroy(false);    // Pas détruit
 	}
-	return *emptyWidgetInstance;
+	return *EmptyWidgetInstance;
 }
 
 // Définition dans le fichier source
 
-trWidget* trWidget::emptyWidgetInstance = nullptr;
+trWidget* trWidget::EmptyWidgetInstance = nullptr;
 
 // DESTRUCTEUR
 
@@ -484,19 +484,19 @@ trWidget::~trWidget()
 
 	delete PositionAbsolue;
 
-	delete size;
+	delete Size;
 
-	delete activate;
+	delete Activate;
 
-	delete protecte;
+	delete Protecte;
 
-	delete color;
+	delete Color;
 
-	delete change;
+	delete Change;
 
 	delete RpType;
 
-	delete content; 
+	delete Content; 
 
 	delete ColoredContent;
 
@@ -504,9 +504,9 @@ trWidget::~trWidget()
 
 	delete RawContent;
 
-	delete name; 
+	delete Name; 
 
-	delete destroy;
+	delete Destroy;
 
 	delete RelativePositionPoint;
 }

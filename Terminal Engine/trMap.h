@@ -19,14 +19,14 @@ public:
 
 	// INI default
 
-	trMap() : _map(new std::vector<trPair<INDEX, MAP_T>>()) 
+	trMap() : Map(new std::vector<trPair<INDEX, MAP_T>>()) 
 	{
 
 	}
 
 	// INI deep
 
-	trMap(const trMap& other) : _map(new std::vector<trPair<INDEX, MAP_T>>(*other._map)) 
+	trMap(const trMap& other) : Map(new std::vector<trPair<INDEX, MAP_T>>(*other.Map)) 
 	{
 
 	}
@@ -37,7 +37,7 @@ public:
 	{
 		if (this == &other) return *this;
 
-		_map = new std::vector<trPair<INDEX, MAP_T>>(*other._map);
+		Map = new std::vector<trPair<INDEX, MAP_T>>(*other.Map);
 
 		return *this;
 	}
@@ -46,7 +46,7 @@ public:
 
 	MAP_T& operator[](const INDEX& idx)
 	{
-		for (auto& pair : *_map)
+		for (auto& pair : *Map)
 		{
 			if (*pair.first == idx)
 			{
@@ -54,56 +54,56 @@ public:
 			}
 		}
 
-		_map->push_back(trPair<INDEX, MAP_T>(idx, MAP_T()));
+		Map->push_back(trPair<INDEX, MAP_T>(idx, MAP_T()));
 
-		return *_map->back().second;
+		return *Map->back().second;
 	}
 
 	// GET
 
 	size_t GetSize() const 
 	{
-		return _map->size();
+		return Map->size();
 	}
 
 	// Itérateur début
 
 	auto begin() const
 	{
-		return _map->begin();
+		return Map->begin();
 	}
 
 	// Itérateur fin
 
 	auto end() const
 	{
-		return _map->end();
+		return Map->end();
 	}
 
 	// Itérateur début (non-const pour modification)
 
 	auto begin()
 	{
-		return _map->begin();
+		return Map->begin();
 	}
 
 	// Itérateur fin (non-const pour modification)
 
 	auto end()
 	{
-		return _map->end();
+		return Map->end();
 	}
 
 	// DESTR
 
 	~trMap()
 	{
-		delete _map;
+		delete Map;
 	}
 
 private:
 
-	std::vector<trPair<INDEX, MAP_T>>* _map; 
+	std::vector<trPair<INDEX, MAP_T>>* Map; 
 };
 
 #endif

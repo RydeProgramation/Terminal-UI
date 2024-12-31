@@ -3,13 +3,13 @@
 using namespace std;
 
 // INI
-trKeyBoardManagement::trKeyBoardManagement() : start(false), BTNS(new vector<trBTN_Key*>)
+trKeyBoardManagement::trKeyBoardManagement() : Start_(false), BTNS(new std::unordered_map<int, trBTN_Key>())
 {
 	
 }
 
 // INI deep copy
-trKeyBoardManagement::trKeyBoardManagement(const trKeyBoardManagement& other) : start(other.start), BTNS(new vector<trBTN_Key*>(*other.BTNS))
+trKeyBoardManagement::trKeyBoardManagement(const trKeyBoardManagement& other) : Start_(other.Start_), BTNS(new std::unordered_map<int, trBTN_Key>(*other.BTNS))
 {
 
 }
@@ -19,8 +19,8 @@ trKeyBoardManagement& trKeyBoardManagement::operator=(const trKeyBoardManagement
 {
 	if (this == &other) { return *this; }
 
-	start = other.start;
-	BTNS = new vector<trBTN_Key*>(*other.BTNS);
+	Start_ = other.Start_;
+	BTNS = new std::unordered_map<int, trBTN_Key>(*other.BTNS);
 
 	return *this;
 }
@@ -28,44 +28,32 @@ trKeyBoardManagement& trKeyBoardManagement::operator=(const trKeyBoardManagement
 // FNC
 void trKeyBoardManagement::ActionBTN() // PAS OTPI DU TOUT
 {
-	for (size_t i = 0; i < BTNS->size(); i++) 
-	{
-		if ((*BTNS)[i]->GetDetachKey()) 
-		{
-			(*BTNS)[i]->Action();
-		}
-	}
+	/*Action Mapping : Correspond aux actions comme "Sauter", "Tirer".
+Axis Mapping : Correspond aux axes comme "Déplacement horizontal" ou "Rotation de la caméra".*/
 
 	// faire plutot
 
 	/*
 	Recevoir la touche du clavier : c'est fonction
-	BTNS[key]->Action();
+	BTNS[Key]->Action();
 	*/
 }
 
-bool trKeyBoardManagement::CreateBTN(trBTN_Key* Btns)
+bool trKeyBoardManagement::CreateBTN(const trBTN_Key& Btn)
 {
-	for (size_t i = 0; i < BTNS->size(); i++) 
-	{
-		if ((*BTNS)[i]->GetKey() == Btns->GetKey()) 
-		{
-			return false;
-		}
-	}
+	(*BTNS)[Btn.GetKey()] = Btn;
 
-	BTNS->push_back(Btns);
 	return true;
 }
 
 // SET
-void trKeyBoardManagement::SetActionBtnKey(int key, void (*action)()) 
+void trKeyBoardManagement::SetActionBtnKey(int Key, void (*action)()) 
 {
-	(*BTNS)[BtnResearch(key)]->SetAction(action);
+	(*BTNS)[Key].SetAction(action);
 }
 
 // GET
-const std::vector<trBTN_Key*>& trKeyBoardManagement::GetBTNS() const 
+const std::unordered_map<int, trBTN_Key>& trKeyBoardManagement::GetBTNS() const
 {
 	return *BTNS;
 }
@@ -73,31 +61,21 @@ const std::vector<trBTN_Key*>& trKeyBoardManagement::GetBTNS() const
 // UPDATE
 void trKeyBoardManagement::Update() 
 {
-	for (size_t i = 0; i < BTNS->size(); i++) 
+	for (auto& it : *BTNS) 
 	{
-		(*BTNS)[i]->Update();
-	}
-}
-
-// FNC
-int trKeyBoardManagement::BtnResearch(int key) 
-{
-	auto it = find_if(BTNS->begin(), BTNS->end(), [key](const trBTN_Key* btn) { return btn->GetKey() == key; });
-
-	if (it != BTNS->end()) {
-		return int(distance(BTNS->begin(), it));
+		it.second.Update(); // ne sert a rien
 	}
 
-	return -1;
+	ActionBTN();
 }
 
 // START
 void trKeyBoardManagement::Start() 
 {
-	if (!start) 
+	if (!Start_) 
 	{
+		Start_ = true;
 		Loop();
-		start = true;
 	}
 }
 

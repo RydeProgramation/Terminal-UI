@@ -29,7 +29,7 @@ trUserInterface::trUserInterface() : trUserInterface(RENDER_SYSTEM, 6, L"\033[0m
 
 // INI
 
-trUserInterface::trUserInterface(int RenderType_, int BordW_, wstring RstClr) : SizeWindow(new trSize(0, 0)), CursorSelector(new trData(0)), mtx(new std::mutex), KB(new trKeyBoardManagement()), Widgets(new std::unordered_map<std::string, trWidget*>()), Render_(new std::wostringstream()), RenderColor_(new std::wostringstream()), T(new std::thread()), T2(new std::thread()), BorderWidth(BordW_), BaseColor(new wstring(RstClr))
+trUserInterface::trUserInterface(int RenderType_, int BordW_, wstring RstClr) : SizeWindow(new trSize(0, 0)), CursorSelector(new trData(0)), mtx(new std::mutex), KB(new trKeyBoardManagement()), Widgets(new std::unordered_map<std::string, trWidget*>()), Render_(new std::wostringstream()), RenderColor_(new std::wostringstream()), Thr_UI(new std::thread()), Thr_KB(new std::thread()), BorderWidth(BordW_), BaseColor(new wstring(RstClr))
 {
 	switch (RenderType_)
 	{
@@ -52,7 +52,7 @@ trUserInterface::trUserInterface(int RenderType_, int BordW_, wstring RstClr) : 
 
 // INI deep copy
 
-trUserInterface::trUserInterface(const trUserInterface& other) : SizeWindow(new trSize(*other.SizeWindow)), CursorSelector(new trData(*other.CursorSelector)), mtx(new std::mutex), KB(new trKeyBoardManagement()), Widgets(new std::unordered_map<std::string, trWidget*>(*other.Widgets)), Render_(new std::wostringstream()), RenderColor_(new std::wostringstream()), T(new std::thread()), T2(new std::thread()), BorderWidth(other.BorderWidth), RenderType(other.RenderType), BaseColor(new wstring(*other.BaseColor))
+trUserInterface::trUserInterface(const trUserInterface& other) : SizeWindow(new trSize(*other.SizeWindow)), CursorSelector(new trData(*other.CursorSelector)), mtx(new std::mutex), KB(new trKeyBoardManagement()), Widgets(new std::unordered_map<std::string, trWidget*>(*other.Widgets)), Render_(new std::wostringstream()), RenderColor_(new std::wostringstream()), Thr_UI(new std::thread()), Thr_KB(new std::thread()), BorderWidth(other.BorderWidth), RenderType(other.RenderType), BaseColor(new wstring(*other.BaseColor))
 {
 
 }
@@ -70,8 +70,8 @@ trUserInterface& trUserInterface::operator=(const trUserInterface& other)
 	Widgets = new std::unordered_map<std::string, trWidget*>(*other.Widgets);
 	Render_ = new std::wostringstream();
 	RenderColor_ = new std::wostringstream();
-	T = new std::thread();
-	T2 = new std::thread();
+	Thr_UI = new std::thread();
+	Thr_KB = new std::thread();
 	BaseColor = new wstring(*other.BaseColor);
 	RenderType = other.RenderType;
 
@@ -84,8 +84,8 @@ void trUserInterface::Start()
 {
 	SetupConsole();
 
-	T = new std::thread([this]() { this->Loop(); });
-	T2 = new std::thread([this]() { this->KB->Start(); });
+	Thr_UI = new std::thread([this]() { this->Loop(); });
+	Thr_KB = new std::thread([this]() { this->KB->Start(); });
 }
 
 void trUserInterface::Update()
@@ -123,7 +123,7 @@ void trUserInterface::Update()
 
 	Refreshed = false;
 
-	KB->ActionBTN(); // a voir lors du changement pour le traitement du clavier et souris
+	// KB->ActionBTN(); // a voir lors du changement pour le traitement du clavier et souris
 }
 
 void trUserInterface::Refresh()
@@ -214,8 +214,8 @@ void trUserInterface::SetupConsole()
 	SizeWindow->SetSize(GetConsoleSize(BorderWidth).GetSizeX().GetDataActual(), GetConsoleSize(BorderWidth).GetSizeY().GetDataActual());
 	SizeWindow->Update();
 
-	KB->CreateBTN(new trBTN_Key(VK_LEFT, bind(&trUserInterface::SelectPrevious, this)));
-	KB->CreateBTN(new trBTN_Key(VK_RIGHT, bind(&trUserInterface::SelectNext, this)));
+	KB->CreateBTN(trBTN_Key(VK_LEFT, bind(&trUserInterface::SelectPrevious, this)));
+	KB->CreateBTN(trBTN_Key(VK_RIGHT, bind(&trUserInterface::SelectNext, this)));
 }
 
 /// SELECTION ///
@@ -623,9 +623,9 @@ trUserInterface::~trUserInterface()
 
 	delete Widgets;
 
-	delete T;
+	delete Thr_UI;
 
-	delete T2;
+	delete Thr_KB;
 
 	delete SizeWindow;
 
