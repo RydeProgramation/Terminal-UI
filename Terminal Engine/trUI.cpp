@@ -123,6 +123,22 @@ void trUserInterface::Update()
 		Render();
 	}
 
+	/// Gerer les destruction a ce moment plutot que dans le thread de l'UI (car sinon ça fait des bugs de mutex et de destruction de thread)
+
+	for (auto it = Widgets->begin(); it != Widgets->end(); )
+	{
+		if (it->second->GetDestroy().GetDataActual())
+		{
+			delete it->second;          // supprime l'objet pointé
+			it = Widgets->erase(it);   // efface et récupère l'itérateur valide suivant
+			ForceRefresh = true;
+		}
+		else
+		{
+			++it;
+		}
+	}
+
 	Refreshed = false;
 }
 
@@ -324,7 +340,7 @@ void trUserInterface::SelectPrevious() // <-- a refaire en entier (car pas optim
 
 bool trUserInterface::CreateWidget(trWidget* WIDG)
 {
-	std::lock_guard<std::mutex> lock(*Mutex);
+	std::lock_guard<std::mutex> lock(*Mutex); // des fois abort()
 
 	if (Widgets->find(WIDG->GetName().GetDataActual()) == Widgets->end())
 	{
@@ -347,13 +363,15 @@ bool trUserInterface::CreateWidget(trWidget* WIDG)
 
 bool trUserInterface::DestroyWidget(trWidget* WIDG)
 {
-	std::lock_guard<std::mutex> lock(*Mutex);
+	/*std::lock_guard<std::mutex> lock(*Mutex);
 
 	Widgets->erase(WIDG->GetName().GetDataActual());
 
 	delete WIDG;
 
-	ForceRefresh = true;
+	ForceRefresh = true;*/
+
+	WIDG->SetDestroy(true);
 
 	return true; 
 }

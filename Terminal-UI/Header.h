@@ -1,26 +1,4 @@
-#include <iostream>
-#include <stdio.h>     
-#include <stdlib.h>   
-#include <Windows.h>
-#include <time.h>
-#include <fstream>
-#include <vector>
-#include <fcntl.h>
-#include <string>
-#include <io.h>
-#include <fcntl.h>
-#include <optional>
-#include <conio.h> 
-#include <limits>
-#include <random>
-#include <sstream>
-#include <mutex>
-#include <thread>
-#include <algorithm>
-#include <functional>
-#include <unordered_map>
-#include <locale>
-#include <codecvt>
+#include "include.h"
 
 #include "trUI.h"
 #include "trSize.h"
@@ -31,3 +9,4 @@
 #include "trData.h"
 #include "trMap.h"
 #include "trPair.h"
+#include "trActor.h"

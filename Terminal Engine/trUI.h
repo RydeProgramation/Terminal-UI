@@ -23,7 +23,7 @@
 #define DIRECT_TERMINAL 0
 #define RENDER_SYSTEM 1
 
-class TERMINAL_ENGINE_API trUserInterface : trObject // RANGER LES FONCTINON C'EST DANS UN BORDEL PAS POSSIBLE
+class TERMINAL_ENGINE_API trUserInterface : trObject // séparér les fonctionalités en plusieurs classes (trUI_Render, trUI_Display, trUI_World...)
 {
 public: 
 

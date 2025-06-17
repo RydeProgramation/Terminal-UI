@@ -125,12 +125,16 @@
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>NDEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
+      <AdditionalIncludeDirectories>$(SolutionDir)Terminal Core;$(SolutionDir)Terminal AudioModule;$(SolutionDir)Terminal Components;$(SolutionDir)Terminal Engine;$(SolutionDir)Terminal InputModule;$(SolutionDir)Terminal Tool;</AdditionalIncludeDirectories>
+      <LanguageStandard>stdcpplatest</LanguageStandard>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
       <GenerateDebugInformation>true</GenerateDebugInformation>
+      <AdditionalLibraryDirectories>$(SolutionDir)$(IntDir)</AdditionalLibraryDirectories>
+      <AdditionalDependencies>Terminal Engine.lib;%(AdditionalDependencies);Terminal Core.lib;Terminal Tool.lib;Terminal InputModule.lib;Terminal Components.lib;Terminal AudioModule.lib</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
