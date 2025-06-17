@@ -57,13 +57,14 @@ public:
 	virtual void Update();
 
 	/// <summary>
-	/// 
+	/// Raffraichie l'interface utilisateur
 	/// </summary>
 	virtual void Refresh();
 
 	/// <summary>
-	/// 
+	/// Vérifie si l'interface utilisateur doit être rafraichie 
 	/// </summary>
+	/// <returns> true si l'interface utilisateur doit être rafraichie, false sinon </returns>
 	bool RefreshVerification();
 
 	/// <summary>
@@ -80,69 +81,77 @@ public:
 	/// SELECTION ///
 
 	/// <summary>
-	/// Select (trSelector...)
+	/// Sélectionne un widget par son nom
 	/// </summary>
-	/// <param name="name"></param>
-	/// <returns></returns>
+	/// <param name="name"> Le nom du widget à sélectionner </param>
 	void Select(const std::string& name); // a changer la méthode
 
 	/// <summary>
-	/// /
+	/// Séléctionne le widget suivant
 	/// </summary>
 	void SelectNext();
 
 	/// <summary>
-	/// 
+	/// Séléctionne le widget précédent
 	/// </summary>
 	void SelectPrevious();
 
 	/// WIDGET MANG ///
 
 	/// <summary>
-	/// 
+	/// Crée un widget
 	/// </summary>
 	/// <typeparam name="Widget_T"> trWidget, trSelector... </typeparam>
-	/// <param name="WIDG"></param>
-	/// <returns></returns>
+	/// <param name="WIDG"> Le widget à créer </param>
+	/// <returns> true si le widget a été créé avec succès, false sinon </returns>
 	bool CreateWidget(trWidget* WIDG);
 
 	/// <summary>
-	/// 
+	/// Détruit un widget
 	/// </summary>
 	/// <typeparam name="Widget_T"> trWidget, trSelector... </typeparam>
-	/// <param name="name"></param>
-	/// <param name="WIDG"></param>
-	/// <returns></returns>
+	/// <param name="WIDG"> Le widget à détruire </param>
+	/// <returns> true si le widget a été détruit avec succès, false sinon </returns>
 	bool DestroyWidget(trWidget* WIDG);
 
 	/// <summary>
-	/// 
+	/// Détruit un widget par son nom
 	/// </summary>
 	/// <typeparam name="Widget_T"> trWidget, trSelector... </typeparam>
-	/// <param name="name"></param>
-	/// <param name="WIDG"></param>
-	/// <returns></returns>
-	bool DestroyWidget(const std::string& name);
+	/// <param name="name"> Le nom du widget à détruire </param>
+	/// <returns> true si le widget a été détruit avec succès, false sinon </returns>
+	bool DestroyWidget(const std::string& Name);
 
 	/// <summary>
-	/// FONCTION VIDE
+	/// Obtient un widget par son nom
 	/// </summary>
-	/// <param name="name"></param>
-	/// <param name="WIDG"></param>
-	const trWidget GetWidget(const std::string& name) const;
+	/// <param name="Name"> Le nom du widget à obtenir </param>
+	/// <returns> Un object de type trWidget si le widget existe, nullptr sinon </returns>
+	const trWidget GetWidget(const std::string& Name) const;
+
+protected:
+		
+	/// <summary>
+	/// Obtient un pointeur vers un widget par son nom
+	/// </summary>
+	/// <param name="Name"> Le nom du widget à obtenir </param>
+	/// <returns> Un pointeur vers un object de type trWidget si le widget existe, nullptr sinon </returns>
+	trWidget* GetPtrWidget(const std::string& Name) const;
+
+public: 
 
 	/// <summary>
 	/// Pour éxécuter une fonciton sur un Widget
 	/// </summary>
-	/// <param name="name">Le nom du Widget</param>
-	/// <param name="func">L'adresse de la fonction par exemple (&trWidget::AddToContent)</param>
-	/// <param name="...args">Les argument</param>
+	/// <param Name="Name_">Le nom du Widget</param>
+	/// <param Name="func">L'adresse de la fonction par exemple (&trWidget::AddToContent)</param>
+	/// <param Name="...args">Les argument</param>
 	template <typename Func, typename... Args>
-	void SetWidget(const std::string& name, Func&& func, Args&&... args) 
+	void SetWidget(const std::string& Name, Func&& func, Args&&... args)
 	{
-		if ((*Widgets)[name] != nullptr)
+		if ((*Widgets)[Name] != nullptr)
 		{
-			std::invoke(std::forward<Func>(func), (*Widgets)[name], std::forward<Args>(args)...);
+			std::invoke(std::forward<Func>(func), (*Widgets)[Name], std::forward<Args>(args)...);
 		}
 	}
 
@@ -151,8 +160,8 @@ private: // FNC
 	/// <summary>
 	/// Affiche un widget
 	/// </summary>
-	/// <param name="WIDG"></param>
-	/// <returns></returns>
+	/// <param name="WIDG"> Le widget à afficher </param>
+	/// <returns> true si le widget a été affiché avec succès, false sinon </returns>
 	void DisplayWidget(trWidget* WIDG); // à vérifier
 
 	/// <summary>
@@ -161,24 +170,24 @@ private: // FNC
 	void DisplayColor(); // à verifier
 
 	/// <summary>
-	/// 
+	/// Cache un widget (le rend invisible)
 	/// </summary>
-	/// <param name="WIDG"></param>
+	/// <param name="WIDG"> Le widget à cacher </param>
 	void HideWidget(trWidget* WIDG);
 
 	/// <summary>
-	/// 
+	/// Nettoie un widget (le rend vide)
 	/// </summary>
-	/// <param name="WIDG"></param>
+	/// <param name="WIDG"> Le widget à nettoyer </param>
 	void CleanWidget(trWidget* WIDG);
 
 	/// <summary>
-	/// 
+	/// Met à jour un widget (rafraichit son contenu, sa position, etc.)
 	/// </summary>
 	void UpdateWidget();
 
 	/// <summary>
-	/// 
+	/// Boucle principale de l'interface utilisateur
 	/// </summary>
 	void Loop();
 
@@ -192,24 +201,25 @@ private: // FNC
 	/// <summary>
 	/// Permet de déplacer pour un ostrinstream donnée la position du curseur
 	/// </summary>
-	/// <param name="Pos"></param>
-	/// <param name="output"></param>
-	void MoveCursorToOstream(const trCoordinate<int>& Pos, std::wostringstream* output, const trSize<int>& SizeOutput);
+	/// <param name="Pos"> Position du curseur </param>
+	/// <param name="Output"> Ostream dans lequel on va écrire </param>
+	void MoveCursorToOstream(const trCoordinate<int>& Pos, std::wostringstream* Output, const trSize<int>& SizeOutput);
 
 	/// <summary>
-	/// Permet de déplacer pour un ostrinstream donnée la position du curseur en prenant compte de la bordure
+	/// Permet de déplacer pour un ostrinstream donnée la position du curseur en tenant compte de la bordure
 	/// </summary>
-	/// <param name="Pos"></param>
-	/// <param name="output"></param>
-	/// <param name="BorderW"></param>
-	void MoveCursorToOstream(const trCoordinate<int>& Pos, std::wostringstream* output, const trSize<int>& SizeOutput, int BorderW);
+	/// <param name="Pos"> Position du curseur </param>
+	/// <param name="Output"> Ostream dans lequel on va écrire </param>
+	/// <param name="SizeOutput"> Taille de l'output (pour le terminal) </param>
+	/// <param name="BorderW"> Largeur de la bordure </param>
+	void MoveCursorToOstream(const trCoordinate<int>& Pos, std::wostringstream* Output, const trSize<int>& SizeOutput, int BorderW);
 
 	/// <summary>
 	/// Permet de déplacer pour un ostrinstream donnée la position du curseur
 	/// </summary>
-	/// <param name="Pos"></param>
-	/// <param name="output"></param>
-	void CleanOstreamSize(std::wostringstream* output, const trSize<int>& SizeOutput);
+	/// <param name="Pos"> Position du curseur </param>
+	/// <param name="Output"> Ostream dans lequel on va écrire </param>
+	void CleanOstreamSize(std::wostringstream* Output, const trSize<int>& SizeOutput);
 
 public:
 
@@ -225,7 +235,7 @@ protected:
 
 	std::wstring *BaseColor;
 
-	std::mutex *mtx;
+	std::mutex* Mutex; // Mutex pour les threads et a voir pour mieux les utiliser de façon plus propore et moins a la râche
 
 private:
 

@@ -8,6 +8,7 @@ using namespace UITools;
 
 trSelector::trSelector() : trWidget(), Selected(new trData<bool>(false)), ColorSelected(new trData<int>(0))
 {
+
 }
 
 // INI

@@ -279,7 +279,7 @@ void trWidget::APPLY(const trSize<int>& SizeWindow_)
 	Destroy->Update();
 
 	Change->SetData(VerificationProprety() ? true : Change->GetDataNew());
-	Change->Update();
+    Change->Update();
 }
 
 // FNC
