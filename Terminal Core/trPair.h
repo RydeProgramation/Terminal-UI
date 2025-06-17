@@ -7,10 +7,10 @@
 #ifndef __TR_PAIR__
 #define __TR_PAIR__
 
-#ifdef TERMINAL_ENGINE_EXPORT
-#define TERMINAL_ENGINE_API __declspec(dllexport)
+#ifdef TERMINAL_CORE_EXPORTS
+#define TERMINAL_CORE_API __declspec(dllexport)
 #else
-#define TERMINAL_ENGINE_API __declspec(dllimport)
+#define TERMINAL_CORE_API __declspec(dllimport)
 #endif
 
 template <class PAIR_T_1, class PAIR_T_2>

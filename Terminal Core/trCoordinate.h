@@ -6,10 +6,10 @@
 #ifndef __TR_COORDINATE__
 #define __TR_COORDINATE__
 
-#ifdef TERMINAL_ENGINE_EXPORT
-#define TERMINAL_ENGINE_API __declspec(dllexport)
+#ifdef TERMINAL_CORE_EXPORTS
+#define TERMINAL_CORE_API __declspec(dllexport)
 #else
-#define TERMINAL_ENGINE_API __declspec(dllimport)
+#define TERMINAL_CORE_API __declspec(dllimport)
 #endif
 
 template <class COORD_T>

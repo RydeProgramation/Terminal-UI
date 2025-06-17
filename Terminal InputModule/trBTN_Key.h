@@ -9,10 +9,10 @@
 #ifndef __TR_BTN_KEY__
 #define __TR_BTN_KEY__
 
-#ifdef TERMINAL_ENGINE_EXPORT
-#define TERMINAL_ENGINE_API __declspec(dllexport)
+#ifdef TERMINAL_INPUT_MODULE_EXPORTS
+#define TERMINAL_INPUT_API __declspec(dllexport)
 #else
-#define TERMINAL_ENGINE_API __declspec(dllimport)
+#define TERMINAL_INPUT_API __declspec(dllimport)
 #endif
 
 // PresseOrRelease
@@ -29,7 +29,7 @@
 // Exemple joystick
 #define Axis 0x005
 
-struct TERMINAL_ENGINE_API trBTN_Key : trObject
+struct TERMINAL_INPUT_API trBTN_Key : trObject
 {
 public:
 

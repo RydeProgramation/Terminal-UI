@@ -11,10 +11,10 @@
 #ifndef __TR_WIDGET__
 #define __TR_WIDGET__
 
-#ifdef TERMINAL_ENGINE_EXPORT
-#define TERMINAL_ENGINE_API __declspec(dllexport)
+#ifdef TERMINAL_COMPONENTS_EXPORTS
+#define TERMINAL_COMPONENTS_API __declspec(dllexport)
 #else
-#define TERMINAL_ENGINE_API __declspec(dllimport)
+#define TERMINAL_COMPONENTS_API __declspec(dllimport)
 #endif
 
 #define TopLeft 0
@@ -27,7 +27,7 @@
 #define BottomCenter 7
 #define BottomRight 8
 
-struct TERMINAL_ENGINE_API trWidget : trObject
+struct TERMINAL_COMPONENTS_API trWidget : trObject
 {
 public:
 

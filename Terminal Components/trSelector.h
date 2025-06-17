@@ -10,13 +10,13 @@
 #ifndef __TR_SELECTOR__
 #define __TR_SELECTOR__
 
-#ifdef TERMINAL_ENGINE_EXPORT
-#define TERMINAL_ENGINE_API __declspec(dllexport)
+#ifdef TERMINAL_COMPONENTS_EXPORTS
+#define TERMINAL_COMPONENTS_API __declspec(dllexport)
 #else
-#define TERMINAL_ENGINE_API __declspec(dllimport)
+#define TERMINAL_COMPONENTS_API __declspec(dllimport)
 #endif
 
-struct TERMINAL_ENGINE_API trSelector : trWidget
+struct TERMINAL_COMPONENTS_API trSelector : trWidget
 {
 public:
 

@@ -29,7 +29,7 @@ trUserInterface::trUserInterface() : trUserInterface(RENDER_SYSTEM, 6, L"\033[0m
 
 // INI
 
-trUserInterface::trUserInterface(int RenderType_, int BordW_, wstring RstClr) : SizeWindow(new trSize(0, 0)), CursorSelector(new trData(0)), mtx(new std::mutex), KB(new trKeyBoardManagement()), Widgets(new std::unordered_map<std::string, trWidget*>()), Render_(new std::wostringstream()), RenderColor_(new std::wostringstream()), Thr_UI(new std::thread()), Thr_KB(new std::thread()), BorderWidth(BordW_), BaseColor(new wstring(RstClr))
+trUserInterface::trUserInterface(int RenderType_, int BordW_, wstring RstClr) : SizeWindow(new trSize(0, 0)), CursorSelector(new trData(0)), Mutex(new std::mutex), KB(new trKeyBoardManagement()), Widgets(new std::unordered_map<std::string, trWidget*>()), Render_(new std::wostringstream()), RenderColor_(new std::wostringstream()), Thr_UI(new std::thread()), Thr_KB(new std::thread()), BorderWidth(BordW_), BaseColor(new wstring(RstClr))
 {
 	switch (RenderType_)
 	{
@@ -52,7 +52,7 @@ trUserInterface::trUserInterface(int RenderType_, int BordW_, wstring RstClr) : 
 
 // INI deep copy
 
-trUserInterface::trUserInterface(const trUserInterface& other) : SizeWindow(new trSize(*other.SizeWindow)), CursorSelector(new trData(*other.CursorSelector)), mtx(new std::mutex), KB(new trKeyBoardManagement()), Widgets(new std::unordered_map<std::string, trWidget*>(*other.Widgets)), Render_(new std::wostringstream()), RenderColor_(new std::wostringstream()), Thr_UI(new std::thread()), Thr_KB(new std::thread()), BorderWidth(other.BorderWidth), RenderType(other.RenderType), BaseColor(new wstring(*other.BaseColor))
+trUserInterface::trUserInterface(const trUserInterface& other) : SizeWindow(new trSize(*other.SizeWindow)), CursorSelector(new trData(*other.CursorSelector)), Mutex(new std::mutex), KB(new trKeyBoardManagement()), Widgets(new std::unordered_map<std::string, trWidget*>(*other.Widgets)), Render_(new std::wostringstream()), RenderColor_(new std::wostringstream()), Thr_UI(new std::thread()), Thr_KB(new std::thread()), BorderWidth(other.BorderWidth), RenderType(other.RenderType), BaseColor(new wstring(*other.BaseColor))
 {
 
 }
@@ -65,7 +65,7 @@ trUserInterface& trUserInterface::operator=(const trUserInterface& other)
 
 	SizeWindow = new trSize(*other.SizeWindow);
 	CursorSelector = new trData(*other.CursorSelector);
-	mtx = new std::mutex;
+	Mutex = new std::mutex;
 	KB = new trKeyBoardManagement();
 	Widgets = new std::unordered_map<std::string, trWidget*>(*other.Widgets);
 	Render_ = new std::wostringstream();
@@ -90,15 +90,17 @@ void trUserInterface::Start()
 
 void trUserInterface::Update()
 {
+	std::lock_guard<std::mutex> lock(*Mutex); // <<-- A voir pourquoi quand on l'enlève ça crée des prblms
+
 	SizeWindow->SetSize(GetConsoleSize().GetSizeX().GetDataActual(), GetConsoleSize().GetSizeY().GetDataActual());
 	SizeWindow->Update();
-
-	std::lock_guard<std::mutex> lock(*mtx); // je sais pas si ça sert vrm mddrrrr
 
 	if (RefreshVerification()) 
 	{
 		Refresh();
 	}
+
+	KB->Update();
 	
 	UpdateWidget();
 
@@ -122,8 +124,6 @@ void trUserInterface::Update()
 	}
 
 	Refreshed = false;
-
-	// KB->ActionBTN(); // a voir lors du changement pour le traitement du clavier et souris
 }
 
 void trUserInterface::Refresh()
@@ -214,8 +214,8 @@ void trUserInterface::SetupConsole()
 	SizeWindow->SetSize(GetConsoleSize(BorderWidth).GetSizeX().GetDataActual(), GetConsoleSize(BorderWidth).GetSizeY().GetDataActual());
 	SizeWindow->Update();
 
-	KB->CreateBTN(trBTN_Key(VK_LEFT, bind(&trUserInterface::SelectPrevious, this)));
-	KB->CreateBTN(trBTN_Key(VK_RIGHT, bind(&trUserInterface::SelectNext, this)));
+	KB->CreateBTN(trBTN_Key(VK_LEFT, OnRelease, PressToTrigger, bind(&trUserInterface::SelectPrevious, this), this));
+	KB->CreateBTN(trBTN_Key(VK_RIGHT, OnRelease, PressToTrigger, bind(&trUserInterface::SelectNext, this), this));
 }
 
 /// SELECTION ///
@@ -234,6 +234,10 @@ void trUserInterface::Select(const string& name)
 
 void trUserInterface::SelectNext() // <-- a refaire en entier (car pas optimiser + non-utilisation de vector)
 {
+	// std::lock_guard<std::mutex> lock(*Mutex); ça fait crash, par ce que le lock est appeler dnas un meme lock
+
+	cout << "droite";
+
 	/*bool found = false;
 
 	for (auto& widg : Widgets)
@@ -274,6 +278,10 @@ void trUserInterface::SelectNext() // <-- a refaire en entier (car pas optimiser
 
 void trUserInterface::SelectPrevious() // <-- a refaire en entier (car pas optimiser + non-utilisation de vector)
 {
+	// std::lock_guard<std::mutex> lock(*Mutex); ça fait crash, par ce que le lock est appeler dnas un meme lock
+
+	cout << "gauche";
+
 	/*bool found = false;
 
 	for (int i = int(Widgets.size()) - 1; i >= 0; i--)
@@ -316,7 +324,7 @@ void trUserInterface::SelectPrevious() // <-- a refaire en entier (car pas optim
 
 bool trUserInterface::CreateWidget(trWidget* WIDG)
 {
-	std::lock_guard<std::mutex> lock(*mtx);
+	std::lock_guard<std::mutex> lock(*Mutex);
 
 	if (Widgets->find(WIDG->GetName().GetDataActual()) == Widgets->end())
 	{
@@ -339,7 +347,7 @@ bool trUserInterface::CreateWidget(trWidget* WIDG)
 
 bool trUserInterface::DestroyWidget(trWidget* WIDG)
 {
-	std::lock_guard<std::mutex> lock(*mtx); // jsp si ça sert a qqchose mdr
+	std::lock_guard<std::mutex> lock(*Mutex);
 
 	Widgets->erase(WIDG->GetName().GetDataActual());
 
@@ -352,6 +360,8 @@ bool trUserInterface::DestroyWidget(trWidget* WIDG)
 
 bool trUserInterface::DestroyWidget(const string& name) // VERIF SI BUG
 {
+	// Ne pas mettre de mutex ici
+
 	if ((*Widgets)[name])
 	{
 		return DestroyWidget((*Widgets)[name]);
@@ -386,6 +396,30 @@ const trWidget trUserInterface::GetWidget(const string& Name) const
 		);
 
 		return trWidget::EmptyWidget(); // Retourne le widget vide
+	}
+}
+
+// Protected 
+
+trWidget* trUserInterface::GetPtrWidget(const std::string& Name) const
+{
+	auto it = Widgets->find(Name);
+
+	if (it != Widgets->end())
+	{
+		return (it->second);
+	}
+
+	else
+	{
+		MessageBox(
+			NULL,
+			L"Widget Not found",
+			L"Warning",
+			MB_ICONERROR | MB_OK
+		);
+
+		return nullptr; // Retourne le widget vide
 	}
 }
 
@@ -438,10 +472,10 @@ void trUserInterface::DisplayWidget(trWidget* WIDG)
 		{
 			output << WIDG->GetContent().GetDataActual().substr(min(col, WIDG->GetContent().GetDataActual().size()), WIDG->GetSize().GetSizeX().GetDataActual() - max(WIDG->GetAbsolutePosition().GetX().GetDataActual() + WIDG->GetSize().GetSizeX().GetDataActual() - GetConsoleSize(BorderWidth).GetSizeX().GetDataActual(), 0));
 
-			MoveCursorToOstream(trCoordinate<int>(WIDG->GetAbsolutePosition().GetX().GetDataActual(), ln), Render_, *SizeWindow, BorderWidth);
-
 			if (!IsOutSide(trCoordinate<int>(WIDG->GetAbsolutePosition().GetX().GetDataActual(), ln), BorderWidth))
 			{
+				MoveCursorToOstream(trCoordinate<int>(WIDG->GetAbsolutePosition().GetX().GetDataActual(), ln), Render_, *SizeWindow, BorderWidth);
+
 				// PROTOTYPE COULEUR
 
 				rstColortemp.push_back(trPair<wstring, trCoordinate<int>>(L"\033[0m" + *BaseColor, trCoordinate<int>(WIDG->GetAbsolutePosition().GetX().GetDataActual() + static_cast<int>(output.str().size()), ln)));
@@ -572,7 +606,7 @@ void trUserInterface::Loop()
 
 void trUserInterface::Render()
 {
-	// PROTOTYPE COULEUR
+	// PROTOTYPE COULEUR qui marche tres bien (a voir si on peut l'optimiser) ou le mettre de façon definitive
 
 	RenderColor_->str(Render_->str());
 
@@ -619,7 +653,7 @@ trUserInterface::~trUserInterface()
 {
 	delete KB;
 
-	delete mtx;
+	delete Mutex;
 
 	delete Widgets;
 

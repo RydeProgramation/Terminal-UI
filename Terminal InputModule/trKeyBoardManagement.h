@@ -9,13 +9,13 @@
 #ifndef __TR_KEYBOARD_M__
 #define __TR_KEYBOARD_M__
 
-#ifdef TERMINAL_ENGINE_EXPORT
-#define TERMINAL_ENGINE_API __declspec(dllexport)
+#ifdef TERMINAL_INPUT_MODULE_EXPORTS
+#define TERMINAL_INPUT_API __declspec(dllexport)
 #else
-#define TERMINAL_ENGINE_API __declspec(dllimport)
+#define TERMINAL_INPUT_API __declspec(dllimport)
 #endif
 
-class TERMINAL_ENGINE_API trKeyBoardManagement : trObject
+class TERMINAL_INPUT_API trKeyBoardManagement : trObject
 {
 public:
 

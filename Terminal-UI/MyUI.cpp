@@ -152,20 +152,22 @@ void MyUI::Start()
 		hello3_ = hello3[0] + hello3[1] + hello3[2] + hello3[3] + hello3[4];
 
 		SetWidget("Hello3", &trWidget::SetContent, hello3_);
+
+		Sleep(26);
 	}
 
 	for (int i = 0; i < 10; i++)
 	{
 		SetWidget("Hello3", &trWidget::AddToPosition, 0, 1);
 
-		Sleep(50);
+		Sleep(100);
 	}
 
 	for (int i = 0; i < 5; i++)
 	{
 		SetWidget("Hello3", &trWidget::AddToSize, 0, -1);
 
-		Sleep(50);
+		Sleep(100);
 	}
 
 	DestroyWidget("Hello3");
@@ -174,11 +176,11 @@ void MyUI::Start()
 
 	trSize<int>* size_ = new trSize<int>(GetConsoleSize()); 
 
-	CreateWidgetWait(new trWidget(0, 0, 123, 6, MiddleCenter, L"", "Paragraphe"));
+	/*CreateWidgetWait(new trWidget(0, 0, 123, 6, MiddleCenter, L"", "Paragraphe"));
 
 	for (int i = 0; i < paragColor.size(); i++)
 	{
-		if (paragColor[i] == L'\033')
+		if (paragColor[i] == L'\033') // ca serait cool que ça fonctionne tout le temps
 		{
 			// Trouve la fin de la séquence ANSI (caractère 'm' à la fin)
 			size_t endSeq = paragColor.find(L'm', i);
@@ -201,7 +203,7 @@ void MyUI::Start()
 			SetWidget("Paragraphe", &trWidget::AddToContent, wstring(1, paragColor[i]));
 		}
 		
-		Sleep(35);
+		Sleep(50);
 	}
 
 	Sleep(2500);
@@ -213,13 +215,15 @@ void MyUI::Start()
 		Sleep(250);
 	}
 
-	DestroyWidget("Paragraphe");
+	DestroyWidget("Paragraphe");*/
 
 	Menu1();
 }
 
 void MyUI::Menu1()
 {
+	
+
 	vector<wstring> sim_cont;
 
 	sim_cont.push_back(L" ________       ___      _____ ______       ___  ___      ___           ________      _________    ___      ________      ________       ");
@@ -262,6 +266,17 @@ void MyUI::Menu1()
 	// ICI
 
 	// CreateSelectorWait(new trSelector(25, 5, static_cast<int>(Diff[0].size()), 5, MiddleCenter, Diff_, "SimDiffusion"));
+
+	// TEST
+
+	KB->CreateBTN(trBTN_Key(0x57, OnPress, HoldToTrigger, bind(&trWidget::AddToPosition, GetPtrWidget("Simulation"), 0, -1), GetPtrWidget("Simulation")));
+	KB->CreateBTN(trBTN_Key(0x41, OnPress, HoldToTrigger, bind(&trWidget::AddToPosition, GetPtrWidget("Simulation"), -1, 0), GetPtrWidget("Simulation")));
+	KB->CreateBTN(trBTN_Key(0x53, OnPress, HoldToTrigger, bind(&trWidget::AddToPosition, GetPtrWidget("Simulation"), 0, 1), GetPtrWidget("Simulation")));
+	KB->CreateBTN(trBTN_Key(0x44, OnPress, HoldToTrigger, bind(&trWidget::AddToPosition, GetPtrWidget("Simulation"), 1, 0), GetPtrWidget("Simulation")));
+
+	KB->CreateBTN(trBTN_Key(KEY_J, OnPress, HoldToTrigger, bind(&trWidget::AddToPosition, GetPtrWidget("Simulation"), 1, 0), GetPtrWidget("Simulation")));
+
+	//
 
 	while (true)
 	{

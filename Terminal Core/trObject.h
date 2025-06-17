@@ -5,13 +5,13 @@
 #ifndef __TR_OBJECT__
 #define __TR_OBJECT__
 
-#ifdef TERMINAL_ENGINE_EXPORT
-#define TERMINAL_ENGINE_API __declspec(dllexport)
+#ifdef TERMINAL_CORE_EXPORTS
+#define TERMINAL_CORE_API __declspec(dllexport)
 #else
-#define TERMINAL_ENGINE_API __declspec(dllimport)
+#define TERMINAL_CORE_API __declspec(dllimport)
 #endif
 
-class TERMINAL_ENGINE_API trObject 
+class TERMINAL_CORE_API trObject
 {
 public:
 	trObject() = default;
