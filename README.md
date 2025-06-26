@@ -3,12 +3,12 @@ Tu rêve de pouvoir faire des widget a ta sauce ?
 
 # BUG-PROBLEM
 - Il faut gérer le fait de pouvoir "hide" un widget.
-- Il faut gérer quand on reste cliquait sur une touche. Comme sur un jeu quand on veut avancer.
-- Il faut recrée le system de keyboardmanagment et crée un système pour la souris.
-- FAIRE une meilleur documentation des fonction
+- crée un système pour la souris.
 - J'ai un trPair, il faut implémenter un trMulti
+- Les touches fonctionne tout le temps, (cf Cheval de Troie)
+- ContentReorganisation a ameliorer et optimiser
 - Améliorer trMap, éviter d'utiliser un vector est crée un truc moi-même
-- La mémoire ne fait qu'augmenter ? Normalement régler
+- La mémoire ne fait qu'augmenter ? (Régler !)
 - ![image](https://github.com/user-attachments/assets/13648a60-4fb6-4188-bc11-3bef1952be6e)
 - passé a 
 - ![image](https://github.com/user-attachments/assets/3da9de98-7350-4619-a5cb-2649bafdf5c2)
@@ -33,3 +33,4 @@ Tu rêve de pouvoir faire des widget a ta sauce ?
 ## ajout
 - Pourvoir créer/utiliser des ficher par exemple .widget pour avoir des widgets
 - Pouvoir gérer le son !
+- FAIRE une meilleur documentation des fonction
