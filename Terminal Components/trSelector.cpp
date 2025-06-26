@@ -1,8 +1,8 @@
-﻿#include "trUI_Tools.h"
-#include "trSelector.h"
+﻿#include "trSelector.h"
+#include "trUIToolsCore.h"
 
 using namespace std;
-using namespace UITools;
+using namespace UIToolsCore;
 
 // INI default
 
@@ -13,7 +13,7 @@ trSelector::trSelector() : trWidget(), Selected(new trData<bool>(false)), ColorS
 
 // INI
 
-trSelector::trSelector(int x_, int y_, int size_x_, int size_y_, int RelativePosition_, wstring content_, string name_) : trWidget(x_, y_, size_x_, size_y_, RelativePosition_, content_, name_), Selected(new trData<bool>(true)), ColorSelected(new trData<int>(14))
+trSelector::trSelector(int x_, int y_, int size_x_, int size_y_, uint8_t RelativePosition_, wstring content_, string name_) : trWidget(x_, y_, size_x_, size_y_, RelativePosition_, content_, name_), Selected(new trData<bool>(true)), ColorSelected(new trData<int>(14))
 {
 
 }
@@ -32,10 +32,21 @@ trSelector& trSelector::operator=(const trSelector& other)
 	// Si on est en train de se copier soi-même, il n'y a rien à faire
 	if (this == &other) { return *this; }
 
-	trWidget::operator=(other);;
+	trWidget::operator=(other);
 
-	Selected = new trData<bool>(*other.Selected);
-	ColorSelected = new trData<int>(*other.ColorSelected);
+	if (Selected == nullptr) {
+		Selected = new trData<bool>(*other.Selected);
+	}
+	else {
+		*Selected = *other.Selected;
+	}
+
+	if (ColorSelected == nullptr) {
+		ColorSelected = new trData<int>(*other.ColorSelected);
+	}
+	else {
+		*ColorSelected = *other.ColorSelected;
+	}
 
 	return *this;
 }
@@ -66,9 +77,9 @@ const trData<int> trSelector::GetColorSelected() const
 
 // APPLY
 
-void trSelector::APPLY(const trSize<int>& SizeWindow_)
+void trSelector::APPLY_(const trSize<uint16_t>& SizeWindow)
 {
-	trWidget::APPLY(SizeWindow_);
+	trWidget::APPLY_(SizeWindow);
 	Selected->Update();
 	ColorSelected->Update();
 }

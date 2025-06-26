@@ -37,14 +37,57 @@ public:
 	// Copy
 	trData& operator=(const trData& other)
 	{
-		if (this == &other)
-		{
+		if (this == &other) {
 			return *this;
 		}
 
-		Old = new DATA_T(*other.Old);
-		Actual = new DATA_T(*other.Actual);
-		New = new DATA_T(*other.New);
+		if (Old == nullptr) {
+			Old = new DATA_T(*other.Old);
+		}
+		else {
+			*Old = *other.Old;
+		}
+
+		if (Actual == nullptr) {
+			Actual = new DATA_T(*other.Actual);
+		}
+		else {
+			*Actual = *other.Actual;
+		}
+
+		if (New == nullptr) {
+			New = new DATA_T(*other.New);
+		}
+		else {
+			*New = *other.New;
+		}
+
+		return *this;
+	}
+
+	// Copy VAR
+	trData& operator=(const DATA_T& other)
+	{
+		if (Old == nullptr) {
+			Old = new DATA_T(other);
+		}
+		else {
+			*Old = other;
+		}
+
+		if (Actual == nullptr) {
+			Actual = new DATA_T(other);
+		}
+		else {
+			*Actual = other;
+		}
+
+		if (New == nullptr) {
+			New = new DATA_T(other);
+		}
+		else {
+			*New = other;
+		}
 
 		return *this;
 	}

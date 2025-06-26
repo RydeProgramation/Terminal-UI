@@ -1,26 +1,26 @@
-#include "trUI_Tools.h"
+#include "trUIToolsCore.h"
 #include "trActor.h"
 
 using namespace std;
-using namespace UITools;
+using namespace UIToolsCore;
 
 // INI default
 
-trActor::trActor() : trWidget()
+trActor::trActor() : trActor("None")
 {
 
 }
 
 // INI
 
-trActor::trActor(int x_, int y_, int size_x_, int size_y_, int RelativePosition_, wstring content_, string name_) : trWidget(x_, y_, size_x_, size_y_, RelativePosition_, content_, name_)
+trActor::trActor(string name_) : Name(new trData<string>(name_)), Activate(new trData<bool>(true)), Protected(new trData<bool>(false)), ToChange(new trData<bool>(true)), ToDestroy(new trData<bool>(false))
 {
-
+	
 }
 
 // INI deep copy
 
-trActor::trActor(const trActor& other) : trWidget(other)
+trActor::trActor(const trActor& other) : Name(new trData<string>(*other.Name)), Activate(new trData<bool>(*other.Activate)), ToChange(new trData<bool>(true)), ToDestroy(new trData<bool>(*other.ToDestroy)), Protected(new trData<bool>(*other.Protected))
 {
 
 }
@@ -29,29 +29,141 @@ trActor::trActor(const trActor& other) : trWidget(other)
 
 trActor& trActor::operator=(const trActor& other)
 {
-	// Si on est en train de se copier soi-même, il n'y a rien à faire
 	if (this == &other) { return *this; }
 
-	trWidget::operator=(other);;
+	if (Name == nullptr) {
+		Name = new trData<string>(*other.Name);
+	}
+	else {
+		*Name = *other.Name;
+	}
 
+	if (Activate == nullptr) {
+		Activate = new trData<bool>(*other.Activate);
+	}
+	else {
+		*Activate = *other.Activate;
+	}
+
+	if (Protected == nullptr) {
+		Protected = new trData<bool>(*other.Protected);
+	}
+	else {
+		*Protected = *other.Protected;
+	}
+
+	if (ToChange == nullptr) {
+		ToChange = new trData<bool>(true);
+	}
+	else {
+		*ToChange = *other.ToChange;
+	}
+
+	if (ToDestroy == nullptr) {
+		ToDestroy = new trData<bool>(*other.ToDestroy);
+	}
+	else {
+		*ToDestroy = *other.ToDestroy;
+	}
+	
 	return *this;
+}
+
+// SET
+
+void trActor::SetName(const string& name_)
+{
+	Name->SetData(name_);
+}
+
+void trActor::SetActivate(bool Activate_)
+{
+	Activate->SetData(Activate_);
+}
+
+void trActor::SetProtecte(bool Protected_)
+{
+	Protected->SetData(Protected_);
+}
+
+void trActor::SetChange(bool Change_)
+{
+	ToChange->SetData(Change_);
+}
+
+void trActor::SetDestroy(bool Destroy_)
+{
+	ToDestroy->SetData(Destroy_);
+}
+
+// GET
+
+const trData<string>& trActor::GetName() const
+{
+	return *Name;
+}
+
+const trData<bool>& trActor::GetActivate() const
+{
+	return *Activate;
+}
+
+const trData<bool>& trActor::GetProtecte() const
+{
+	return *Protected;
+}
+
+const trData<bool>& trActor::GetChange() const
+{
+	return *ToChange;
+}
+
+const trData<bool>& trActor::GetDestroy() const
+{
+	return *ToDestroy;
 }
 
 // APPLY
 
-void trActor::APPLY(const trSize<int>& SizeWindow_)
-{
+void trActor::APPLY(const trSize<uint16_t>& SizeWindow)
+{	
 	APPLY_Implementation();
 
-	trWidget::APPLY(SizeWindow_);
+	APPLY_(SizeWindow);
+
+	Activate->Update();
+	Protected->Update();
+	Name->Update();
+	ToDestroy->Update();
+
+	ToChange->SetData(VerificationProprety() ? true : ToChange->GetDataNew());
+	ToChange->Update();
 }
 
-void trActor::APPLY_Implementation()
+// FNC
+
+bool trActor::VerificationProprety()
 {
-	// some code
+	return (
+		Activate->GetDataOld() != Activate->GetDataActual()
+		);
 }
+
+// EMPTY ACTOR STATIC
+
+trActor trActor::EmptyActor = trActor();
+
+// DESTRUCTEUR
 
 trActor::~trActor()
 {
+	delete Activate;
 
+	delete Protected;
+
+	delete ToChange;
+
+	delete Name;
+
+	delete ToDestroy;
 }

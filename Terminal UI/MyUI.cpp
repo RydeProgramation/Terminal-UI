@@ -119,7 +119,7 @@ void MyUI::Start()
 
 	for (int i = 0; i < 115; i++)
 	{
-		SetWidget("Hello", &trWidget::AddToPosition, -1, 0);
+		SetActor("Hello", &trWidget::AddToPosition, -1, 0);
 
 		Sleep(10);
 	}
@@ -128,13 +128,13 @@ void MyUI::Start()
 
 	CreateWidgetWait(new trWidget(0, -1, 52, 5, MiddleCenter, hello2_, "Hello2"));
 
-	DestroyWidget("Hello");
+	DestroyActor("Hello");
 
 	Sleep(20 * 100); 
 
 	CreateWidgetWait(new trWidget(1, -1, 54, 5, MiddleCenter, hello3_, "Hello3"));
 
-	DestroyWidget("Hello2");
+	DestroyActor("Hello2");
 	
 	int i = 0;
 
@@ -151,30 +151,30 @@ void MyUI::Start()
 
 		hello3_ = hello3[0] + hello3[1] + hello3[2] + hello3[3] + hello3[4];
 
-		SetWidget("Hello3", &trWidget::SetContent, hello3_);
+		SetActor("Hello3", &trWidget::SetContent, hello3_);
 
 		Sleep(26);
 	}
 
 	for (int i = 0; i < 10; i++)
 	{
-		SetWidget("Hello3", &trWidget::AddToPosition, 0, 1);
+		SetActor("Hello3", &trWidget::AddToPosition, 0, 1);
 
 		Sleep(100);
 	}
 
 	for (int i = 0; i < 5; i++)
 	{
-		SetWidget("Hello3", &trWidget::AddToSize, 0, -1);
+		SetActor("Hello3", &trWidget::AddToSize, 0, -1);
 
 		Sleep(100);
 	}
 
-	DestroyWidget("Hello3");
+	DestroyActor("Hello3");
 
 	wstring paragColor = L"\033[38;2;255;182;193mSalutations, brave lache\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\bons, brave aventurier !\033[0m\033[38;2;176;224;230m Mon projet est une application maléfique\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\033[0m\033[38;2;152;251;152mapplication magique qui ouvre les portes des marchés financiers.\033[0m\nÀ l'aide de la puissante technique de \033[38;2;216;191;216mDiCaprio\b\b\b\b\b\b\b\bMonte-Carlo\033[0m, \033[38;2;240;230;140mje simule des trajectoires aléatoires\033[0m pour les options (calls et \033[38;2;250;235;215mputain\b\b\bs\033[0m).\n\033[38;2;255;222;173mImagine-toi chevauchant un dragon volant au-dessus des courbes de prix, scrutant les volatilités et les risques.\033[0m\nLes prix d'\033[38;2;255;228;196moptions\033[0m se révèlent tels des trésors cachés dans les profondeurs du marché. \033[38;2;240;255;255mQue la probabilités soit avec toi !\033[0m\n\033[38;2;245;222;179mJe te propose donc cette application pour que tu fasses tes propres simulations et découvre les secrets enfouis\033[0m dans\f\033[38;2;216;191;216mles volutes des courbes financières.\033[0m 🎉";
 
-	trSize<int>* size_ = new trSize<int>(GetConsoleSize()); 
+	trSize<uint16_t>* size_ = new trSize<uint16_t>(GetConsoleSize());
 
 	/*CreateWidgetWait(new trWidget(0, 0, 123, 6, MiddleCenter, L"", "Paragraphe"));
 
@@ -190,7 +190,7 @@ void MyUI::Start()
 				std::wstring ansiSeq = paragColor.substr(i, endSeq - i + 1);  // +1 pour inclure 'm'
 
 				// On ajoute la séquence ANSI à l'interface
-				SetWidget("Paragraphe", &trWidget::AddToContent, ansiSeq);
+				SetActor("Paragraphe", &trWidget::AddToContent, ansiSeq);
 
 				// On saute l'indice de la séquence ANSI pour ne pas la traiter à nouveau
 				i += static_cast<int>(ansiSeq.size() - 1); // -1 car on a déjà ajouté un caractère
@@ -200,7 +200,7 @@ void MyUI::Start()
 		else
 		{
 			// Si ce n'est pas une séquence ANSI, on ajoute un seul caractère
-			SetWidget("Paragraphe", &trWidget::AddToContent, wstring(1, paragColor[i]));
+			SetActor("Paragraphe", &trWidget::AddToContent, wstring(1, paragColor[i]));
 		}
 		
 		Sleep(50);
@@ -210,20 +210,18 @@ void MyUI::Start()
 
 	for (int i = 0; i < 6; i++)
 	{
-		SetWidget("Paragraphe", &trWidget::AddToSize, 0, -1);
+		SetActor("Paragraphe", &trWidget::AddToSize, 0, -1);
 
 		Sleep(250);
 	}
 
-	DestroyWidget("Paragraphe");*/
+	DestroyActor("Paragraphe");*/
 
 	Menu1();
 }
 
 void MyUI::Menu1()
 {
-	
-
 	vector<wstring> sim_cont;
 
 	sim_cont.push_back(L" ________       ___      _____ ______       ___  ___      ___           ________      _________    ___      ________      ________       ");
@@ -269,33 +267,82 @@ void MyUI::Menu1()
 
 	// TEST
 
-	KB->CreateBTN(trBTN_Key(0x57, OnPress, HoldToTrigger, bind(&trWidget::AddToPosition, GetPtrWidget("Simulation"), 0, -1), GetPtrWidget("Simulation")));
-	KB->CreateBTN(trBTN_Key(0x41, OnPress, HoldToTrigger, bind(&trWidget::AddToPosition, GetPtrWidget("Simulation"), -1, 0), GetPtrWidget("Simulation")));
-	KB->CreateBTN(trBTN_Key(0x53, OnPress, HoldToTrigger, bind(&trWidget::AddToPosition, GetPtrWidget("Simulation"), 0, 1), GetPtrWidget("Simulation")));
-	KB->CreateBTN(trBTN_Key(0x44, OnPress, HoldToTrigger, bind(&trWidget::AddToPosition, GetPtrWidget("Simulation"), 1, 0), GetPtrWidget("Simulation")));
+	// KB->CreateBTN(trBTN_Key(0x57, OnPress, HoldToTrigger, bind(&trWidget::AddToPosition, GetPtrActor("Simulation"), 0, -1), GetPtrActor("Simulation")));
 
-	KB->CreateBTN(trBTN_Key(KEY_J, OnPress, HoldToTrigger, bind(&trWidget::AddToPosition, GetPtrWidget("Simulation"), 1, 0), GetPtrWidget("Simulation")));
+	KB->CreateBTN(trBTN_Key(
+		0x57,
+		OnPress,
+		HoldToTrigger,
+		[ptr = dynamic_cast<trWidget*>(GetPtrActor("Simulation"))]() {
+			if (ptr) {
+				ptr->AddToPosition(0, -1);
+			}
+		},
+		GetPtrActor("Simulation")
+	));
 
-	//
+	KB->CreateBTN(trBTN_Key(
+		0x41,
+		OnPress,
+		HoldToTrigger,
+		[ptr = dynamic_cast<trWidget*>(GetPtrActor("Simulation"))]() {
+			if (ptr) ptr->AddToPosition(-1, 0);
+		},
+		GetPtrActor("Simulation")
+	));
 
-	while (true)
-	{
+	KB->CreateBTN(trBTN_Key(
+		0x53,
+		OnPress,
+		HoldToTrigger,
+		[ptr = dynamic_cast<trWidget*>(GetPtrActor("Simulation"))]() {
+			if (ptr) ptr->AddToPosition(0, 1);
+		},
+		GetPtrActor("Simulation")
+	));
 
-	} 
+	KB->CreateBTN(trBTN_Key(
+		0x44,
+		OnPress,
+		HoldToTrigger,
+		[ptr = dynamic_cast<trWidget*>(GetPtrActor("Simulation"))]() {
+			if (ptr) ptr->AddToPosition(1, 0);
+		},
+		GetPtrActor("Simulation")
+	));
+
+	/* ancienne version que je veux retravailler pour l'optimiser
+	KB->CreateBTN(trBTN_Key(0x41, OnPress, HoldToTrigger, bind(&trWidget::AddToPosition, GetPtrActor("Simulation"), -1, 0), GetPtrActor("Simulation")));
+	KB->CreateBTN(trBTN_Key(0x53, OnPress, HoldToTrigger, bind(&trWidget::AddToPosition, GetPtrActor("Simulation"), 0, 1), GetPtrActor("Simulation")));
+	KB->CreateBTN(trBTN_Key(0x44, OnPress, HoldToTrigger, bind(&trWidget::AddToPosition, GetPtrActor("Simulation"), 1, 0), GetPtrActor("Simulation")));
+	KB->CreateBTN(trBTN_Key(KEY_J, OnPress, HoldToTrigger, bind(&trUserInterface::CreateActor, GetPtrActor("Simulation"), new Munition(0, 0, TopLeft, L"*", "Bullet_")), GetPtrActor("Simulation")));
+	*/
+
+	KB->CreateBTN(trBTN_Key(
+		KEY_J,            // La touche J
+		OnPress,          // Appui
+		PressToTrigger,    // Mode d'utilisation
+		[this]() {        // Lambda sans argument, qui capture this
+			CreateWidgetWait(new Munition(0, 0, TopLeft, L"*", "Bullet_"));
+		},
+		this  // Pointeur vers widget parent
+	));
+
 }
 
 void MyUI::CreateWidgetWait(trWidget* WIDG)
 {
-	CreateWidget(WIDG);
+	CreateActor(WIDG);
 
 	while (WIDG->GetChange().GetDataActual()) {} // faire attention ici
 }
 
 void MyUI::CreateSelectorWait(trSelector* WIDG)
 {
-	CreateWidget(WIDG);
+	CreateActor(WIDG);
 
 	while (WIDG->GetChange().GetDataActual()) {} // faire attention ici
 }
 
 
+int Munition::bulletCount;

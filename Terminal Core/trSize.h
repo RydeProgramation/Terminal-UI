@@ -47,8 +47,19 @@ public:
 			return *this; 
 		}
 
-		x = new trData<SIZE_T>(*other.x);
-		y = new trData<SIZE_T>(*other.y);
+		if (x == nullptr) {
+			x = new trData<SIZE_T>(*other.x);
+		}
+		else {
+			*x = *other.x;
+		}
+
+		if (y == nullptr) {
+			y = new trData<SIZE_T>(*other.y);
+		}
+		else {
+			*y = *other.y;
+		}		
 
 		return *this;
 	}

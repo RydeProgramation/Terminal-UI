@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
+﻿<?xml version="1.0" encoding="utf-8"?>
 <Project DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup Label="ProjectConfigurations">
     <ProjectConfiguration Include="Debug|Win32">
@@ -19,20 +19,26 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="..\Terminal Components\trActor.h" />
     <ClInclude Include="include.h" />
     <ClInclude Include="trCoordinate.h" />
     <ClInclude Include="trData.h" />
     <ClInclude Include="trMap.h" />
     <ClInclude Include="trObject.h" />
     <ClInclude Include="trPair.h" />
+    <ClInclude Include="trPawn.h" />
     <ClInclude Include="trSize.h" />
+    <ClInclude Include="trUIToolsCore.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="..\Terminal Components\trActor.cpp" />
     <ClCompile Include="trCoordinate.cpp" />
     <ClCompile Include="trData.cpp" />
     <ClCompile Include="trMap.cpp" />
     <ClCompile Include="trPair.cpp" />
+    <ClCompile Include="trPawn.cpp" />
     <ClCompile Include="trSize.cpp" />
+    <ClCompile Include="trUIToolsCore.cpp" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <VCProjectVersion>17.0</VCProjectVersion>

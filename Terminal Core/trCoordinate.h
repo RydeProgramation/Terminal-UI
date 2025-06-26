@@ -38,13 +38,24 @@ public:
 	// Copy
 	trCoordinate& operator=(const trCoordinate& other)
 	{
-		if (this == &other) 
+		if (this == &other)
 		{ 
 			return *this; 
 		}
 
-		x = new trData<COORD_T>(*other.x);
-		y = new trData<COORD_T>(*other.y);
+		if (x == nullptr) {
+			x = new trData<COORD_T>(*other.x);
+		}
+		else {
+			*x = *other.x;
+		}
+
+		if (y == nullptr) {
+			y = new trData<COORD_T>(*other.y);
+		}
+		else {
+			*y = *other.y;
+		}
 
 		return *this;
 	}

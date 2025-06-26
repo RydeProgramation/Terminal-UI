@@ -6,6 +6,7 @@
 #include "trSize.h"
 #include "trWidget.h"
 #include "trData.h"
+#include "trUIToolsCore.h"
 
 #ifndef __TR_UI_TOOLS__
 #define __TR_UI_TOOLS__
@@ -18,19 +19,21 @@
 
 namespace UITools
 {
-	/// <summary>
-	/// Déplace le curseur vers
-	/// </summary>
-	/// <param name="trCoordinate"></param>
-	/// <param name="WithBorder"> Mettre false si tu veux être à l'interieur des bordures </param>
-	TERMINAL_ENGINE_API void MoveCursorTo(trCoordinate<int> trCoordinate, int BorderWitdh);
+	using namespace UIToolsCore;
 
 	/// <summary>
 	/// Déplace le curseur vers
 	/// </summary>
 	/// <param name="trCoordinate"></param>
 	/// <param name="WithBorder"> Mettre false si tu veux être à l'interieur des bordures </param>
-	TERMINAL_ENGINE_API void MoveCursorTo(trCoordinate<int> trCoordinate);
+	TERMINAL_ENGINE_API void MoveCursorTo(const trCoordinate<int>& Coordinate_, uint8_t BorderWitdh_);
+
+	/// <summary>
+	/// Déplace le curseur vers
+	/// </summary>
+	/// <param name="trCoordinate"></param>
+	/// <param name="WithBorder"> Mettre false si tu veux être à l'interieur des bordures </param>
+	TERMINAL_ENGINE_API void MoveCursorTo(const trCoordinate<int>& Coordinate_);
 
 	/// <summary>
 	/// Cache le curseur
@@ -43,7 +46,7 @@ namespace UITools
 	/// <param name="WIDG"></param>
 	/// <param name="trCoordinate"></param>
 	/// <returns></returns>
-	TERMINAL_ENGINE_API bool IsOutSide(trCoordinate<int> xy, int BorderWidth);
+	TERMINAL_ENGINE_API bool IsOutSide(const trCoordinate<int>& xy, uint8_t BorderWidth_);
 
 	/// <summary>
 	/// Permet de verfier si les coordonnées données sont en dehors de la fenêtre
@@ -52,7 +55,7 @@ namespace UITools
 	/// <param name="trCoordinate"></param>
 	/// <param name="CountTouch"></param>
 	/// <returns></returns>
-	TERMINAL_ENGINE_API bool IsOutSide(trCoordinate<int> xy, int BorderWidth, bool CountTouch);
+	TERMINAL_ENGINE_API bool IsOutSide(const trCoordinate<int>& xy, uint8_t BorderWidth_, bool CountTouch);
 
 	/// <summary>
 	/// Permet de verifier si c'est en dehors juste avec les coord 1 dimensions
@@ -60,7 +63,7 @@ namespace UITools
 	/// <param name="z"></param>
 	/// <param name="BorderWidth"></param>
 	/// <returns></returns>
-	TERMINAL_ENGINE_API bool IsOutSide(int z, int BorderWidth, bool CountTouch);
+	TERMINAL_ENGINE_API bool IsOutSide(int z, uint8_t BorderWidth_, bool CountTouch);
 
 	/// <summary>
 	/// Permet de verifier si c'est en dehors juste avec les coord 1 dimensions
@@ -68,7 +71,7 @@ namespace UITools
 	/// <param name="z"></param>
 	/// <param name="BorderWidth"></param>
 	/// <returns></returns>
-	TERMINAL_ENGINE_API bool IsOutSide(int z, int BorderWidth);
+	TERMINAL_ENGINE_API bool IsOutSide(int z, uint8_t BorderWidth_);
 
 	/// <summary>
 	/// Permet de verfier si les coordonnées données sont en dehors de la fenêtre
@@ -76,7 +79,7 @@ namespace UITools
 	/// <param name="WIDG"></param>
 	/// <param name="trCoordinate"></param>
 	/// <returns></returns>
-	TERMINAL_ENGINE_API bool IsOutSide(trCoordinate<int> xy);
+	TERMINAL_ENGINE_API bool IsOutSide(const trCoordinate<int>& xy);
 
 	/// <summary>
 	/// Permet de verfier si les coordonnées données sont en dehors de la fenêtre
@@ -85,7 +88,7 @@ namespace UITools
 	/// <param name="trCoordinate"></param>
 	/// <param name="CountTouch"></param>
 	/// <returns></returns>
-	TERMINAL_ENGINE_API bool IsOutSide(trCoordinate<int> xy, bool CountTouch);
+	TERMINAL_ENGINE_API bool IsOutSide(const trCoordinate<int>& xy, bool CountTouch);
 
 	/// <summary>
 	/// Permet de verifier si c'est en dehors juste avec les coord 1 dimensions
@@ -106,55 +109,7 @@ namespace UITools
 	/// </summary>
 	/// <param name="WIDG"></param>
 	/// <returns></returns>
-	TERMINAL_ENGINE_API bool IsInWidget(trWidget* WIDG, trCoordinate<int> crd);
-
-	/// <summary>
-	///
-	/// </summary>
-	/// <param name="color"></param>
-	TERMINAL_ENGINE_API void SetColorConsole(int color);
-
-	/// <summary>
-	/// Permet d'obtenir la taille de la console
-	/// </summary>
-	/// <param name="trCoordinate"></param>
-	/// <param name="WithBorder"> Mettre false si tu veux être à l'interieur des bordures </param>
-	TERMINAL_ENGINE_API trSize<int> GetConsoleSize(int BorderWitdh);
-
-	/// <summary>
-	/// Permet d'obtenir la taille de la console
-	/// </summary>
-	/// <param name="trCoordinate"></param>
-	/// <param name="WithBorder"> Mettre false si tu veux être à l'interieur des bordures </param>
-	TERMINAL_ENGINE_API trSize<int> GetConsoleSize();
-
-	/// <summary>
-	/// Permet de convertir un wstring en string
-	/// </summary>
-	/// <param name="wstr"></param>
-	/// <returns></returns>
-	TERMINAL_ENGINE_API std::string WstringToUtf8(const std::wstring& wstr);
-
-	/// <summary>
-	/// comme le nom l'indique
-	/// </summary>
-	/// <param name="input"></param>
-	/// <returns></returns>
-	TERMINAL_ENGINE_API bool IsPureColor(const std::wstring& input);
-
-	/// <summary>
-	/// FONCTION VIDE
-	/// </summary>
-	/// <param name="name"></param>
-	/// <param name="WIDG"></param>
-	template<typename obj, typename FuncType, typename... Args>
-	void SetFunctionTo(obj* object, FuncType func, Args... args)
-	{
-		if (object)
-		{
-			std::invoke(func, object, std::forward<Args>(args)...);
-		}
-	}
+	TERMINAL_ENGINE_API bool IsInWidget(trWidget* WIDG, const trCoordinate<int>& crd);
 }
 
 #endif

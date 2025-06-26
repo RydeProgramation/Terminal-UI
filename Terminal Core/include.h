@@ -12,6 +12,7 @@
 #include <limits>
 #include <random>
 #include <sstream>
+#include <type_traits>
 #include <io.h>
 #include <mutex>
 #include <thread>

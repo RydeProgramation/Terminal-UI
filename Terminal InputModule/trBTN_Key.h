@@ -29,7 +29,7 @@
 // Exemple joystick
 #define Axis 0x005
 
-struct TERMINAL_INPUT_API trBTN_Key : trObject
+struct TERMINAL_INPUT_API trBTN_Key : public trObject
 {
 public:
 

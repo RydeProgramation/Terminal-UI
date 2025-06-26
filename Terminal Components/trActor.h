@@ -4,19 +4,20 @@
 
 #include "trSize.h"
 #include "trCoordinate.h"
-#include "trWidget.h"
 #include "trData.h"
+#include "trPair.h"
+#include "trMap.h"
 
 #ifndef __TR_ACTOR__
 #define __TR_ACTOR__
 
-#ifdef TERMINAL_COMPONENTS_EXPORTS
-#define TERMINAL_COMPONENTS_API __declspec(dllexport)
+#ifdef TERMINAL_CORE_EXPORTS
+#define TERMINAL_CORE_API __declspec(dllexport)
 #else
-#define TERMINAL_COMPONENTS_API __declspec(dllimport)
+#define TERMINAL_CORE_API __declspec(dllimport)
 #endif
 
-struct TERMINAL_COMPONENTS_API trActor : trWidget
+class TERMINAL_CORE_API trActor : public trObject
 {
 public:
 
@@ -24,9 +25,11 @@ public:
 
 	trActor();
 
+	virtual void Init() {};
+
 	// INI
 
-	trActor(int x_, int y_, int size_x_, int size_y_, int RelativePosition_, std::wstring content_, std::string name_);
+	trActor(std::string name_);
 
 	// INI deep copy
 
@@ -36,11 +39,45 @@ public:
 
 	trActor& operator=(const trActor& other);
 
+	// SET
+
+	void SetName(const std::string& name_);
+
+	void SetActivate(bool Activate_);
+
+	void SetProtecte(bool Protected_);
+
+	void SetChange(bool Change_);
+
+	void SetDestroy(bool Destroy_);
+
+	// GET
+
+	const trData<std::string>& GetName() const;
+
+	const trData<bool>& GetActivate() const;
+
+	const trData<bool>& GetProtecte() const;
+
+	const trData<bool>& GetChange() const;
+
+	const trData<bool>& GetDestroy() const;
+
 	// APPLY
 
-	void APPLY(const trSize<int>& SizeWindow_) override;
+	void APPLY(const trSize<uint16_t>& SizeWindow);
 
-	virtual void APPLY_Implementation();
+protected:
+
+	virtual void APPLY_(const trSize<uint16_t>& SizeWindow) {};
+
+public:
+	
+	virtual void APPLY_Implementation() {};
+
+	// FONCTION
+
+	virtual bool VerificationProprety(); 
 
 	// DESTRUCTEUR
 
@@ -48,7 +85,21 @@ public:
 
 private:
 
+	trData<bool>* Activate;
 
+	trData<bool>* Protected;
+
+	trData<bool>* ToChange;
+
+	trData<std::string>* Name;
+
+	trData<bool>* ToDestroy;
+
+public:
+
+	// EMPTY ACTOR STATIC
+
+	static trActor EmptyActor;
 };
 
 #endif

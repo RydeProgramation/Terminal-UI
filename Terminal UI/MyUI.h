@@ -27,4 +27,33 @@ private:
 	void CreateSelectorWait(trSelector* WIDG);
 };
 
+class Munition : public trWidget
+{
+public:
+
+	Munition(int x_, int y_, int RelativePosition_, std::wstring content_, std::string name_)
+		: trWidget(x_, y_, 1, 1, RelativePosition_, content_, name_ + std::to_string(bulletCount))
+	{
+		this->SetContent(L"*");
+		bulletCount++;
+	}
+
+	void APPLY_Implementation() override
+	{
+		if (a <= 10)
+		{
+			this->AddToPosition(0, -1);
+			a++;
+		}
+		
+		else
+		{
+			this->SetDestroy(true);
+		}
+	}
+
+	int a = 0;
+
+	static int bulletCount;
+};
 #endif

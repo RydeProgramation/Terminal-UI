@@ -5,6 +5,7 @@
 #include "trSize.h"
 #include "trCoordinate.h"
 #include "trPair.h"
+#include "trUIToolsCore.h"
 
 #ifndef __TR_KEYBOARD_M__
 #define __TR_KEYBOARD_M__

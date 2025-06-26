@@ -26,7 +26,7 @@ public:
 
 	// INI
 
-	trSelector(int x_, int y_, int size_x_, int size_y_, int RelativePosition_, std::wstring content_, std::string name_);
+	trSelector(int x_, int y_, int size_x_, int size_y_, uint8_t RelativePosition_, std::wstring content_, std::string name_);
 
 	// INI deep copy
 
@@ -50,7 +50,7 @@ public:
 
 	// APPLY
 
-	void APPLY(const trSize<int>& SizeWindow_) override;
+	void APPLY_(const trSize<uint16_t>& SizeWindow) override;
 
 	void Display(std::wostringstream& OutputLine) override;
 

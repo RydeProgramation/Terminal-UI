@@ -29,9 +29,15 @@ trBTN_Key& trBTN_Key::operator=(const trBTN_Key& other)
 {
 	if (this == &other) { return *this; }
 
+	if (Action == nullptr) {
+		Action = new std::function<void()>(*other.Action);
+	}
+	else {
+		*Action = *other.Action;
+	}
+
 	Key = other.Key;
 	KeyState = other.KeyState;
-	Action = new std::function<void()>(*other.Action);
 	Protect = other.Protect;
 	Mode = other.Mode;
 	UsingMode = other.UsingMode;
@@ -120,23 +126,15 @@ void trBTN_Key::DoAction()
 	case HoldToTrigger:
 		if (Action && ActionState)
 		{
-			Protect = true; // <--- Je sais pas pourquoi c'est là
-
 			(*Action)();
-
-			Protect = false; // <--- Je sais pas pourquoi c'est là
 		}
 		break;
 	case PressToTrigger: // Eviter si c'est OnRelease
 		if (Action && ActionState)
 		{
-			Protect = true; // <--- Je sais pas pourquoi c'est là
-
 			(*Action)();
 
 			ActionState = false;
-
-			Protect = false; // <--- Je sais pas pourquoi c'est là
 		}
 		break;
 	case Axis:

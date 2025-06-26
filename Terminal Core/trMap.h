@@ -35,9 +35,16 @@ public:
 
 	trMap& operator=(const trMap& other)
 	{
-		if (this == &other) return *this;
+		if (this == &other) {
+			return *this;
+		}
 
-		Map = new std::vector<trPair<INDEX, MAP_T>>(*other.Map);
+		if (Map == nullptr) {
+			Map = new std::vector<trPair<INDEX, MAP_T>>(*other.Map);
+		}
+		else {
+			*Map = *other.Map;
+		}
 
 		return *this;
 	}

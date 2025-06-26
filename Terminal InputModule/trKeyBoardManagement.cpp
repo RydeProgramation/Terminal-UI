@@ -1,6 +1,7 @@
 ﻿#include "trKeyBoardManagement.h"
 
 using namespace std;
+using namespace UIToolsCore;
 
 // INI
 trKeyBoardManagement::trKeyBoardManagement() : Start_(false), BTNS(new std::unordered_map<int, trBTN_Key>()), ActiveKeysBufferWrite(new std::vector<trPair<int, bool>>()), ActiveKeysBufferRead(new std::vector<trPair<int, bool>>()), MutexKB(new std::mutex())
@@ -11,23 +12,43 @@ trKeyBoardManagement::trKeyBoardManagement() : Start_(false), BTNS(new std::unor
 // INI deep copy
 trKeyBoardManagement::trKeyBoardManagement(const trKeyBoardManagement& other) : Start_(other.Start_), BTNS(new std::unordered_map<int, trBTN_Key>(*other.BTNS)), ActiveKeysBufferWrite(new std::vector<trPair<int, bool>>(*other.ActiveKeysBufferWrite)), ActiveKeysBufferRead(new std::vector<trPair<int, bool>>(*other.ActiveKeysBufferRead)), MutexKB(new std::mutex())
 {
-	// A voir si ça crée pas de Prblm
-	delete other.MutexKB; // On ne copie pas le mutex, on crée un nouveau mutex pour éviter les conflits d'accès
+
 }
 
 // copy
 trKeyBoardManagement& trKeyBoardManagement::operator=(const trKeyBoardManagement& other)
 {
 	if (this == &other) { return *this; }
+	
+	if (BTNS == nullptr) {
+		BTNS = new std::unordered_map<int, trBTN_Key>(*other.BTNS);
+	}
+	else {
+		*BTNS = *other.BTNS;
+	}
+
+	if (ActiveKeysBufferWrite == nullptr) {
+		ActiveKeysBufferWrite = new std::vector<trPair<int, bool>>(*other.ActiveKeysBufferWrite);
+	}
+	else {
+		*ActiveKeysBufferWrite = *other.ActiveKeysBufferWrite;
+	}
+
+	if (ActiveKeysBufferRead == nullptr) {
+		ActiveKeysBufferRead = new std::vector<trPair<int, bool>>(*other.ActiveKeysBufferRead);
+	}
+	else {
+		*ActiveKeysBufferRead = *other.ActiveKeysBufferRead;
+	}
+
+	if (MutexKB == nullptr) {
+		MutexKB = new std::mutex();
+	}
+	else {
+		// *MutexKB = *other.MutexKB; on ne devrait pas faire ça normalement
+	}
 
 	Start_ = other.Start_;
-	BTNS = new std::unordered_map<int, trBTN_Key>(*other.BTNS);
-	ActiveKeysBufferWrite = new std::vector<trPair<int, bool>>(*other.ActiveKeysBufferWrite);
-	ActiveKeysBufferRead = new std::vector<trPair<int, bool>>(*other.ActiveKeysBufferRead);
-	MutexKB = new std::mutex();
-
-	// A voir si ça crée pas de Prblm
-	delete other.MutexKB; // On ne copie pas le mutex, on crée un nouveau mutex pour éviter les conflits d'accès
 
 	return *this;
 }
@@ -35,6 +56,8 @@ trKeyBoardManagement& trKeyBoardManagement::operator=(const trKeyBoardManagement
 // FNC
 bool trKeyBoardManagement::CreateBTN(const trBTN_Key& Btn)
 {
+	// FAUDERAIT MUTEX ?
+
 	(*BTNS)[Btn.GetKey()] = Btn;
 
 	return true;
@@ -114,19 +137,19 @@ void trKeyBoardManagement::Loop()
 		{
 			bool kState = (GetAsyncKeyState(it.first) & 0x8000);
 
-			if (kState && GetLastKeyState(LocalBuffer, it.first) == -1 && !LocalKeyState[it.first])
+			if (kState && GetLastKeyState(LocalBuffer, it.first) == -1 && !LocalKeyState[it.first] /*&& IsMyWindowInFocus()*/)
 			{
 				LocalBuffer.push_back(trPair<int, bool>(it.first, true));
 			}
-			else if (!kState && GetLastKeyState(LocalBuffer, it.first) == -1 && LocalKeyState[it.first])
+			else if (!kState && GetLastKeyState(LocalBuffer, it.first) == -1 && LocalKeyState[it.first] /*&& IsMyWindowInFocus()*/)
 			{
 				LocalBuffer.push_back(trPair<int, bool>(it.first, false));
 			}
-			else if (kState && GetLastKeyState(LocalBuffer, it.first) == 0) 
+			else if (kState && GetLastKeyState(LocalBuffer, it.first) == 0 /*&& IsMyWindowInFocus()*/)
 			{
 				LocalBuffer.push_back(trPair<int, bool>(it.first, true));
 			}
-			else if (!kState && GetLastKeyState(LocalBuffer, it.first) == 1)
+			else if (!kState && GetLastKeyState(LocalBuffer, it.first) == 1 /*&& IsMyWindowInFocus()*/)
 			{
 				LocalBuffer.push_back(trPair<int, bool>(it.first, false)); 
 			}

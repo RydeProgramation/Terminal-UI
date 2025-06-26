@@ -9,7 +9,8 @@
 #include "trData.h"
 #include "trPair.h"
 #include "trSelector.h"
-#include "trUI_Tools.h"
+#include "trUITools.h"
+#include "trActor.h"
 
 #ifndef __TR_UI__
 #define __TR_UI__
@@ -23,7 +24,7 @@
 #define DIRECT_TERMINAL 0
 #define RENDER_SYSTEM 1
 
-class TERMINAL_ENGINE_API trUserInterface : trObject // séparér les fonctionalités en plusieurs classes (trUI_Render, trUI_Display, trUI_World...)
+class TERMINAL_ENGINE_API trUserInterface : public trObject // séparér les fonctionalités en plusieurs classes (trUI_Render, trUI_Display, trUI_World...)
 {
 public: 
 
@@ -33,7 +34,7 @@ public:
 	
 	// INI
 
-	trUserInterface(int RenderType_, int BordW_, std::wstring RstClr);
+	trUserInterface(uint8_t RenderType_, int BordW_, std::wstring RstClr);
 
 	// INI deep copy
 
@@ -104,7 +105,7 @@ public:
 	/// <typeparam name="Widget_T"> trWidget, trSelector... </typeparam>
 	/// <param name="WIDG"> Le widget à créer </param>
 	/// <returns> true si le widget a été créé avec succès, false sinon </returns>
-	bool CreateWidget(trWidget* WIDG);
+	bool CreateActor(trActor* WIDG);
 
 	/// <summary>
 	/// Détruit un widget
@@ -112,7 +113,7 @@ public:
 	/// <typeparam name="Widget_T"> trWidget, trSelector... </typeparam>
 	/// <param name="WIDG"> Le widget à détruire </param>
 	/// <returns> true si le widget a été détruit avec succès, false sinon </returns>
-	bool DestroyWidget(trWidget* WIDG);
+	bool DestroyActor(trActor* WIDG);
 
 	/// <summary>
 	/// Détruit un widget par son nom
@@ -120,14 +121,14 @@ public:
 	/// <typeparam name="Widget_T"> trWidget, trSelector... </typeparam>
 	/// <param name="name"> Le nom du widget à détruire </param>
 	/// <returns> true si le widget a été détruit avec succès, false sinon </returns>
-	bool DestroyWidget(const std::string& Name);
+	bool DestroyActor(const std::string& Name);
 
 	/// <summary>
 	/// Obtient un widget par son nom
 	/// </summary>
 	/// <param name="Name"> Le nom du widget à obtenir </param>
 	/// <returns> Un object de type trWidget si le widget existe, nullptr sinon </returns>
-	const trWidget GetWidget(const std::string& Name) const;
+	const trActor GetActor(const std::string& Name) const;
 
 protected:
 		
@@ -136,9 +137,9 @@ protected:
 	/// </summary>
 	/// <param name="Name"> Le nom du widget à obtenir </param>
 	/// <returns> Un pointeur vers un object de type trWidget si le widget existe, nullptr sinon </returns>
-	trWidget* GetPtrWidget(const std::string& Name) const;
+	trActor* GetPtrActor(const std::string& Name) const;
 
-public: 
+public: // IL FAUDERA VRAIMENT MODIFIER L'ENDROIT OU ON FAIT ÇA
 
 	/// <summary>
 	/// Pour éxécuter une fonciton sur un Widget
@@ -147,13 +148,46 @@ public:
 	/// <param Name="func">L'adresse de la fonction par exemple (&trWidget::AddToContent)</param>
 	/// <param Name="...args">Les argument</param>
 	template <typename Func, typename... Args>
-	void SetWidget(const std::string& Name, Func&& func, Args&&... args)
+	void SetActor(const std::string& Name, Func&& func, Args&&... args)
 	{
-		if ((*Widgets)[Name] != nullptr)
+		trWidget* widget = dynamic_cast<trWidget*>((*Actors)[Name]);
+
+		if (/*(*Actors)[Name]*/widget != nullptr)
 		{
-			std::invoke(std::forward<Func>(func), (*Widgets)[Name], std::forward<Args>(args)...);
+			std::invoke(std::forward<Func>(func), /*(*Actors)[Name]*/widget, std::forward<Args>(args)...);
 		}
 	}
+
+	// TEST
+
+	/*/// invoke_if_possible : appelle la fonction si elle est valide
+	template <typename T, typename Func, typename... Args>
+	auto invoke_if_possible(T* object, Func&& func, Args&&... args)
+		-> std::enable_if_t<std::is_invocable_v<Func, T*, Args...>>
+	{
+		std::invoke(std::forward<Func>(func), object, std::forward<Args>(args)...);
+	}
+
+	/// Surcharge : si la fonction n'est pas invocable, ne fait rien
+	template <typename T, typename Func, typename... Args>
+	auto invoke_if_possible(T* / *object* /, Func&& / *func* /, Args&&... / *args* /)
+		-> std::enable_if_t<!std::is_invocable_v<Func, T*, Args...>>
+	{
+		// Rien du tout 😄
+	}
+
+	/// Et ta fonction principale :
+	template <typename Func, typename... Args>
+	void SetActor(const std::string& Name, Func&& func, Args&&... args)
+	{
+		auto it = Actors->find(Name);
+		if (it != Actors->end() && it->second)
+		{
+			// On ne sait pas le type réel, donc on tente dynamiquement
+			trActor* base = it->second;
+			invoke_if_possible(base, std::forward<Func>(func), std::forward<Args>(args)...);
+		}
+	}*/
 
 private: // FNC
 
@@ -184,7 +218,7 @@ private: // FNC
 	/// <summary>
 	/// Met à jour un widget (rafraichit son contenu, sa position, etc.)
 	/// </summary>
-	void UpdateWidget();
+	void UpdateActors();
 
 	/// <summary>
 	/// Boucle principale de l'interface utilisateur
@@ -203,7 +237,7 @@ private: // FNC
 	/// </summary>
 	/// <param name="Pos"> Position du curseur </param>
 	/// <param name="Output"> Ostream dans lequel on va écrire </param>
-	void MoveCursorToOstream(const trCoordinate<int>& Pos, std::wostringstream* Output, const trSize<int>& SizeOutput);
+	void MoveCursorToOstream(const trCoordinate<int>& Pos, std::wostringstream* Output, const trSize<uint16_t>& SizeOutput);
 
 	/// <summary>
 	/// Permet de déplacer pour un ostrinstream donnée la position du curseur en tenant compte de la bordure
@@ -212,14 +246,14 @@ private: // FNC
 	/// <param name="Output"> Ostream dans lequel on va écrire </param>
 	/// <param name="SizeOutput"> Taille de l'output (pour le terminal) </param>
 	/// <param name="BorderW"> Largeur de la bordure </param>
-	void MoveCursorToOstream(const trCoordinate<int>& Pos, std::wostringstream* Output, const trSize<int>& SizeOutput, int BorderW);
+	void MoveCursorToOstream(const trCoordinate<int>& Pos, std::wostringstream* Output, const trSize<uint16_t>& SizeOutput, uint8_t BorderW);
 
 	/// <summary>
 	/// Permet de déplacer pour un ostrinstream donnée la position du curseur
 	/// </summary>
 	/// <param name="Pos"> Position du curseur </param>
 	/// <param name="Output"> Ostream dans lequel on va écrire </param>
-	void CleanOstreamSize(std::wostringstream* Output, const trSize<int>& SizeOutput);
+	void CleanOstreamSize(std::wostringstream* Output, const trSize<uint16_t>& SizeOutput);
 
 public:
 
@@ -231,7 +265,7 @@ protected:
 
 	trKeyBoardManagement *KB;
 
-	int BorderWidth;
+	uint8_t BorderWidth;
 
 	std::wstring *BaseColor;
 
@@ -239,13 +273,13 @@ protected:
 
 private:
 
-	std::unordered_map<std::string, trWidget*> *Widgets;
+	std::unordered_map<std::string, trActor*> *Actors;
 
 	std::thread *Thr_UI;
 
 	std::thread *Thr_KB;
 
-	trSize<int> *SizeWindow;
+	trSize<uint16_t> *SizeWindow;
 
 	trData<int> *CursorSelector;
 
@@ -253,7 +287,7 @@ private:
 
 	std::wostringstream *RenderColor_;
 
-	int RenderType;
+	uint8_t RenderType;
 
 	bool Refreshed = false;
 
@@ -261,7 +295,5 @@ private:
 };
 
 TERMINAL_ENGINE_API trUserInterface* CreateUserInterface();
-
-// #include "UI.inl" // <-- Inutile
 
 #endif

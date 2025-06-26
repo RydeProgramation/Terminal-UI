@@ -48,8 +48,19 @@ public:
 			return *this; 
 		}
 
-		first = new PAIR_T_1(*other.first);
-		second = new PAIR_T_2(*other.second);
+		if (first == nullptr) {
+			first = new PAIR_T_1(*other.first);
+		}
+		else {
+			*first = *other.first;
+		}
+
+		if (second == nullptr) {
+			second = new PAIR_T_2(*other.second);
+		}
+		else {
+			*second = *other.second;
+		}
 
 		return *this;
 	}

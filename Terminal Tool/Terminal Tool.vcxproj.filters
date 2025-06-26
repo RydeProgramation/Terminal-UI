@@ -18,12 +18,12 @@
     <ClInclude Include="include.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="trUI_Tools.h">
+    <ClInclude Include="trUITools.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="trUI_Tools.cpp">
+    <ClCompile Include="trUITools.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
