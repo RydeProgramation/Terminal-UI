@@ -10,7 +10,7 @@ Tu rêve de pouvoir faire des widget a ta sauce ?
 - Améliorer trMap, éviter d'utiliser un vector est crée un truc moi-même
 - La mémoire ne fait qu'augmenter ? Normalement régler
 - ![image](https://github.com/user-attachments/assets/13648a60-4fb6-4188-bc11-3bef1952be6e)
-passé a 
+- passé a 
 - ![image](https://github.com/user-attachments/assets/3da9de98-7350-4619-a5cb-2649bafdf5c2)
 
 - Il faut gérer tout les code/séquence :
