@@ -1,0 +1,116 @@
+﻿#pragma once
+
+#include "include.h"
+
+#include "trSize.h"
+#include "trCoordinate.h"
+#include "trData.h"
+#include "trPair.h"
+#include "trMap.h"
+#include "trPawn.h"
+
+#ifndef __TR_WIDGET__
+#define __TR_WIDGET__
+
+#ifdef TERMINAL_COMPONENTS_EXPORTS
+#define TERMINAL_COMPONENTS_API __declspec(dllexport)
+#else
+#define TERMINAL_COMPONENTS_API __declspec(dllimport)
+#endif
+
+class TERMINAL_COMPONENTS_API trWidget : public trPawn
+{
+public:
+
+	// INI default
+
+	trWidget();
+
+	// INI
+
+	trWidget(int x_, int y_, int size_x_, int size_y_, uint8_t RelativePositionType_, std::wstring content_, std::string name_);
+
+	// INI deep copy
+
+	trWidget(const trWidget& other);
+
+	// Copy
+
+	trWidget& operator=(const trWidget& other);
+
+	// SET
+
+	void SetContent(const std::wstring& content_);
+
+	void SetResetColor(const std::vector<trPair<std::wstring, trCoordinate<int>>>& RstColor);
+
+	void SetColor(int color_); // a voir quoi faire avec ça frR
+
+	void SetSize(int x_, int y_);
+
+	// ADD
+
+	void AddToContent(const std::wstring& content_);
+
+	void AddToColor(int color_);
+
+	void AddToSize(int x_, int y_);
+
+	// GET
+
+	const trSize<int>& GetSize() const;
+
+	const trData<std::wstring>& GetContent() const;
+
+	const trData<std::wstring>& GetRawContent() const;
+
+	const trData<trMap<int, trPair<std::wstring, trCoordinate<int>>>>& GetColoredContent() const;
+
+	const std::vector<trPair<std::wstring, trCoordinate<int>>>& GetResetColor() const;
+
+	const trData<int>& GetColor() const;
+
+	virtual void APPLY_(const trSize<uint16_t>& SizeWindow) override;
+
+	// FNC
+
+	bool VerificationProprety() override; 
+
+	virtual void UpdateRelativePositionPoint(const trSize<uint16_t>& SizeWindow) override;
+	
+	virtual void Display(std::wostringstream& output_line);
+
+private:
+
+	std::wstring ContentReorganisation(std::wstring _content, const trSize<int>& SizeWidget) const;
+
+public:
+
+	// Empty Widget (Static)
+	static const trWidget& EmptyWidget();
+
+	// DESTRUCTEUR
+
+	~trWidget();
+
+private:
+
+	static trWidget* EmptyWidgetInstance; // Pointeur pour l'instance unique
+
+	trSize<int> *Size;
+
+	trData<int> *Color; // a voir si utiliser ??????
+
+	trData<std::wstring>* RawContent;
+
+	/// <summary>
+	/// L'index correspond aux coordonnées de l'info en 1 dimensions par rapport aux widget PAS a la fenêtre (merci de bien vouloir lire ;) )
+	/// </summary>
+	trData<trMap<int, trPair<std::wstring, trCoordinate<int>>>> *ColoredContent;
+
+	std::vector<trPair<std::wstring, trCoordinate<int>>> *BaseColor;
+
+	trData<std::wstring>* Content;
+};
+
+#endif

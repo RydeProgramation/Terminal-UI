@@ -1,0 +1,95 @@
+#pragma once
+
+#include "include.h"
+
+#include "trSize.h"
+#include "trCoordinate.h"
+#include "trData.h"
+#include "trPair.h"
+#include "trMap.h"
+#include "trActor.h"
+
+#ifndef __TR_PAWN__
+#define __TR_PAWN__
+
+#ifdef TERMINAL_CORE_EXPORTS
+#define TERMINAL_CORE_API __declspec(dllexport)
+#else
+#define TERMINAL_CORE_API __declspec(dllimport)
+#endif
+
+class TERMINAL_CORE_API trPawn : public trActor
+{
+public:
+
+	// INI default
+
+	trPawn();
+
+	virtual void Init() override;
+
+	// INI
+
+	trPawn(int x_, int y_, int RelativePosition_, std::string name_);
+
+	// INI deep copy
+
+	trPawn(const trPawn& other);
+
+	// Copy
+
+	trPawn& operator=(const trPawn& other);
+
+	// SET
+
+	void SetPosition(int x_, int y_);
+
+	bool SetTypeRelativePosition(int rp);
+
+
+	// ADD
+
+	void AddToPosition(int x_, int y_);
+
+	// GET
+
+	const trCoordinate<int>& GetPosition() const;
+
+	const trCoordinate<int>& GetAbsolutePosition() const;
+
+	const trData<uint8_t>& GetRelativePositionType() const;
+
+	// UPDATE APPLY (a mettre en private ?)
+
+	void UpdateRelativePosition();
+
+	// APPLY
+
+	virtual void APPLY_(const trSize<uint16_t>& SizeWindow) override;
+
+public:
+
+	virtual void APPLY_Implementation() {};
+
+	// FONCTION
+
+	virtual bool VerificationProprety() override;
+
+	virtual void UpdateRelativePositionPoint(const trSize<uint16_t>& SizeWindow);
+
+	// DESTRUCTEUR
+
+	~trPawn();
+
+protected:
+
+	trCoordinate<int>* PositionRelative;
+
+	trCoordinate<int>* RelativePositionPoint;
+
+	trCoordinate<int>* PositionAbsolue;
+
+	trData<uint8_t>* RpType;
+};
+
+#endif
