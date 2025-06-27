@@ -19,7 +19,6 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="include.h" />
     <ClInclude Include="trBTN_Key.h" />
     <ClInclude Include="trKeyBoardManagement.h" />
   </ItemGroup>

@@ -311,9 +311,9 @@ void MyUI::Menu1()
 		GetPtrActor("Simulation")
 	));
 
-	/* ancienne version que je veux retravailler pour l'optimiser
-	KB->CreateBTN(trBTN_Key(0x41, OnPress, HoldToTrigger, bind(&trWidget::AddToPosition, GetPtrActor("Simulation"), -1, 0), GetPtrActor("Simulation")));
-	KB->CreateBTN(trBTN_Key(0x53, OnPress, HoldToTrigger, bind(&trWidget::AddToPosition, GetPtrActor("Simulation"), 0, 1), GetPtrActor("Simulation")));
+	// ancienne version que je veux retravailler pour l'optimiser
+	// KB->CreateBTN(trBTN_Key(0x41, OnPress, HoldToTrigger, bind(&trWidget::AddToPosition, dynamic_cast<trWidget*>GetPtrActor("Simulation"), -1, 0), GetPtrActor("Simulation")));
+	/*KB->CreateBTN(trBTN_Key(0x53, OnPress, HoldToTrigger, bind(&trWidget::AddToPosition, GetPtrActor("Simulation"), 0, 1), GetPtrActor("Simulation")));
 	KB->CreateBTN(trBTN_Key(0x44, OnPress, HoldToTrigger, bind(&trWidget::AddToPosition, GetPtrActor("Simulation"), 1, 0), GetPtrActor("Simulation")));
 	KB->CreateBTN(trBTN_Key(KEY_J, OnPress, HoldToTrigger, bind(&trUserInterface::CreateActor, GetPtrActor("Simulation"), new Munition(0, 0, TopLeft, L"*", "Bullet_")), GetPtrActor("Simulation")));
 	*/
@@ -327,7 +327,6 @@ void MyUI::Menu1()
 		},
 		this  // Pointeur vers widget parent
 	));
-
 }
 
 void MyUI::CreateWidgetWait(trWidget* WIDG)

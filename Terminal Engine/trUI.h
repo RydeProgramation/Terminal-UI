@@ -123,6 +123,15 @@ public:
 	/// <returns> true si le widget a été détruit avec succès, false sinon </returns>
 	bool DestroyActor(const std::string& Name);
 
+private:
+	
+	/// <summary>
+	/// Détruit tous les widgets
+	/// </summary>
+	/// <returns> true si tous les widgets ont été détruits avec succès, false sinon </returns>
+	bool Destroy();
+
+public:
 	/// <summary>
 	/// Obtient un widget par son nom
 	/// </summary>

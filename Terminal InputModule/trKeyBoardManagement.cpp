@@ -129,32 +129,44 @@ void trKeyBoardManagement::Loop()
 {
 	std::unordered_map<int, bool> LocalKeyState;
 
+	bool kState = false;
+
+	std::vector<trPair<int, bool>> LocalBuffer;
+
+	int key = 0;
+	int lastState = 0;
+	bool prevState = 0;   
+
 	while (true) 
 	{
-		std::vector<trPair<int, bool>> LocalBuffer; // On crée un vecteur local pour stocker les touches pressées ou relâchées
+		LocalBuffer.clear();
 
 		for (auto& it : *BTNS) 
 		{
-			bool kState = (GetAsyncKeyState(it.first) & 0x8000);
+			kState = (GetAsyncKeyState(it.first) & 0x8000);
 
-			if (kState && GetLastKeyState(LocalBuffer, it.first) == -1 && !LocalKeyState[it.first] /*&& IsMyWindowInFocus()*/)
+			key = it.first;
+			lastState = GetLastKeyState(LocalBuffer, key);
+			prevState = LocalKeyState[key];
+
+			if (kState && lastState == -1 && !prevState /*&& IsMyWindowInFocus()*/)
 			{
-				LocalBuffer.push_back(trPair<int, bool>(it.first, true));
+				LocalBuffer.push_back(trPair<int, bool>(key, true));
 			}
-			else if (!kState && GetLastKeyState(LocalBuffer, it.first) == -1 && LocalKeyState[it.first] /*&& IsMyWindowInFocus()*/)
+			else if (!kState && lastState == -1 && prevState /*&& IsMyWindowInFocus()*/)
 			{
-				LocalBuffer.push_back(trPair<int, bool>(it.first, false));
+				LocalBuffer.push_back(trPair<int, bool>(key, false));
 			}
-			else if (kState && GetLastKeyState(LocalBuffer, it.first) == 0 /*&& IsMyWindowInFocus()*/)
+			else if (kState && lastState == 0 /*&& IsMyWindowInFocus()*/)
 			{
-				LocalBuffer.push_back(trPair<int, bool>(it.first, true));
+				LocalBuffer.push_back(trPair<int, bool>(key, true));
 			}
-			else if (!kState && GetLastKeyState(LocalBuffer, it.first) == 1 /*&& IsMyWindowInFocus()*/)
+			else if (!kState && lastState == 1 /*&& IsMyWindowInFocus()*/)
 			{
-				LocalBuffer.push_back(trPair<int, bool>(it.first, false)); 
+				LocalBuffer.push_back(trPair<int, bool>(key, false));
 			}
 
-			LocalKeyState[it.first] = kState;
+			LocalKeyState[key] = kState;
 		}
 
 		if (!LocalBuffer.empty()) 
@@ -162,9 +174,12 @@ void trKeyBoardManagement::Loop()
 			lock_guard<std::mutex> guard(*MutexKB); // On verrouille le mutex pour éviter les conflits d'accès
 			ActiveKeysBufferWrite->insert(ActiveKeysBufferWrite->end(), LocalBuffer.begin(), LocalBuffer.end()); // On ajoute le vecteur local au buffer principal
 		}
+
+		std::this_thread::sleep_for(std::chrono::milliseconds(5)); // test pour le cpu
 	}
 }
 
+// DESTRUCTEUR
 trKeyBoardManagement::~trKeyBoardManagement()
 {
 	delete BTNS;

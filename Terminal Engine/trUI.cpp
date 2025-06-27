@@ -144,6 +144,8 @@ void trUserInterface::Start()
 {
 	SetupConsole();
 
+	timeBeginPeriod(2);  // Demande timer à résolution 1 ms
+
 	Thr_UI = new std::thread([this]() { this->Loop(); });
 	Thr_KB = new std::thread([this]() { this->KB->Start(); });
 }
@@ -187,19 +189,7 @@ void trUserInterface::Update()
 
 	/// Gerer les destruction a ce moment plutot que dans le thread de l'UI (car sinon ça fait des bugs de mutex et de destruction de thread)
 
-	for (auto it = Actors->begin(); it != Actors->end(); )
-	{
-		if (it->second->GetDestroy().GetDataActual())
-		{
-			delete it->second;          // supprime l'objet pointé
-			it = Actors->erase(it);   // efface et récupère l'itérateur valide suivant
-			ForceRefresh = true;
-		}
-		else
-		{
-			++it;
-		}
-	}
+	Destroy();
 
 	Refreshed = false;
 }
@@ -450,6 +440,25 @@ bool trUserInterface::DestroyActor(const string& name) // VERIF SI BUG
 	return false;
 }
 
+bool trUserInterface::Destroy()
+{
+	for (auto it = Actors->begin(); it != Actors->end(); )
+	{
+		if (it->second->GetDestroy().GetDataActual())
+		{
+			delete it->second;          // supprime l'objet pointé
+			it = Actors->erase(it);   // efface et récupère l'itérateur valide suivant
+			ForceRefresh = true;
+		}
+		else
+		{
+			++it;
+		}
+	}
+
+	return true; // Retourne true si tous les widgets ont été détruits avec succès
+}
+
 const trActor trUserInterface::GetActor(const string& Name) const
 {
 	auto it = Actors->find(Name);
@@ -506,6 +515,12 @@ trActor* trUserInterface::GetPtrActor(const std::string& Name) const
 
 void trUserInterface::DisplayWidget(trWidget* WIDG)
 {
+	///
+
+	/// je pense que je peut deja optimiser par juste crée des appel pour éviter d'appeler 50 000 fois une fonction inutilement
+
+	///
+
 	// améliorer pour direct_terminal a voir quoi faire
 	if (RenderType == DIRECT_TERMINAL)
 	{
@@ -577,6 +592,12 @@ void trUserInterface::DisplayWidget(trWidget* WIDG)
 
 void trUserInterface::DisplayColor()
 {
+	///
+
+	/// je pense que je peut deja optimiser par juste crée des appel pour éviter d'appeler 50 000 fois une fonction inutilement
+
+	///
+
 	std::map<int, wstring> Color;
 
 	for (auto& it : *Actors)
@@ -692,19 +713,17 @@ void trUserInterface::Render()
 
 	RenderColor_->str(Render_->str());
 
-	DisplayColor();
+	DisplayColor(); // il faut optimiser
 
 	// fin PROTOTYPE COULEUR
 
 	MoveCursorTo(trCoordinate<int>(0, 0));
 
-	// cout << WstringToUtf8(RenderColor_->str());
-
 	string temp = WstringToUtf8(RenderColor_->str());
 
-	Sleep(10); // je suis obliger sinon y'a des bugs quand on pousse le truc loin (100 fps)
+	std::this_thread::sleep_for(std::chrono::milliseconds(2));
 
-	cout << temp;
+	std::print("{}", temp); // ici il faut optimiser
 }
 
 // Fonciton utilise (à deplacer dans trUiTools je pense)
@@ -752,4 +771,6 @@ trUserInterface::~trUserInterface()
 	delete RenderColor_;
 
 	delete BaseColor;
+
+	timeEndPeriod(1);    // Libère la résolution demandée
 }
