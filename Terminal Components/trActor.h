@@ -81,7 +81,7 @@ public:
 
 	// DESTRUCTEUR
 
-	~trActor();
+	virtual ~trActor();
 
 private:
 

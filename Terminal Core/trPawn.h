@@ -79,7 +79,7 @@ public:
 
 	// DESTRUCTEUR
 
-	~trPawn();
+	virtual ~trPawn();
 
 protected:
 

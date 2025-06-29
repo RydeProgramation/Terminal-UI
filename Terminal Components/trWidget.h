@@ -62,9 +62,11 @@ public:
 
 	const trData<std::wstring>& GetContent() const;
 
+	const trData<std::wstring>& GetColoredContent() const;
+
 	const trData<std::wstring>& GetRawContent() const;
 
-	const trData<trMap<int, trPair<std::wstring, trCoordinate<int>>>>& GetColoredContent() const;
+	const trData<trMap<int, trPair<std::wstring, trCoordinate<int>>>>& GetColoredMap() const;
 
 	const std::vector<trPair<std::wstring, trCoordinate<int>>>& GetResetColor() const;
 
@@ -83,6 +85,8 @@ public:
 private:
 
 	std::wstring ContentReorganisation(std::wstring _content, const trSize<int>& SizeWidget) const;
+
+	std::wstring ContentReorganisationKeepColor(std::wstring _content, const trSize<int>& SizeWidget) const;
 
 public:
 
@@ -106,7 +110,9 @@ private:
 	/// <summary>
 	/// L'index correspond aux coordonnées de l'info en 1 dimensions par rapport aux widget PAS a la fenêtre (merci de bien vouloir lire ;) )
 	/// </summary>
-	trData<trMap<int, trPair<std::wstring, trCoordinate<int>>>> *ColoredContent;
+	trData<trMap<int, trPair<std::wstring, trCoordinate<int>>>> *ColoredMap;
+
+	trData<std::wstring>* ColoredContent;
 
 	std::vector<trPair<std::wstring, trCoordinate<int>>> *BaseColor;
 

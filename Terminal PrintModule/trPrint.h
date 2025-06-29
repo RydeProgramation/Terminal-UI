@@ -3,6 +3,7 @@
 #include "include.h"
 
 #include "trObject.h"
+#include "trUITools.h"
 
 #ifndef __TR_PRINT__
 #define __TR_PRINT__
@@ -13,9 +14,9 @@
 #define TERMINAL_PRINT_API __declspec(dllimport)
 #endif
 
-namespace trPrint
+namespace trPrintModule
 {
-	void TERMINAL_PRINT_API trPrint(const std::wstring& ToPrint_);
+	void TERMINAL_PRINT_API trPrint(const std::string& ToPrint_);
 };
 
 #endif

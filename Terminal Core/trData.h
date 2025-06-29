@@ -122,7 +122,7 @@ public:
 	}
 
 	// Destructuer
-	~trData()
+	virtual ~trData()
 	{
 		delete New;
 		delete Old;

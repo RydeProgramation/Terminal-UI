@@ -12,14 +12,14 @@ trWidget::trWidget() : trWidget(0, 0, 0, 0, TopLeft, L"", "None")
 
 // INI
 
-trWidget::trWidget(int x_, int y_, int size_x_, int size_y_, uint8_t RelativePositionType_, wstring content_, string name_) : trPawn(x_, y_, RelativePositionType_, name_), Size(new trSize<int>(size_x_, size_y_)), ColoredContent(new trData<trMap<int, trPair<std::wstring, trCoordinate<int>>>>()), BaseColor(new std::vector<trPair<std::wstring, trCoordinate<int>>>()), RawContent(new trData<wstring>(content_)), Color(new trData<int>(15)), Content(new trData<wstring>(ContentReorganisation(content_, trSize<int>(size_x_, size_y_))))
+trWidget::trWidget(int x_, int y_, int size_x_, int size_y_, uint8_t RelativePositionType_, wstring content_, string name_) : trPawn(x_, y_, RelativePositionType_, name_), Size(new trSize<int>(size_x_, size_y_)), ColoredMap(new trData<trMap<int, trPair<std::wstring, trCoordinate<int>>>>()), BaseColor(new std::vector<trPair<std::wstring, trCoordinate<int>>>()), RawContent(new trData<wstring>(content_)), Color(new trData<int>(15)), Content(new trData<wstring>(ContentReorganisation(content_, trSize<int>(size_x_, size_y_)))), ColoredContent(new trData<wstring>(ContentReorganisationKeepColor(content_, trSize<int>(size_x_, size_y_))))
 {
 	
 }
 
 // INI deep copy
 
-trWidget::trWidget(const trWidget& other) : trPawn(other), Size(new trSize<int>(*other.Size)), ColoredContent(new trData<trMap<int, trPair<std::wstring, trCoordinate<int>>>>(*other.ColoredContent)), BaseColor(new std::vector<trPair<std::wstring, trCoordinate<int>>>(*other.BaseColor)), RawContent(new trData<wstring>(*other.RawContent)), Color(new trData<int>(*other.Color)), Content(new trData<wstring>(*other.Content))
+trWidget::trWidget(const trWidget& other) : trPawn(other), Size(new trSize<int>(*other.Size)), ColoredMap(new trData<trMap<int, trPair<std::wstring, trCoordinate<int>>>>(*other.ColoredMap)), BaseColor(new std::vector<trPair<std::wstring, trCoordinate<int>>>(*other.BaseColor)), RawContent(new trData<wstring>(*other.RawContent)), Color(new trData<int>(*other.Color)), Content(new trData<wstring>(*other.Content)), ColoredContent(new trData<wstring>(*other.ColoredContent))
 {
 
 }
@@ -39,11 +39,11 @@ trWidget& trWidget::operator=(const trWidget& other)
 		*Size = *other.Size;
 	}
 
-	if (ColoredContent == nullptr) {
-		ColoredContent = new trData<trMap<int, trPair<std::wstring, trCoordinate<int>>>>(*other.ColoredContent);
+	if (ColoredMap == nullptr) {
+		ColoredMap = new trData<trMap<int, trPair<std::wstring, trCoordinate<int>>>>(*other.ColoredMap);
 	}
 	else {
-		*ColoredContent = *other.ColoredContent;
+		*ColoredMap = *other.ColoredMap;
 	}
 
 	if (BaseColor == nullptr) {
@@ -74,6 +74,13 @@ trWidget& trWidget::operator=(const trWidget& other)
 		*Content = *other.Content;
 	}
 
+	if (ColoredContent == nullptr) {
+		ColoredContent = new trData<wstring>(*other.ColoredContent);
+	}
+	else {
+		*ColoredContent = *other.ColoredContent;
+	}
+
 	return *this;
 }
 
@@ -89,6 +96,7 @@ void trWidget::SetContent(const wstring& content_)
 {
 	RawContent->SetData(content_);
 	Content->SetData(ContentReorganisation(content_, *Size));
+	ColoredContent->SetData(ContentReorganisationKeepColor(content_, *Size));
 }
 
 void trWidget::SetResetColor(const vector<trPair<std::wstring, trCoordinate<int>>>& RstColor)
@@ -132,14 +140,19 @@ const trData<wstring>& trWidget::GetContent() const
 	return *Content;
 }
 
+const trData<wstring>& trWidget::GetColoredContent() const
+{
+	return *ColoredContent;
+}
+
 const trData<wstring>& trWidget::GetRawContent() const
 {
 	return *RawContent;
 }
 
-const trData<trMap<int, trPair<std::wstring, trCoordinate<int>>>>& trWidget::GetColoredContent() const
+const trData<trMap<int, trPair<std::wstring, trCoordinate<int>>>>& trWidget::GetColoredMap() const
 {
-	return *ColoredContent;
+	return *ColoredMap;
 }
 
 const std::vector<trPair<std::wstring, trCoordinate<int>>>& trWidget::GetResetColor() const
@@ -164,8 +177,9 @@ void trWidget::APPLY_(const trSize<uint16_t>& SizeWindow)
 
 	Content->Update();
 	RawContent->Update();
-	ColoredContent->Update();
+	ColoredMap->Update();
 	Color->Update();
+	ColoredContent->Update();
 }
 
 // FNC
@@ -378,7 +392,116 @@ std::wstring trWidget::ContentReorganisation(std::wstring _content, const trSize
 		}
 	}
 
-	ColoredContent->SetData(coloredtemp);
+	ColoredMap->SetData(coloredtemp);
+
+	return _content;
+}
+
+std::wstring trWidget::ContentReorganisationKeepColor(std::wstring _content, const trSize<int>& SizeWidget) const
+{
+	size_t Cherche = 0;
+	size_t Cherche_ = 0;
+
+	int Verif = 0;
+
+	trMap<int, trPair<std::wstring, trCoordinate<int>>> coloredtemp;
+
+	const int max_ = static_cast<int>(_content.size());
+
+	for (int i = 0; i < max_; i++) // rendre plus concis ?
+	{
+		Verif = 0;
+
+		Cherche = _content.find('\t');
+
+		if (Cherche != std::wstring::npos)
+		{
+			wstring space = L"   ";
+			_content.erase(Cherche, 1);
+			_content.insert(Cherche, space);
+		}
+
+		else
+		{
+			Verif++;
+		}
+
+		Cherche = _content.find('\b');
+
+		if (Cherche != std::wstring::npos)
+		{
+			_content.erase(Cherche, 1);
+			_content.erase(Cherche - 1, 1);
+		}
+
+		else
+		{
+			Verif++;
+		}
+
+		Cherche = /*min(_content.find('\033'),*/ min(min(_content.find('\n'), _content.find('\f')), _content.find('\v'))/*)*/;
+
+		if (Cherche != std::wstring::npos && _content.find('\b') == std::wstring::npos && _content.find('\t') == std::wstring::npos && Cherche == min(min(_content.find('\n'), _content.find('\f')), _content.find('\v')))
+		{
+			size_t ligne = (Cherche) / (SizeWidget.GetSizeX().GetDataActual());
+			size_t espace_a_remplir = (SizeWidget.GetSizeX().GetDataActual()) - (Cherche % SizeWidget.GetSizeX().GetDataActual()); // changer le calcul
+
+			_content.erase(Cherche, 1);
+
+			wstring toinsert = L"";
+			toinsert.insert(0, espace_a_remplir, ' ');
+			_content.insert(Cherche, toinsert);
+		}
+
+		else
+		{
+			Verif++;
+		}
+
+		Cherche = _content.find('\r');
+
+		if (Cherche != std::wstring::npos)
+		{
+			size_t ligne = (Cherche) / (SizeWidget.GetSizeX().GetDataActual());
+			size_t espace_a_suppr = Cherche % SizeWidget.GetSizeX().GetDataActual();
+
+			_content.erase(Cherche, 1);
+			_content.erase(Cherche - espace_a_suppr, espace_a_suppr);
+		}
+
+		else
+		{
+			Verif++;
+		}
+
+		/*Cherche = _content.find('\\'); // a voir
+
+		if (Cherche != std::string::npos)
+		{
+			// code;
+		}
+
+		else
+		{
+			Verif++;
+		}*/
+
+		if (Verif == 4)
+		{
+			break;
+		}
+
+		// securité pas important je pense
+		if (i > _content.size() / 2 && i > 350 && coloredtemp.GetSize() < i)
+		{
+			MessageBox(
+				NULL,
+				L"Il y a beaucoup d'itérations ! dans la fonction ContentReorganisation. Est-ce normal ? si oui ignorer ce message (pas de panique !)",
+				L"Message",
+				MB_ICONERROR | MB_OK
+			);
+		}
+	}
 
 	return _content;
 }
@@ -418,9 +541,11 @@ trWidget::~trWidget()
 
 	delete Content; 
 
-	delete ColoredContent;
+	delete ColoredMap;
 
 	delete BaseColor;
 
 	delete RawContent;
+
+	delete ColoredContent;
 }

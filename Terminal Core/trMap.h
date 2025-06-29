@@ -103,7 +103,7 @@ public:
 
 	// DESTR
 
-	~trMap()
+	virtual ~trMap()
 	{
 		delete Map;
 	}

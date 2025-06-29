@@ -97,7 +97,7 @@ public:
 
 	// DESTRUCTEUR
 
-	~trPair()
+	virtual ~trPair()
 	{
 		delete first;
 		delete second;

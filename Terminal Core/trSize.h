@@ -94,7 +94,7 @@ public:
 
 	// DESTRUCTEUR
 
-	~trSize()
+	virtual ~trSize()
 	{
 		delete x;
 		delete y;

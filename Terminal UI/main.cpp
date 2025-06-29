@@ -29,19 +29,6 @@ int main()
 
 	cout << WstringToUtf8(L"Ensuite clique sur n'importe quelle touche (entrée)") << endl;
 
-/*
-	while (true) {
-		if (IsConsoleFocused()) {
-			std::cout << "✅ CONSOLE FOCUS\n";
-		}
-		else {
-			std::cout << "❌ PAS FOCUS\n";
-		}
-
-		Sleep(500); // évite de spammer le CPU
-	}
-*/
-
 	cin.ignore();
 
 	MyUI UI;

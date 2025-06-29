@@ -272,3 +272,66 @@ bool UITools::IsInWidget(trWidget* WIDG, const trCoordinate<int>& crd) // a mett
 	return false;
 }
 
+void UITools::MoveCursorToOstream(const trCoordinate<int>& Pos, std::wostringstream* output, const trSize<uint16_t>& SizeOutput)
+{
+	output->seekp(Pos.GetX().GetDataActual() + Pos.GetY().GetDataActual() * SizeOutput.GetSizeX().GetDataActual());
+}
+
+void UITools::MoveCursorToOstream(const trCoordinate<int>& Pos, std::wostringstream* output, const trSize<uint16_t>& SizeOutput, uint8_t BorderW)
+{
+	int adjustedX = Pos.GetX().GetDataActual() + (BorderW * 2);
+	int adjustedY = Pos.GetY().GetDataActual() + BorderW;
+
+	int position = adjustedX + adjustedY * SizeOutput.GetSizeX().GetDataActual();
+
+	output->seekp(position);
+}
+
+void UITools::CleanOstreamSize(std::wostringstream* output, const trSize<uint16_t>& SizeOutput)
+{
+	output->str(output->str().substr(0, SizeOutput.GetSizeX().GetDataActual() * SizeOutput.GetSizeY().GetDataActual()));
+}
+
+std::string UITools::DifferenceStringOutput(const std::string& ActualFrame_, const std::string& PreviousFrame_)
+{
+	int sizeX = GetConsoleSize().GetSizeX().GetDataActual();
+	int sizeY = GetConsoleSize().GetSizeY().GetDataActual();
+
+	// ✅ Vérification des tailles
+	if (ActualFrame_.size() - 1 != PreviousFrame_.size() && ActualFrame_.size() != PreviousFrame_.size()) {
+		// Affichage optionnel en debug
+		// MessageBox(nullptr, L"Taille incompatible", L"Erreur", MB_ICONERROR);
+		return ActualFrame_; // On affiche tout au cas où
+	}
+
+	std::string differences;
+
+	for (int index = 0; index < (int)ActualFrame_.size(); index++)
+	{
+		if (ActualFrame_[index] != PreviousFrame_[index])
+		{
+			// 📍 Position du curseur (ANSI commence à 1,1)
+			int i = index / sizeX + 1; // ligne
+			int j = index % sizeX; // colonne
+
+			differences += "\x1b[" + std::to_string(i) + ";" + std::to_string(j) + "H";
+
+			// 🔁 Ajoute tous les caractères modifiés consécutifs
+			while (ActualFrame_[index] != PreviousFrame_[index])
+			{
+				differences += ActualFrame_[index];
+				index++;
+			}
+		}
+	}
+
+	return differences;
+}
+
+// buffer += "\x1b[4;10H##########";     // ligne 4, colonne 10
+
+uint8_t UITools::BorderWidth = 6; // Largeur de la bordure par défaut
+
+bool UITools::ForceRefresh = true;
+
+bool UITools::Refreshed = false;

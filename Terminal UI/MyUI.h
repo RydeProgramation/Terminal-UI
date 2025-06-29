@@ -12,7 +12,7 @@ public:
 
 	MyUI();
 
-	~MyUI();
+	virtual ~MyUI();
 
 	void Start() override;
 
