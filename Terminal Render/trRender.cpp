@@ -1,4 +1,4 @@
-#include "trRender.h"
+Ôªø#include "trRender.h"
 
 using namespace UITools;
 using namespace UIToolsCore;
@@ -244,19 +244,19 @@ wstring substrAnsiSafe(const wstring& input, size_t startVisible, size_t countVi
 		wchar_t c = input[i];
 
 		if (c == L'\033') {
-			// DÈbut d'une sÈquence ANSI
+			// D√©but d'une s√©quence ANSI
 			inAnsi = true;
 			result += c;
 		}
 		else if (inAnsi) {
 			result += c;
 			if ((c >= L'A' && c <= L'Z') || (c >= L'a' && c <= L'z')) {
-				// Fin possible de la sÈquence ANSI (ex: 'm', 'K', etc.)
+				// Fin possible de la s√©quence ANSI (ex: 'm', 'K', etc.)
 				inAnsi = false;
 			}
 		}
 		else {
-			// CaractËre visible
+			// Caract√®re visible
 			if (visibleCount >= startVisible && visibleCount < startVisible + countVisible) {
 				result += c;
 			}
@@ -274,10 +274,10 @@ wstring substrAnsiSafe(const wstring& input, size_t startVisible, size_t countVi
 void trRender::DisplayWidget(trWidget* WIDG)
 {
 	///
-	/// je pense que je peut deja optimiser par juste crÈe des appel pour Èviter d'appeler 50 000 fois une fonction inutilement
+	/// je pense que je peut deja optimiser par juste cr√©e des appel pour √©viter d'appeler 50 000 fois une fonction inutilement
 	///
 
-	// amÈliorer pour direct_terminal a voir quoi faire
+	// am√©liorer pour direct_terminal a voir quoi faire
 	if (RenderType == DIRECT_SYSTEM)
 	{
 		CleanWidget(WIDG);
@@ -347,7 +347,7 @@ void trRender::DisplayWidget(trWidget* WIDG)
 
 	else if (RenderType == RENDER_SYSTEM)
 	{
-		// j'ai rÈutilisÈ le code de BUFFER_SYSTEM pour l'instant, mais il faut le faire pour RENDER_SYSTEM
+		// j'ai r√©utilis√© le code de BUFFER_SYSTEM pour l'instant, mais il faut le faire pour RENDER_SYSTEM
 
 		Render_->seekp(0, std::ios::end);
 
@@ -409,7 +409,7 @@ void trRender::DisplayWidget(trWidget* WIDG)
 void trRender::DisplayColor(const std::unordered_map<std::string, trActor*>& Actors_)
 {
 	///
-	/// je pense que je peut deja optimiser par juste crÈe des appel pour Èviter d'appeler 50 000 fois une fonction inutilement
+	/// je pense que je peut deja optimiser par juste cr√©e des appel pour √©viter d'appeler 50 000 fois une fonction inutilement
 	///
 
 	std::map<int, wstring> Color;
@@ -421,7 +421,7 @@ void trRender::DisplayColor(const std::unordered_map<std::string, trActor*>& Act
 
 		for (auto& it_ : widgetPtr->GetColoredMap().GetDataActual())
 		{
-			// La condition en dessous est juste watafak, pourquoi Áa marche (je sais pas)... Mais est-ce Áa marche ? (Du tonnerre, enfaite pas de fou)
+			// La condition en dessous est juste watafak, pourquoi √ßa marche (je sais pas)... Mais est-ce √ßa marche ? (Du tonnerre, enfaite pas de fou)
 			if (!IsOutSide(*it_.second->second, BorderWidth, false) && !IsOutSide(trCoordinate<int>(it_.second->second->GetY().GetDataActual() + widgetPtr->GetAbsolutePosition().GetY().GetDataActual(), it_.second->second->GetY().GetDataActual() + widgetPtr->GetAbsolutePosition().GetY().GetDataActual()), BorderWidth, false))
 			{
 				if (it_.second->second->GetY().GetDataActual() + widgetPtr->GetAbsolutePosition().GetY().GetDataActual() < widgetPtr->GetSize().GetSizeY().GetDataActual() + widgetPtr->GetAbsolutePosition().GetY().GetDataActual()) // verifier si la couelur n'est pas en dehors du widget en taille
@@ -506,7 +506,7 @@ void trRender::CleanWidget(trWidget* WIDG)
 
 	else if (RenderType == RENDER_SYSTEM)
 	{
-		// j'ai rÈutilisÈ le code de BUFFER_SYSTEM pour l'instant, mais il faut le faire pour RENDER_SYSTEM
+		// j'ai r√©utilis√© le code de BUFFER_SYSTEM pour l'instant, mais il faut le faire pour RENDER_SYSTEM
 
 		Render_->seekp(0, std::ios::end);
 
@@ -524,11 +524,11 @@ void trRender::CleanWidget(trWidget* WIDG)
 
 void trRender::Clear()
 {
-	Render_->str(L"");   // Remplace le contenu par une chaÓne vide (wstring vide)
-	Render_->clear();    // EnlËve les flags d'erreur (optionnel, souvent utile aprËs str(""))
+	Render_->str(L"");   // Remplace le contenu par une cha√Æne vide (wstring vide)
+	Render_->clear();    // Enl√®ve les flags d'erreur (optionnel, souvent utile apr√®s str(""))
 
-	RenderColor_->str(L""); // Remplace le contenu par une chaÓne vide (wstring vide)
-	RenderColor_->clear();  // EnlËve les flags d'erreur (optionnel, souvent utile aprËs str(""))
+	RenderColor_->str(L""); // Remplace le contenu par une cha√Æne vide (wstring vide)
+	RenderColor_->clear();  // Enl√®ve les flags d'erreur (optionnel, souvent utile apr√®s str(""))
 }
 
 // RENDER
@@ -561,7 +561,7 @@ void trRender::Render(const std::unordered_map<std::string, trActor*>& Actors_)
 		// std::print("{}", temp); // ici il faut optimiser
 		// trPrint(temp); c'est plus lent... FLOP
 
-		WriteFile(GetStdHandle(STD_OUTPUT_HANDLE), temp.c_str(), temp.size(), NULL, nullptr);
+		WriteFile(GetStdHandle(STD_OUTPUT_HANDLE), temp.c_str(), static_cast<DWORD>(temp.size()), NULL, nullptr);
 	}
 
 	else if (RenderType == RENDER_SYSTEM)
@@ -574,7 +574,7 @@ void trRender::Render(const std::unordered_map<std::string, trActor*>& Actors_)
 
 		std::this_thread::sleep_for(std::chrono::milliseconds(2));
 
-		WriteFile(GetStdHandle(STD_OUTPUT_HANDLE), ActualFrame.c_str(), ActualFrame.size(), NULL, nullptr);
+		WriteFile(GetStdHandle(STD_OUTPUT_HANDLE), ActualFrame.c_str(), static_cast<DWORD>(ActualFrame.size()), NULL, nullptr);
 
 		Render_->str(L""); 
 	}

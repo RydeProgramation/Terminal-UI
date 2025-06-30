@@ -111,6 +111,8 @@ void trUserInterface::Update()
 	}
 
 	KB->Update();
+
+	World->Update();
 	
 	World->UpdateActors();
 
@@ -127,7 +129,7 @@ void trUserInterface::Update()
 			Render->HideWidget(widgetPtr);
 		}
 
-		else if (widg.second->GetActivate().GetDataActual() && widg.second->GetChange().GetDataActual() /*test a remettre ou pas a voir*/ || Render->GetRenderType() == RENDER_SYSTEM)
+		else if (widg.second->GetActivate().GetDataActual() && widg.second->GetChange().GetDataActual())
 		{
 			Render->DisplayWidget(widgetPtr);
 		}

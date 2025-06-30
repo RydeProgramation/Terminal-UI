@@ -121,6 +121,7 @@ void trWidget::AddToContent(const wstring& content_)
 {
 	RawContent->SetData(RawContent->GetDataNew() + content_);
 	Content->SetData(ContentReorganisation(RawContent->GetDataNew(), *Size));
+	ColoredContent->SetData(ContentReorganisationKeepColor(RawContent->GetDataNew(), *Size));
 }
 
 void trWidget::AddToColor(int color_)
@@ -170,7 +171,6 @@ const trData<int>& trWidget::GetColor() const
 void trWidget::APPLY_(const trSize<uint16_t>& SizeWindow)
 {// RESPECTER L'ORDRE STP
 
-
 	Size->Update();
 
 	trPawn::APPLY_(SizeWindow);
@@ -191,7 +191,9 @@ bool trWidget::VerificationProprety()
 		Size->GetSizeX().GetDataOld() != Size->GetSizeX().GetDataActual() ||
 		Size->GetSizeY().GetDataOld() != Size->GetSizeY().GetDataActual() ||
 		Color->GetDataOld() != Color->GetDataActual() ||
-		Content->GetDataOld() != Content->GetDataActual()
+		Content->GetDataOld() != Content->GetDataActual() ||
+		RawContent->GetDataOld() != RawContent->GetDataActual() ||
+		ColoredContent->GetDataOld() != ColoredContent->GetDataActual()
 		);
 }
 
@@ -252,7 +254,7 @@ std::wstring trWidget::ContentReorganisation(std::wstring _content, const trSize
 
 	const int max_ = static_cast<int>(_content.size());
 
-	for (int i = 0; i < max_; i++) // rendre plus concis ?
+	for (int i = 0; i < max_; i++) // rendre plus concis ? fait dans celui qui garde la couleur
 	{
 		Verif = 0;
 
@@ -381,7 +383,7 @@ std::wstring trWidget::ContentReorganisation(std::wstring _content, const trSize
 		}
 
 		// securité pas important je pense
-		if (i > _content.size() / 2 && i > 350 && coloredtemp.GetSize() < i)
+		if (i > _content.size() / 2 && i > 35000 && coloredtemp.GetSize() < i)
 		{
 			MessageBox(
 				NULL,
@@ -400,7 +402,6 @@ std::wstring trWidget::ContentReorganisation(std::wstring _content, const trSize
 std::wstring trWidget::ContentReorganisationKeepColor(std::wstring _content, const trSize<int>& SizeWidget) const
 {
 	size_t Cherche = 0;
-	size_t Cherche_ = 0;
 
 	int Verif = 0;
 
@@ -408,7 +409,8 @@ std::wstring trWidget::ContentReorganisationKeepColor(std::wstring _content, con
 
 	const int max_ = static_cast<int>(_content.size());
 
-	for (int i = 0; i < max_; i++) // rendre plus concis ?
+	// ne pas enlever ancien code
+	/*for (int i = 0; i < max_; i++) // rendre plus concis ?
 	{
 		Verif = 0;
 
@@ -416,7 +418,7 @@ std::wstring trWidget::ContentReorganisationKeepColor(std::wstring _content, con
 
 		if (Cherche != std::wstring::npos)
 		{
-			wstring space = L"   ";
+			wstring space = L"	";
 			_content.erase(Cherche, 1);
 			_content.insert(Cherche, space);
 		}
@@ -439,7 +441,7 @@ std::wstring trWidget::ContentReorganisationKeepColor(std::wstring _content, con
 			Verif++;
 		}
 
-		Cherche = /*min(_content.find('\033'),*/ min(min(_content.find('\n'), _content.find('\f')), _content.find('\v'))/*)*/;
+		Cherche = / *min(_content.find('\033'),* / min(min(_content.find('\n'), _content.find('\f')), _content.find('\v'))/ *)* /;
 
 		if (Cherche != std::wstring::npos && _content.find('\b') == std::wstring::npos && _content.find('\t') == std::wstring::npos && Cherche == min(min(_content.find('\n'), _content.find('\f')), _content.find('\v')))
 		{
@@ -474,7 +476,7 @@ std::wstring trWidget::ContentReorganisationKeepColor(std::wstring _content, con
 			Verif++;
 		}
 
-		/*Cherche = _content.find('\\'); // a voir
+		/ *Cherche = _content.find('\\'); // a voir
 
 		if (Cherche != std::string::npos)
 		{
@@ -484,7 +486,7 @@ std::wstring trWidget::ContentReorganisationKeepColor(std::wstring _content, con
 		else
 		{
 			Verif++;
-		}*/
+		}* /
 
 		if (Verif == 4)
 		{
@@ -493,6 +495,85 @@ std::wstring trWidget::ContentReorganisationKeepColor(std::wstring _content, con
 
 		// securité pas important je pense
 		if (i > _content.size() / 2 && i > 350 && coloredtemp.GetSize() < i)
+		{
+			MessageBox(
+				NULL,
+				L"Il y a beaucoup d'itérations ! dans la fonction ContentReorganisation. Est-ce normal ? si oui ignorer ce message (pas de panique !)",
+				L"Message",
+				MB_ICONERROR | MB_OK
+			);
+		}
+	}
+*/
+
+	for (int i = 0; i < max_; i++) // rendre plus concis ?
+	{
+		Cherche = _content.find('\b');
+		Cherche = min(
+
+			min(min(_content.find('\b'),
+			_content.find('\t')),
+
+			min(_content.find('\n'),
+			_content.find('\f'))),
+
+			min(_content.find('\v'),
+			_content.find('\r'))
+		/*, _content.find('\\'),
+		_content.find('\0x')*/);
+
+		if (Cherche == std::wstring::npos)
+		{
+			break;
+		}
+
+		else if (Cherche == _content.find('\t'))
+		{
+			wstring space = L"	";
+			_content.erase(Cherche, 1);
+			_content.insert(Cherche, space);
+		}
+
+		else if (Cherche == _content.find('\b'))
+		{
+			_content.erase(Cherche, 1);
+			_content.erase(Cherche - 1, 1);
+		}
+
+		else if (Cherche == _content.find('\n') || Cherche == _content.find('\f') || Cherche == _content.find('\v'))
+		{
+			_content.erase(Cherche, 1);
+
+			wstring tempContent = RemoveColor(_content.substr(0, Cherche)); // enlver les ansi \033 en cherchant le m le plus proche
+
+			size_t ChercheTemp = tempContent.size(); 
+
+			size_t ligne = (ChercheTemp) / (SizeWidget.GetSizeX().GetDataActual());
+			size_t espace_a_remplir = (SizeWidget.GetSizeX().GetDataActual()) - (ChercheTemp % SizeWidget.GetSizeX().GetDataActual()); // changer le calcul
+
+			wstring toinsert = L"";
+			toinsert.insert(0, espace_a_remplir, ' ');
+			_content.insert(Cherche, toinsert);
+		}
+
+		else if (Cherche == _content.find('\r'))
+		{
+			size_t ligne = (Cherche) / (SizeWidget.GetSizeX().GetDataActual());
+			size_t espace_a_suppr = Cherche % SizeWidget.GetSizeX().GetDataActual();
+
+			_content.erase(Cherche, 1);
+			_content.erase(Cherche - espace_a_suppr, espace_a_suppr);
+		}
+
+		/*Cherche = _content.find('\\'); // a voir
+
+		if (Cherche != std::string::npos)
+		{
+			// code;
+		}*/
+
+		// securité pas important je pense
+		if (i > _content.size() / 2 && i > 35000 && coloredtemp.GetSize() < i)
 		{
 			MessageBox(
 				NULL,

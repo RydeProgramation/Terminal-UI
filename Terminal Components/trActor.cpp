@@ -1,4 +1,4 @@
-#include "trUIToolsCore.h"
+﻿#include "trUIToolsCore.h"
 #include "trActor.h"
 
 using namespace std;
@@ -123,6 +123,11 @@ const trData<bool>& trActor::GetDestroy() const
 	return *ToDestroy;
 }
 
+const bool trActor::IsCreated() const
+{
+	return Created;
+}
+
 // APPLY
 
 void trActor::APPLY(const trSize<uint16_t>& SizeWindow)
@@ -138,6 +143,11 @@ void trActor::APPLY(const trSize<uint16_t>& SizeWindow)
 
 	ToChange->SetData(VerificationProprety() ? true : ToChange->GetDataNew());
 	ToChange->Update();
+
+	if (!Created)
+	{
+		Created = true;
+	}
 }
 
 // FNC

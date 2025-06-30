@@ -27,6 +27,7 @@
     <ClInclude Include="trObject.h" />
     <ClInclude Include="trPair.h" />
     <ClInclude Include="trPawn.h" />
+    <ClInclude Include="trRect.h" />
     <ClInclude Include="trSize.h" />
     <ClInclude Include="trUIToolsCore.h" />
   </ItemGroup>
@@ -37,6 +38,7 @@
     <ClCompile Include="trMap.cpp" />
     <ClCompile Include="trPair.cpp" />
     <ClCompile Include="trPawn.cpp" />
+    <ClCompile Include="trRect.cpp" />
     <ClCompile Include="trSize.cpp" />
     <ClCompile Include="trUIToolsCore.cpp" />
   </ItemGroup>

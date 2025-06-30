@@ -48,6 +48,16 @@ public:
 	bool CreateActor(trActor* WIDG);
 
 	/// <summary>
+	/// Met à jour un widget (rafraichit son contenu, sa position, etc.)
+	/// </summary>
+	void UpdateActors();
+
+	/// <summary>
+	/// Pour mettre à jour les interactions entre les actors
+	/// </summary>
+	void Update();
+
+	/// <summary>
 	/// Détruit un widget
 	/// </summary>
 	/// <typeparam name="Widget_T"> trWidget, trSelector... </typeparam>
@@ -85,11 +95,6 @@ public:
 	/// </summary>
 	/// <returns> Un pointeur vers une map contenant tous les widgets </returns>
 	const std::unordered_map<std::string, trActor*>& GetActors() const;
-
-	/// <summary>
-	/// Met à jour un widget (rafraichit son contenu, sa position, etc.)
-	/// </summary>
-	void UpdateActors();
 
 	/// <summary>
 	/// Obtient un pointeur vers un widget par son nom
@@ -148,11 +153,17 @@ public:
 		}
 	}*/
 
+protected:
+
+	// FNC
+
+	void DetectCollisionsOptimized(const std::map<trActor*, trRect<int>>& rectMap);
+
 public:
 
 	// DESTRUCTEUR
 
-	~trWorld();
+	virtual ~trWorld();
 
 private:
 

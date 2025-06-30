@@ -62,8 +62,11 @@ wstring applyColorToText(const wstring& text, float offset) {
 		// Construire la séquence de couleur ANSI
 		wstring colorRgb = L"\033[38;2;" + to_wstring(r) + L";" + to_wstring(g) + L";" + to_wstring(b) + L"m";
 
+		// Construire la séquence de couleur ANSI
+		wstring colorRgb2 = L"\033[48;2;" + to_wstring(b / 10) + L";" + to_wstring(r / 10) + L";" + to_wstring(g / 10) + L"m";
+
 		// Ajouter le caractère coloré
-		coloredText += colorRgb + c;
+		coloredText += colorRgb + colorRgb2 + c;
 
 		// Passer à la teinte suivante
 		hue += hueStep;
@@ -172,11 +175,11 @@ void MyUI::Start()
 
 	World->DestroyActor("Hello3");
 
-	wstring paragColor = L"\033[38;2;255;182;193mSalutations, brave lache\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\bons, brave aventurier !\033[0m\033[38;2;176;224;230m Mon projet est une application maléfique\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\033[0m\033[38;2;152;251;152mapplication magique qui ouvre les portes des marchés financiers.\033[0m\nÀ l'aide de la puissante technique de \033[38;2;216;191;216mDiCaprio\b\b\b\b\b\b\b\bMonte-Carlo\033[0m, \033[38;2;240;230;140mje simule des trajectoires aléatoires\033[0m pour les options (calls et \033[38;2;250;235;215mputain\b\b\bs\033[0m).\n\033[38;2;255;222;173mImagine-toi chevauchant un dragon volant au-dessus des courbes de prix, scrutant les volatilités et les risques.\033[0m\nLes prix d'\033[38;2;255;228;196moptions\033[0m se révèlent tels des trésors cachés dans les profondeurs du marché. \033[38;2;240;255;255mQue la probabilités soit avec toi !\033[0m\n\033[38;2;245;222;179mJe te propose donc cette application pour que tu fasses tes propres simulations et découvre les secrets enfouis\033[0m dans\f\033[38;2;216;191;216mles volutes des courbes financières.\033[0m 🎉";
+	wstring paragColor = L"\033[38;2;255;182;193mSalutations, brave lache !\033[0m\033[38;2;176;224;230m Mon projet est une application maléfique\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\033[0m\033[38;2;152;251;152mapplication magique qui ouvre les portes des marchés financiers.\033[0m\nÀ l'aide de la puissante technique de \033[38;2;216;191;216mDiCaprio\b\b\b\b\b\b\b\bMonte-Carlo\033[0m, \033[38;2;240;230;140mje simule des trajectoires aléatoires\033[0m pour les options (calls et \033[38;2;250;235;215mputain\b\b\bs\033[0m).\n\033[38;2;255;222;173mImagine-toi chevauchant un dragon volant au-dessus des courbes de prix, scrutant les volatilités et les risques.\033[0m\nLes prix d'\033[38;2;255;228;196moptions\033[0m se révèlent tels des trésors cachés dans les profondeurs du marché. \033[38;2;240;255;255mTu attends quoi pour jouer avec les courbes !\033[0m\n\033[38;2;245;222;179mJe te propose donc cette application pour que tu fasses tes propres simulations et découvre les secrets enfouis\033[0m dans\f\033[38;2;216;191;216mles volutes des courbes financières.\033[0m 🎉";
 
 	trSize<uint16_t>* size_ = new trSize<uint16_t>(GetConsoleSize());
 
-	/*CreateWidgetWait(new trWidget(0, 0, 123, 6, MiddleCenter, L"", "Paragraphe"));
+	CreateWidgetWait(new trWidget(0, 0, 135, 6, MiddleCenter, L"", "Paragraphe"));
 
 	for (int i = 0; i < paragColor.size(); i++)
 	{
@@ -190,7 +193,7 @@ void MyUI::Start()
 				std::wstring ansiSeq = paragColor.substr(i, endSeq - i + 1);  // +1 pour inclure 'm'
 
 				// On ajoute la séquence ANSI à l'interface
-				SetActor("Paragraphe", &trWidget::AddToContent, ansiSeq);
+				World->SetActor("Paragraphe", &trWidget::AddToContent, ansiSeq);
 
 				// On saute l'indice de la séquence ANSI pour ne pas la traiter à nouveau
 				i += static_cast<int>(ansiSeq.size() - 1); // -1 car on a déjà ajouté un caractère
@@ -200,22 +203,70 @@ void MyUI::Start()
 		else
 		{
 			// Si ce n'est pas une séquence ANSI, on ajoute un seul caractère
-			SetActor("Paragraphe", &trWidget::AddToContent, wstring(1, paragColor[i]));
+			World->SetActor("Paragraphe", &trWidget::AddToContent, wstring(1, paragColor[i]));
 		}
 		
 		Sleep(50);
 	}
 
-	Sleep(2500);
+	Sleep(1400);
+
+	paragColor = L"\033[38;2;255;182;193mSalutations, brave lache ! \033[38;2;176;224;230mMo\033[48;2;255;255;255m\033[38;2;0;0;0mn\033[0m\033[38;2;176;224;230m projet est une application maléfique\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\033[0m\033[38;2;152;251;152mapplication magique qui ouvre les portes des marchés financiers.\033[0m\nÀ l'aide de la puissante technique de \033[38;2;216;191;216mDiCaprio\b\b\b\b\b\b\b\bMonte-Carlo\033[0m, \033[38;2;240;230;140mje simule des trajectoires aléatoires\033[0m pour les options (calls et \033[38;2;250;235;215mputain\b\b\bs\033[0m).\n\033[38;2;255;222;173mImagine-toi chevauchant un dragon volant au-dessus des courbes de prix, scrutant les volatilités et les risques.\033[0m\nLes prix d'\033[38;2;255;228;196moptions\033[0m se révèlent tels des trésors cachés dans les profondeurs du marché. \033[38;2;240;255;255mTu attends quoi pour jouer avec les courbes !\033[0m\n\033[38;2;245;222;179mJe te propose donc cette application pour que tu fasses tes propres simulations et découvre les secrets enfouis\033[0m dans\f\033[38;2;216;191;216mles volutes des courbes financières.\033[0m 🎉";
+
+	World->SetActor("Paragraphe", &trWidget::SetContent, wstring(paragColor));
+
+	Sleep(1400);
+
+	paragColor = L"\033[38;2;255;182;193mSalutations, brave lache ! \033[38;2;176;224;230mM\033[48;2;255;255;255m\033[38;2;0;0;0mo\033[0m\033[38;2;176;224;230mn projet est une application maléfique\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\033[0m\033[38;2;152;251;152mapplication magique qui ouvre les portes des marchés financiers.\033[0m\nÀ l'aide de la puissante technique de \033[38;2;216;191;216mDiCaprio\b\b\b\b\b\b\b\bMonte-Carlo\033[0m, \033[38;2;240;230;140mje simule des trajectoires aléatoires\033[0m pour les options (calls et \033[38;2;250;235;215mputain\b\b\bs\033[0m).\n\033[38;2;255;222;173mImagine-toi chevauchant un dragon volant au-dessus des courbes de prix, scrutant les volatilités et les risques.\033[0m\nLes prix d'\033[38;2;255;228;196moptions\033[0m se révèlent tels des trésors cachés dans les profondeurs du marché. \033[38;2;240;255;255mTu attends quoi pour jouer avec les courbes !\033[0m\n\033[38;2;245;222;179mJe te propose donc cette application pour que tu fasses tes propres simulations et découvre les secrets enfouis\033[0m dans\f\033[38;2;216;191;216mles volutes des courbes financières.\033[0m 🎉";
+
+	World->SetActor("Paragraphe", &trWidget::SetContent, wstring(paragColor));
+
+	Sleep(500);
+
+	paragColor = L"\033[38;2;255;182;193mSalutations, brave lache ! \033[38;2;176;224;230m\033[48;2;255;255;255m\033[38;2;0;0;0mM\033[0m\033[38;2;176;224;230mon projet est une application maléfique\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\033[0m\033[38;2;152;251;152mapplication magique qui ouvre les portes des marchés financiers.\033[0m\nÀ l'aide de la puissante technique de \033[38;2;216;191;216mDiCaprio\b\b\b\b\b\b\b\bMonte-Carlo\033[0m, \033[38;2;240;230;140mje simule des trajectoires aléatoires\033[0m pour les options (calls et \033[38;2;250;235;215mputain\b\b\bs\033[0m).\n\033[38;2;255;222;173mImagine-toi chevauchant un dragon volant au-dessus des courbes de prix, scrutant les volatilités et les risques.\033[0m\nLes prix d'\033[38;2;255;228;196moptions\033[0m se révèlent tels des trésors cachés dans les profondeurs du marché. \033[38;2;240;255;255mTu attends quoi pour jouer avec les courbes !\033[0m\n\033[38;2;245;222;179mJe te propose donc cette application pour que tu fasses tes propres simulations et découvre les secrets enfouis\033[0m dans\f\033[38;2;216;191;216mles volutes des courbes financières.\033[0m 🎉";
+
+	World->SetActor("Paragraphe", &trWidget::SetContent, wstring(paragColor));
+
+	Sleep(500);
+
+	paragColor = L"\033[38;2;255;182;193mSalutations, brave lache !\033[48;2;255;255;255m\033[38;2;0;0;0m \033[0m\033[38;2;176;224;230mMon projet est une application maléfique\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\033[0m\033[38;2;152;251;152mapplication magique qui ouvre les portes des marchés financiers.\033[0m\nÀ l'aide de la puissante technique de \033[38;2;216;191;216mDiCaprio\b\b\b\b\b\b\b\bMonte-Carlo\033[0m, \033[38;2;240;230;140mje simule des trajectoires aléatoires\033[0m pour les options (calls et \033[38;2;250;235;215mputain\b\b\bs\033[0m).\n\033[38;2;255;222;173mImagine-toi chevauchant un dragon volant au-dessus des courbes de prix, scrutant les volatilités et les risques.\033[0m\nLes prix d'\033[38;2;255;228;196moptions\033[0m se révèlent tels des trésors cachés dans les profondeurs du marché. \033[38;2;240;255;255mTu attends quoi pour jouer avec les courbes !\033[0m\n\033[38;2;245;222;179mJe te propose donc cette application pour que tu fasses tes propres simulations et découvre les secrets enfouis\033[0m dans\f\033[38;2;216;191;216mles volutes des courbes financières.\033[0m 🎉";
+
+	World->SetActor("Paragraphe", &trWidget::SetContent, wstring(paragColor));
+
+	Sleep(500);
+
+	paragColor = L"\033[38;2;255;182;193mSalutations, brave lache \033[48;2;255;255;255m\033[38;2;0;0;0m!\033[0m\033[0m\033[38;2;176;224;230m Mon projet est une application maléfique\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\033[0m\033[38;2;152;251;152mapplication magique qui ouvre les portes des marchés financiers.\033[0m\nÀ l'aide de la puissante technique de \033[38;2;216;191;216mDiCaprio\b\b\b\b\b\b\b\bMonte-Carlo\033[0m, \033[38;2;240;230;140mje simule des trajectoires aléatoires\033[0m pour les options (calls et \033[38;2;250;235;215mputain\b\b\bs\033[0m).\n\033[38;2;255;222;173mImagine-toi chevauchant un dragon volant au-dessus des courbes de prix, scrutant les volatilités et les risques.\033[0m\nLes prix d'\033[38;2;255;228;196moptions\033[0m se révèlent tels des trésors cachés dans les profondeurs du marché. \033[38;2;240;255;255mTu attends quoi pour jouer avec les courbes !\033[0m\n\033[38;2;245;222;179mJe te propose donc cette application pour que tu fasses tes propres simulations et découvre les secrets enfouis\033[0m dans\f\033[38;2;216;191;216mles volutes des courbes financières.\033[0m 🎉";
+
+	World->SetActor("Paragraphe", &trWidget::SetContent, wstring(paragColor));
+
+	Sleep(800);
+
+	paragColor = L"\033[38;2;255;182;193mSalutations, \033[48;2;255;255;255m\033[38;2;0;0;0mbrave lache !\033[0m\033[0m\033[38;2;176;224;230m Mon projet est une application maléfique\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\033[0m\033[38;2;152;251;152mapplication magique qui ouvre les portes des marchés financiers.\033[0m\nÀ l'aide de la puissante technique de \033[38;2;216;191;216mDiCaprio\b\b\b\b\b\b\b\bMonte-Carlo\033[0m, \033[38;2;240;230;140mje simule des trajectoires aléatoires\033[0m pour les options (calls et \033[38;2;250;235;215mputain\b\b\bs\033[0m).\n\033[38;2;255;222;173mImagine-toi chevauchant un dragon volant au-dessus des courbes de prix, scrutant les volatilités et les risques.\033[0m\nLes prix d'\033[38;2;255;228;196moptions\033[0m se révèlent tels des trésors cachés dans les profondeurs du marché. \033[38;2;240;255;255mTu attends quoi pour jouer avec les courbes !\033[0m\n\033[38;2;245;222;179mJe te propose donc cette application pour que tu fasses tes propres simulations et découvre les secrets enfouis\033[0m dans\f\033[38;2;216;191;216mles volutes des courbes financières.\033[0m 🎉";
+
+	World->SetActor("Paragraphe", &trWidget::SetContent, wstring(paragColor));
+
+	Sleep(1000);
+
+	paragColor = L"\033[38;2;255;182;193mSalutations, \033[0m\033[38;2;176;224;230mMon projet est une application maléfique\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\033[0m\033[38;2;152;251;152mapplication magique qui ouvre les portes des marchés financiers.\033[0m\nÀ l'aide de la puissante technique de \033[38;2;216;191;216mDiCaprio\b\b\b\b\b\b\b\bMonte-Carlo\033[0m, \033[38;2;240;230;140mje simule des trajectoires aléatoires\033[0m pour les options (calls et \033[38;2;250;235;215mputain\b\b\bs\033[0m).\n\033[38;2;255;222;173mImagine-toi chevauchant un dragon volant au-dessus des courbes de prix, scrutant les volatilités et les risques.\033[0m\nLes prix d'\033[38;2;255;228;196moptions\033[0m se révèlent tels des trésors cachés dans les profondeurs du marché. \033[38;2;240;255;255mTu attends quoi pour jouer avec les courbes !\033[0m\n\033[38;2;245;222;179mJe te propose donc cette application pour que tu fasses tes propres simulations et découvre les secrets enfouis\033[0m dans\f\033[38;2;216;191;216mles volutes des courbes financières.\033[0m 🎉";
+
+	World->SetActor("Paragraphe", &trWidget::SetContent, wstring(paragColor));
+
+	Sleep(1100);
+
+	paragColor = L"\033[38;2;255;182;193mSalutations, brave aventurier !\033[0m\033[38;2;176;224;230m Mon projet est une application maléfique\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\033[0m\033[38;2;152;251;152mapplication magique qui ouvre les portes des marchés financiers.\033[0m\nÀ l'aide de la puissante technique de \033[38;2;216;191;216mDiCaprio\b\b\b\b\b\b\b\bMonte-Carlo\033[0m, \033[38;2;240;230;140mje simule des trajectoires aléatoires\033[0m pour les options (calls et \033[38;2;250;235;215mputain\b\b\bs\033[0m).\n\033[38;2;255;222;173mImagine-toi chevauchant un dragon volant au-dessus des courbes de prix, scrutant les volatilités et les risques.\033[0m\nLes prix d'\033[38;2;255;228;196moptions\033[0m se révèlent tels des trésors cachés dans les profondeurs du marché. \033[38;2;240;255;255mTu attends quoi pour jouer avec les courbes !\033[0m\n\033[38;2;245;222;179mJe te propose donc cette application pour que tu fasses tes propres simulations et découvre les secrets enfouis\033[0m dans\f\033[38;2;216;191;216mles volutes des courbes financières.\033[0m 🎉";
+
+	World->SetActor("Paragraphe", &trWidget::SetContent, wstring(paragColor));
+
+	Sleep(1200);
 
 	for (int i = 0; i < 6; i++)
 	{
-		SetActor("Paragraphe", &trWidget::AddToSize, 0, -1);
+		World->SetActor("Paragraphe", &trWidget::AddToSize, 0, -1);
 
 		Sleep(250);
 	}
 
-	DestroyActor("Paragraphe");*/
+	World->DestroyActor("Paragraphe");
 
 	Menu1();
 }
@@ -346,14 +397,14 @@ void MyUI::CreateWidgetWait(trWidget* WIDG)
 {
 	World->CreateActor(WIDG);
 
-	while (WIDG->GetChange().GetDataActual()) {} // faire attention ici
+	while (WIDG->IsCreated()) {} // faire attention ici
 }
 
 void MyUI::CreateSelectorWait(trSelector* WIDG)
 {
 	World->CreateActor(WIDG);
 
-	while (WIDG->GetChange().GetDataActual()) {} // faire attention ici
+	while (WIDG->IsCreated()) {} // faire attention ici
 }
 
 

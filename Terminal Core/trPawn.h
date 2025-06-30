@@ -1,4 +1,4 @@
-#pragma once
+﻿#pragma once
 
 #include "include.h"
 
@@ -46,6 +46,7 @@ public:
 
 	bool SetTypeRelativePosition(int rp);
 
+	void SetPawnCollision(trActor* actor, bool collision);
 
 	// ADD
 
@@ -58,6 +59,8 @@ public:
 	const trCoordinate<int>& GetAbsolutePosition() const;
 
 	const trData<uint8_t>& GetRelativePositionType() const;
+
+	const std::vector<trActor*>& GetPawnCollision() const;
 
 	// UPDATE APPLY (a mettre en private ?)
 
@@ -88,6 +91,8 @@ protected:
 	trCoordinate<int>* RelativePositionPoint;
 
 	trCoordinate<int>* PositionAbsolue;
+
+	std::vector<trActor*>* PawnCollision;
 
 	trData<uint8_t>* RpType;
 };

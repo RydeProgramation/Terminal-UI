@@ -1,4 +1,4 @@
-#pragma once
+﻿#pragma once
 
 #include "include.h"
 
@@ -7,6 +7,7 @@
 #include "trData.h"
 #include "trPair.h"
 #include "trMap.h"
+#include "trRect.h"
 
 #ifndef __TR_ACTOR__
 #define __TR_ACTOR__
@@ -63,6 +64,8 @@ public:
 
 	const trData<bool>& GetDestroy() const;
 
+	const bool IsCreated() const;
+
 	// APPLY
 
 	void APPLY(const trSize<uint16_t>& SizeWindow);
@@ -94,6 +97,8 @@ private:
 	trData<std::string>* Name;
 
 	trData<bool>* ToDestroy;
+
+	bool Created = false;
 
 public:
 

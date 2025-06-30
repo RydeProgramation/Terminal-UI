@@ -1,4 +1,4 @@
-#pragma once
+ï»¿#pragma once
 
 #include "include.h"
 
@@ -22,9 +22,9 @@
 #define TERMINAL_RENDER_API __declspec(dllimport)
 #endif
 
-#define DIRECT_SYSTEM 0 // chaque actor est rendu séparément
-#define BUFFER_SYSTEM 1 // tous les actors sont rendus dans un buffer et affichés en une fois
-#define RENDER_SYSTEM 2 // Que ce qui est différent est rendu
+#define DIRECT_SYSTEM 0 // chaque actor est rendu sÃ©parÃ©ment
+#define BUFFER_SYSTEM 1 // tous les actors sont rendus dans un buffer et affichÃ©s en une fois
+#define RENDER_SYSTEM 2 // Que ce qui est diffÃ©rent est rendu
 
 class TERMINAL_RENDER_API trRender : public trObject
 {
@@ -69,39 +69,39 @@ public:
 	// FNC
 
 	/// <summary>
-	/// Crée une bordure
+	/// CrÃ©e une bordure
 	/// </summary>
-	/// <param Name_="BorderWidth">Nombre de pixel sur le coté</param>
+	/// <param Name_="BorderWidth">Nombre de pixel sur le cotÃ©</param>
 	void Border();
 
 	/// <summary>
-	/// Permet de vérifier si les coordonnées données sont en dehors de la fenêtre
+	/// Permet de vÃ©rifier si les coordonnÃ©es donnÃ©es sont en dehors de la fenÃªtre
 	/// </summary>
-	/// <param name="SizeWindow_"> Taille de la fenêtre </param>
+	/// <param name="SizeWindow_"> Taille de la fenÃªtre </param>
 	void UpdateSizeWindow();
 
 	/// <summary>
 	/// Affiche un widget
 	/// </summary>
-	/// <param name="WIDG"> Le widget à afficher </param>
-	/// <returns> true si le widget a été affiché avec succès, false sinon </returns>
-	void DisplayWidget(trWidget* WIDG); // à vérifier
+	/// <param name="WIDG"> Le widget Ã  afficher </param>
+	/// <returns> true si le widget a Ã©tÃ© affichÃ© avec succÃ¨s, false sinon </returns>
+	void DisplayWidget(trWidget* WIDG); // Ã  vÃ©rifier
 
 	/// <summary>
 	/// Aplique les couleurs
 	/// </summary>
-	void DisplayColor(const std::unordered_map<std::string, trActor*>& Actors_); // à verifier
+	void DisplayColor(const std::unordered_map<std::string, trActor*>& Actors_); // Ã  verifier
 
 	/// <summary>
 	/// Cache un widget (le rend invisible)
 	/// </summary>
-	/// <param name="WIDG"> Le widget à cacher </param>
+	/// <param name="WIDG"> Le widget Ã  cacher </param>
 	void HideWidget(trWidget* WIDG);
 
 	/// <summary>
 	/// Nettoie un widget (le rend vide)
 	/// </summary>
-	/// <param name="WIDG"> Le widget à nettoyer </param>
+	/// <param name="WIDG"> Le widget Ã  nettoyer </param>
 	void CleanWidget(trWidget* WIDG);
 
 	/// <summary>

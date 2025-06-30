@@ -1,4 +1,4 @@
-#include "trWorld.h"
+ï»¿#include "trWorld.h"
 
 using namespace UITools;
 using namespace UIToolsCore;
@@ -48,10 +48,10 @@ bool trWorld::CreateActor(trActor* WIDG)
 	else
 	{
 		MessageBox(
-			NULL,                           // Pas de fenêtre parente
+			NULL,                           // Pas de fenÃªtre parente
 			L"Widget already created",      // Message
-			L"Erreur",                      // Titre de la boîte
-			MB_ICONERROR | MB_OK            // Icône d'erreur + bouton OK
+			L"Erreur",                      // Titre de la boÃ®te
+			MB_ICONERROR | MB_OK            // IcÃ´ne d'erreur + bouton OK
 		);
 		return false;
 	}
@@ -91,8 +91,8 @@ bool trWorld::Destroy()
 	{
 		if (it->second->GetDestroy().GetDataActual())
 		{
-			delete it->second;        // supprime l'objet pointé
-			it = Actors->erase(it);   // efface et récupère l'itérateur valide suivant
+			delete it->second;        // supprime l'objet pointÃ©
+			it = Actors->erase(it);   // efface et rÃ©cupÃ¨re l'itÃ©rateur valide suivant
 			ForceRefresh = true;
 		}
 		else
@@ -101,7 +101,7 @@ bool trWorld::Destroy()
 		}
 	}
 
-	return true; // Retourne true si tous les widgets ont été détruits avec succès
+	return true; // Retourne true si tous les widgets ont Ã©tÃ© dÃ©truits avec succÃ¨s
 }
 
 const trActor& trWorld::GetActor(const string& Name) const
@@ -160,6 +160,86 @@ void trWorld::UpdateActors()
 	for (auto& widg : *Actors)
 	{
 		widg.second->APPLY(GetConsoleSize(BorderWidth));
+	}
+}
+
+void trWorld::Update()
+{
+	std::map<trActor*, trRect<int>> Rects;
+
+	for (auto& widg : *Actors)
+	{
+		trPawn* pawPtr = dynamic_cast<trPawn*>(widg.second);
+		if (!pawPtr) continue; 
+
+		trWidget* widgetPtr = dynamic_cast<trWidget*>(pawPtr);
+
+		if (widgetPtr == nullptr)
+		{
+			// C'est un trPawn MAIS PAS un trWidget
+			int PosX = pawPtr->GetAbsolutePosition().GetX().GetDataActual();
+			int PosY = pawPtr->GetAbsolutePosition().GetY().GetDataActual();
+			Rects[pawPtr] = trRect<int>(PosX, PosY, PosX, PosY);
+		}
+
+		else
+		{
+			// C'est un trPawn ET aussi un trWidget (widgetPtr valide)
+			int Left_ = widgetPtr->GetAbsolutePosition().GetX().GetDataActual();
+			int Right_ = widgetPtr->GetAbsolutePosition().GetX().GetDataActual() + widgetPtr->GetSize().GetSizeX().GetDataActual();
+			int Top_ = widgetPtr->GetAbsolutePosition().GetY().GetDataActual();
+			int Bottom_ = widgetPtr->GetAbsolutePosition().GetY().GetDataActual() + widgetPtr->GetSize().GetSizeY().GetDataActual();
+
+			Rects[widgetPtr] = trRect<int>(Left_, Top_, Right_, Bottom_);
+		}
+	}
+
+	DetectCollisionsOptimized(Rects);
+}
+
+// FNC
+
+void trWorld::DetectCollisionsOptimized(const std::map<trActor*, trRect<int>>& rectMap)
+{
+	// Extraire dans un vector pour trier
+	std::vector<std::pair<trActor*, trRect<int>>> rects(rectMap.begin(), rectMap.end());
+
+	// Tri selon left()
+	std::sort(rects.begin(), rects.end(), [](auto& a, auto& b) {
+		return a.second.left() < b.second.left();
+		});
+
+	for (size_t i = 0; i < rects.size(); ++i)
+	{
+		const auto& A = rects[i].second;
+		trActor* actorA = rects[i].first;
+
+		for (size_t j = i + 1; j < rects.size(); ++j)
+		{
+			const auto& B = rects[j].second;
+			trActor* actorB = rects[j].first;
+
+			if (B.left() > A.right())
+				break;
+
+			// Collision si chevauchement vertical
+			if (!(A.bottom() <= B.top() || A.top() >= B.bottom()))
+			{
+				trPawn* pawn = dynamic_cast<trPawn*>(actorA);
+
+				if (pawn)
+				{
+					pawn->SetPawnCollision(actorB, true);
+				}
+
+				pawn = dynamic_cast<trPawn*>(actorB);
+
+				if (pawn)
+				{
+					pawn->SetPawnCollision(actorA, true);
+				}
+			}
+		}
 	}
 }
 
