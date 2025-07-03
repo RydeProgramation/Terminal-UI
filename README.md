@@ -8,7 +8,7 @@ Tu rêve de pouvoir faire des widget a ta sauce ?
 - Les touches fonctionne tout le temps, (cf Cheval de Troie)
 - ContentReorganisation a ameliorer et optimiser
 - Améliorer trMap, éviter d'utiliser un vector est crée un truc moi-même
-- La mémoire ne fait qu'augmenter ? (Régler !)
+- La mémoire ne fait qu'augmenter ? (Régler !) ou pas probleme fuite de memoire esayyer de crée plein de widget et voir ce qui se passe
 - ![image](https://github.com/user-attachments/assets/13648a60-4fb6-4188-bc11-3bef1952be6e)
 - passé a 
 - ![image](https://github.com/user-attachments/assets/3da9de98-7350-4619-a5cb-2649bafdf5c2)
