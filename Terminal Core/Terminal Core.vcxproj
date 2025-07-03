@@ -30,6 +30,7 @@
     <ClInclude Include="trRect.h" />
     <ClInclude Include="trSize.h" />
     <ClInclude Include="trUIToolsCore.h" />
+    <ClInclude Include="trWeakPointer.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\Terminal Components\trActor.cpp" />
@@ -41,6 +42,7 @@
     <ClCompile Include="trRect.cpp" />
     <ClCompile Include="trSize.cpp" />
     <ClCompile Include="trUIToolsCore.cpp" />
+    <ClCompile Include="trWeakPointer.cpp" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <VCProjectVersion>17.0</VCProjectVersion>

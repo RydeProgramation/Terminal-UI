@@ -6,21 +6,33 @@ using namespace UIToolsCore;
 
 // INI default
 
-trSelector::trSelector() : trWidget(), Selected(new trData<bool>(false)), ColorSelected(new trData<int>(0))
+trSelector::trSelector() : trWidget(), Selected(new trData<bool>(false)), ColorSelected(new trData<wstring>(L"\x1b[0m")), ColorUnSelected(new trData<wstring>(L"\x1b[0m"))
 {
 
 }
 
 // INI
 
-trSelector::trSelector(int x_, int y_, int size_x_, int size_y_, uint8_t RelativePosition_, wstring content_, string name_) : trWidget(x_, y_, size_x_, size_y_, RelativePosition_, content_, name_), Selected(new trData<bool>(true)), ColorSelected(new trData<int>(14))
+trSelector::trSelector(int x_, int y_, int size_x_, int size_y_, uint8_t RelativePosition_, wstring content_, string name_) : trWidget(x_, y_, size_x_, size_y_, RelativePosition_, content_, name_), Selected(new trData<bool>(false)), ColorSelected(new trData<wstring>(L"\033[38;2;255;255;255m\033[48;2;50;100;255m")), ColorUnSelected(new trData<wstring>(L"\x1b[0m"))
 {
+	
+}
 
+void trSelector::Init()
+{
+	if (Selected->GetDataActual())
+	{
+		SetColor(ColorSelected->GetDataActual());
+	}
+	else
+	{
+		SetColor(ColorUnSelected->GetDataActual());
+	}
 }
 
 // INI deep copy
 
-trSelector::trSelector(const trSelector& other) : trWidget(other), Selected(other.Selected), ColorSelected(other.ColorSelected)
+trSelector::trSelector(const trSelector& other) : trWidget(other), Selected(new trData<bool>(*other.Selected)), ColorSelected(new trData<wstring>(*other.ColorSelected)), ColorUnSelected(new trData<wstring>(*other.ColorUnSelected))
 {
 
 }
@@ -42,10 +54,17 @@ trSelector& trSelector::operator=(const trSelector& other)
 	}
 
 	if (ColorSelected == nullptr) {
-		ColorSelected = new trData<int>(*other.ColorSelected);
+		ColorSelected = new trData<wstring>(*other.ColorSelected);
 	}
 	else {
 		*ColorSelected = *other.ColorSelected;
+	}
+
+	if (ColorUnSelected == nullptr) {
+		ColorUnSelected = new trData<wstring>(*other.ColorUnSelected);
+	}
+	else {
+		*ColorUnSelected = *other.ColorUnSelected;
 	}
 
 	return *this;
@@ -58,9 +77,56 @@ void trSelector::SetSelected(bool Slct)
 	Selected->SetData(Slct);
 }
 
-void trSelector::SetColorSelected(int color)
+void trSelector::SetColorSelected(uint8_t R, uint8_t G, uint8_t B, bool Backround)
 {
-	ColorSelected->SetData(color);
+	wstring BackRoundOrNot = Backround ? to_wstring(48) : to_wstring(38);
+
+	ColorSelected->SetData(L"\x1b[" + BackRoundOrNot + L";" + L"2" + L";" + to_wstring(R) + L";" + to_wstring(G) + L";" + to_wstring(B) + L"m");
+}
+
+void trSelector::SetColorSelected(const std::wstring& CodeCouleurAnsi)
+{
+	// Vérifie que ça commence bien par \033[
+	if (CodeCouleurAnsi.size() >= 3 && CodeCouleurAnsi[0] == L'\033' && CodeCouleurAnsi[1] == L'[') {
+		// Et que ça finit bien par 'm'
+		if (CodeCouleurAnsi.back() == L'm') {
+			ColorSelected->SetData(CodeCouleurAnsi); // ✅ Code valide
+		}
+		else {
+			MessageBoxW(nullptr, (L"Le code ANSI ne se termine pas par 'm':\n" + CodeCouleurAnsi).c_str(),
+				L"❌ Code ANSI invalide", MB_ICONERROR | MB_OK);
+		}
+	}
+	else {
+		MessageBoxW(nullptr, (L"Le code ANSI est invalide (doit commencer par '\\033['):\n" + CodeCouleurAnsi).c_str(),
+			L"❌ Code ANSI invalide", MB_ICONERROR | MB_OK);
+	}
+}
+
+void trSelector::SetColorUnSelected(uint8_t R, uint8_t G, uint8_t B, bool Backround)
+{
+	wstring BackRoundOrNot = Backround ? to_wstring(48) : to_wstring(38);
+
+	ColorUnSelected->SetData(L"\x1b[" + BackRoundOrNot + L";" + L"2" + L";" + to_wstring(R) + L";" + to_wstring(G) + L";" + to_wstring(B) + L"m");
+}
+
+void trSelector::SetColorUnSelected(const std::wstring& CodeCouleurAnsi)
+{
+	// Vérifie que ça commence bien par \033[
+	if (CodeCouleurAnsi.size() >= 3 && CodeCouleurAnsi[0] == L'\033' && CodeCouleurAnsi[1] == L'[') {
+		// Et que ça finit bien par 'm'
+		if (CodeCouleurAnsi.back() == L'm') {
+			ColorUnSelected->SetData(CodeCouleurAnsi); // ✅ Code valide
+		}
+		else {
+			MessageBoxW(nullptr, (L"Le code ANSI ne se termine pas par 'm':\n" + CodeCouleurAnsi).c_str(),
+				L"❌ Code ANSI invalide", MB_ICONERROR | MB_OK);
+		}
+	}
+	else {
+		MessageBoxW(nullptr, (L"Le code ANSI est invalide (doit commencer par '\\033['):\n" + CodeCouleurAnsi).c_str(),
+			L"❌ Code ANSI invalide", MB_ICONERROR | MB_OK);
+	}
 }
 
 // GET
@@ -70,31 +136,56 @@ const trData<bool> trSelector::IsSelected() const
 	return *Selected;
 }
 
-const trData<int> trSelector::GetColorSelected() const
+const trData<wstring> trSelector::GetColorSelected() const
 {
 	return *ColorSelected;
 }
 
 // APPLY
 
+bool trSelector::VerificationProprety()
+{
+	return (
+		trWidget::VerificationProprety() ||
+		Selected->GetDataOld() != Selected->GetDataActual() ||
+		ColorUnSelected->GetDataOld() != ColorUnSelected->GetDataActual() ||
+		ColorSelected->GetDataOld() != ColorSelected->GetDataActual() 
+		);
+}
+
 void trSelector::APPLY_(const trSize<uint16_t>& SizeWindow)
 {
 	trWidget::APPLY_(SizeWindow);
 	Selected->Update();
 	ColorSelected->Update();
+
+	bool selectedNow = Selected->GetDataActual();
+	bool selectedBefore = Selected->GetDataOld();
+	bool colorChanged = ColorSelected->GetDataOld() != ColorSelected->GetDataActual();
+	bool colorChanged2 = ColorUnSelected->GetDataOld() != ColorUnSelected->GetDataActual();
+	
+	if (selectedNow && (colorChanged || !selectedBefore))
+	{
+		SetColor(ColorSelected->GetDataActual()); // a voir si c ést dans l'ordre
+	}
+
+	else if (!selectedNow && (colorChanged2 || selectedBefore))
+	{
+		SetColor(ColorUnSelected->GetDataActual());
+	}
 }
 
-void trSelector::Display(wostringstream& output_line)
+void trSelector::Display(wostringstream& output_line) // a ne jamais utiliser mdrr
 {
 	if (IsSelected().GetDataActual())
 	{
-		SetColorConsole(GetColorSelected().GetDataActual());
+		//SetColorConsole(GetColorSelected().GetDataActual());
 		cout << WstringToUtf8(output_line.str());
 	}
 
 	if (!IsSelected().GetDataActual())
 	{
-		SetColorConsole(trWidget::GetColor().GetDataActual());
+		//SetColorConsole(trWidget::GetColor().GetDataActual());
 		cout << WstringToUtf8(output_line.str());
 	}
 }

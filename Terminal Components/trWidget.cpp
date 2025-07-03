@@ -12,14 +12,19 @@ trWidget::trWidget() : trWidget(0, 0, 0, 0, TopLeft, L"", "None")
 
 // INI
 
-trWidget::trWidget(int x_, int y_, int size_x_, int size_y_, uint8_t RelativePositionType_, wstring content_, string name_) : trPawn(x_, y_, RelativePositionType_, name_), Size(new trSize<int>(size_x_, size_y_)), ColoredMap(new trData<trMap<int, trPair<std::wstring, trCoordinate<int>>>>()), BaseColor(new std::vector<trPair<std::wstring, trCoordinate<int>>>()), RawContent(new trData<wstring>(content_)), Color(new trData<int>(15)), Content(new trData<wstring>(ContentReorganisation(content_, trSize<int>(size_x_, size_y_)))), ColoredContent(new trData<wstring>(ContentReorganisationKeepColor(content_, trSize<int>(size_x_, size_y_))))
+trWidget::trWidget(int x_, int y_, int size_x_, int size_y_, uint8_t RelativePositionType_, wstring content_, string name_) : trPawn(x_, y_, RelativePositionType_, name_), Size(new trSize<int>(size_x_, size_y_)), ColoredMap(new trData<trMap<int, trPair<std::wstring, trCoordinate<int>>>>()), BaseColor(new std::vector<trPair<std::wstring, trCoordinate<int>>>()), RawContent(new trData<wstring>(content_)), Color(new trData<wstring>(L"\x1B[0m")), Content(new trData<wstring>(ContentReorganisation(content_, trSize<int>(size_x_, size_y_)))), ColoredContent(new trData<wstring>(ContentReorganisationKeepColor(content_, trSize<int>(size_x_, size_y_))))
 {
 	
 }
 
 // INI deep copy
 
-trWidget::trWidget(const trWidget& other) : trPawn(other), Size(new trSize<int>(*other.Size)), ColoredMap(new trData<trMap<int, trPair<std::wstring, trCoordinate<int>>>>(*other.ColoredMap)), BaseColor(new std::vector<trPair<std::wstring, trCoordinate<int>>>(*other.BaseColor)), RawContent(new trData<wstring>(*other.RawContent)), Color(new trData<int>(*other.Color)), Content(new trData<wstring>(*other.Content)), ColoredContent(new trData<wstring>(*other.ColoredContent))
+trWidget::trWidget(const trWidget& other) : trPawn(other), Size(new trSize<int>(*other.Size)), ColoredMap(new trData<trMap<int, trPair<std::wstring, trCoordinate<int>>>>(*other.ColoredMap)), BaseColor(new std::vector<trPair<std::wstring, trCoordinate<int>>>(*other.BaseColor)), RawContent(new trData<wstring>(*other.RawContent)), Color(new trData<wstring>(*other.Color)), Content(new trData<wstring>(*other.Content)), ColoredContent(new trData<wstring>(*other.ColoredContent))
+{
+
+}
+
+void trWidget::Init()
 {
 
 }
@@ -61,7 +66,7 @@ trWidget& trWidget::operator=(const trWidget& other)
 	}
 
 	if (Color == nullptr) {
-		Color = new trData<int>(*other.Color);
+		Color = new trData<wstring>(*other.Color);
 	}
 	else {
 		*Color = *other.Color;
@@ -104,9 +109,39 @@ void trWidget::SetResetColor(const vector<trPair<std::wstring, trCoordinate<int>
 	*BaseColor = RstColor;
 }
 
-void trWidget::SetColor(int color_)
+void trWidget::SetColor(uint8_t R, uint8_t G, uint8_t B, bool Backround)
 {
-	Color->SetData(max(color_, 0));
+	wstring BackRoundOrNot = Backround ? to_wstring(48) : to_wstring(38);
+
+	Color->SetData(L"\x1b[" + BackRoundOrNot + L";" + L"2" + L";" + to_wstring(R) + L";" + to_wstring(G) + L";" + to_wstring(B) + L"m");
+	Content->SetData(ContentReorganisation(RawContent->GetDataActual(), *Size));
+	ColoredContent->SetData(ContentReorganisationKeepColor(RawContent->GetDataActual(), *Size));
+}
+
+void trWidget::SetColor(const std::wstring& CodeCouleurAnsi)
+{
+	// Vérifie que ça commence bien par \033[
+	if (CodeCouleurAnsi.size() >= 3 && CodeCouleurAnsi[0] == L'\033' && CodeCouleurAnsi[1] == L'[') {
+		// Et que ça finit bien par 'm'
+		if (CodeCouleurAnsi.back() == L'm') {
+			Color->SetData(CodeCouleurAnsi); // ✅ Code valide
+			Content->SetData(ContentReorganisation(RawContent->GetDataActual(), *Size));
+			ColoredContent->SetData(ContentReorganisationKeepColor(RawContent->GetDataActual(), *Size));
+		}
+		else {
+			MessageBoxW(nullptr, (L"Le code ANSI ne se termine pas par 'm':\n" + CodeCouleurAnsi).c_str(),
+				L"❌ Code ANSI invalide", MB_ICONERROR | MB_OK);
+		}
+	}
+	else {
+		MessageBoxW(nullptr, (L"Le code ANSI est invalide (doit commencer par '\\033['):\n" + CodeCouleurAnsi).c_str(),
+			L"❌ Code ANSI invalide", MB_ICONERROR | MB_OK);
+	}
+}
+
+void trWidget::ResetColor()
+{
+	Color->SetData(L"\x1b[0m");
 }
 
 // ADD
@@ -122,11 +157,6 @@ void trWidget::AddToContent(const wstring& content_)
 	RawContent->SetData(RawContent->GetDataNew() + content_);
 	Content->SetData(ContentReorganisation(RawContent->GetDataNew(), *Size));
 	ColoredContent->SetData(ContentReorganisationKeepColor(RawContent->GetDataNew(), *Size));
-}
-
-void trWidget::AddToColor(int color_)
-{
-	Color->SetData(Color->GetDataNew() + color_);
 }
 
 // GET
@@ -161,7 +191,7 @@ const std::vector<trPair<std::wstring, trCoordinate<int>>>& trWidget::GetResetCo
 	return *BaseColor;
 }
 
-const trData<int>& trWidget::GetColor() const
+const trData<wstring>& trWidget::GetColor() const
 {
 	return *Color;
 }
@@ -239,7 +269,7 @@ void trWidget::UpdateRelativePositionPoint(const trSize<uint16_t>& SizeWindow)
 
 void trWidget::Display(wostringstream& output_line)
 {
-	SetColorConsole(GetColor().GetDataActual());
+	// SetColorConsole(GetColor().GetDataActual());
 	cout << WstringToUtf8(output_line.str());
 }
 
@@ -403,110 +433,11 @@ std::wstring trWidget::ContentReorganisationKeepColor(std::wstring _content, con
 {
 	size_t Cherche = 0;
 
-	int Verif = 0;
-
-	trMap<int, trPair<std::wstring, trCoordinate<int>>> coloredtemp;
-
 	const int max_ = static_cast<int>(_content.size());
 
-	// ne pas enlever ancien code
-	/*for (int i = 0; i < max_; i++) // rendre plus concis ?
-	{
-		Verif = 0;
+	_content = GetColor().GetDataNew() + _content;
 
-		Cherche = _content.find('\t');
-
-		if (Cherche != std::wstring::npos)
-		{
-			wstring space = L"	";
-			_content.erase(Cherche, 1);
-			_content.insert(Cherche, space);
-		}
-
-		else
-		{
-			Verif++;
-		}
-
-		Cherche = _content.find('\b');
-
-		if (Cherche != std::wstring::npos)
-		{
-			_content.erase(Cherche, 1);
-			_content.erase(Cherche - 1, 1);
-		}
-
-		else
-		{
-			Verif++;
-		}
-
-		Cherche = / *min(_content.find('\033'),* / min(min(_content.find('\n'), _content.find('\f')), _content.find('\v'))/ *)* /;
-
-		if (Cherche != std::wstring::npos && _content.find('\b') == std::wstring::npos && _content.find('\t') == std::wstring::npos && Cherche == min(min(_content.find('\n'), _content.find('\f')), _content.find('\v')))
-		{
-			size_t ligne = (Cherche) / (SizeWidget.GetSizeX().GetDataActual());
-			size_t espace_a_remplir = (SizeWidget.GetSizeX().GetDataActual()) - (Cherche % SizeWidget.GetSizeX().GetDataActual()); // changer le calcul
-
-			_content.erase(Cherche, 1);
-
-			wstring toinsert = L"";
-			toinsert.insert(0, espace_a_remplir, ' ');
-			_content.insert(Cherche, toinsert);
-		}
-
-		else
-		{
-			Verif++;
-		}
-
-		Cherche = _content.find('\r');
-
-		if (Cherche != std::wstring::npos)
-		{
-			size_t ligne = (Cherche) / (SizeWidget.GetSizeX().GetDataActual());
-			size_t espace_a_suppr = Cherche % SizeWidget.GetSizeX().GetDataActual();
-
-			_content.erase(Cherche, 1);
-			_content.erase(Cherche - espace_a_suppr, espace_a_suppr);
-		}
-
-		else
-		{
-			Verif++;
-		}
-
-		/ *Cherche = _content.find('\\'); // a voir
-
-		if (Cherche != std::string::npos)
-		{
-			// code;
-		}
-
-		else
-		{
-			Verif++;
-		}* /
-
-		if (Verif == 4)
-		{
-			break;
-		}
-
-		// securité pas important je pense
-		if (i > _content.size() / 2 && i > 350 && coloredtemp.GetSize() < i)
-		{
-			MessageBox(
-				NULL,
-				L"Il y a beaucoup d'itérations ! dans la fonction ContentReorganisation. Est-ce normal ? si oui ignorer ce message (pas de panique !)",
-				L"Message",
-				MB_ICONERROR | MB_OK
-			);
-		}
-	}
-*/
-
-	for (int i = 0; i < max_; i++) // rendre plus concis ?
+	for (int i = 0; i < max_; i++)
 	{
 		Cherche = _content.find('\b');
 		Cherche = min(
@@ -573,7 +504,7 @@ std::wstring trWidget::ContentReorganisationKeepColor(std::wstring _content, con
 		}*/
 
 		// securité pas important je pense
-		if (i > _content.size() / 2 && i > 35000 && coloredtemp.GetSize() < i)
+		if (i > _content.size() / 2 && i > 35000)
 		{
 			MessageBox(
 				NULL,
@@ -602,7 +533,7 @@ const trWidget& trWidget::EmptyWidget()
 
 		EmptyWidgetInstance->SetActivate(false);   // Désactivé
 		EmptyWidgetInstance->SetProtecte(false);   // Non protégé
-		EmptyWidgetInstance->SetColor(0);          // Couleur par défaut
+		EmptyWidgetInstance->SetColor(L"\x1b[0m");          // Couleur par défaut
 		EmptyWidgetInstance->SetDestroy(false);    // Pas détruit
 	}
 	return *EmptyWidgetInstance;

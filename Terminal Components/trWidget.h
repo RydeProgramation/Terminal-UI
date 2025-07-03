@@ -26,6 +26,8 @@ public:
 
 	trWidget();
 
+	virtual void Init() override;
+
 	// INI
 
 	trWidget(int x_, int y_, int size_x_, int size_y_, uint8_t RelativePositionType_, std::wstring content_, std::string name_);
@@ -44,15 +46,17 @@ public:
 
 	void SetResetColor(const std::vector<trPair<std::wstring, trCoordinate<int>>>& RstColor);
 
-	void SetColor(int color_); // a voir quoi faire avec ça frR
+	void SetColor(uint8_t R, uint8_t G, uint8_t B, bool Backround);
+
+	void SetColor(const std::wstring& CodeCouleurAnsi);
+
+	void ResetColor();
 
 	void SetSize(int x_, int y_);
 
 	// ADD
 
 	void AddToContent(const std::wstring& content_);
-
-	void AddToColor(int color_);
 
 	void AddToSize(int x_, int y_);
 
@@ -70,13 +74,13 @@ public:
 
 	const std::vector<trPair<std::wstring, trCoordinate<int>>>& GetResetColor() const;
 
-	const trData<int>& GetColor() const;
+	const trData<std::wstring>& GetColor() const;
 
 	virtual void APPLY_(const trSize<uint16_t>& SizeWindow) override;
 
 	// FNC
 
-	bool VerificationProprety() override; 
+	bool VerificationProprety() override;
 
 	virtual void UpdateRelativePositionPoint(const trSize<uint16_t>& SizeWindow) override;
 	
@@ -95,7 +99,7 @@ public:
 
 	// DESTRUCTEUR
 
-	~trWidget();
+	virtual ~trWidget();
 
 private:
 
@@ -103,7 +107,7 @@ private:
 
 	trSize<int> *Size;
 
-	trData<int> *Color; // a voir si utiliser ??????
+	trData<std::wstring> *Color; // A voir pour supprimer
 
 	trData<std::wstring>* RawContent;
 

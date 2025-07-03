@@ -169,6 +169,17 @@ bool trUserInterface::RefreshVerification()
 
 void trUserInterface::SetupConsole()
 {
+	// Récupérer le handle du processus actuel
+	HANDLE hProcess = GetCurrentProcess();
+
+	// Mettre la priorité à HIGH PRIORITY CLASS
+	if (SetPriorityClass(hProcess, HIGH_PRIORITY_CLASS)) {
+		std::cout << "Priorité élevée appliquée avec succès ! 🚀\n";
+	}
+	else {
+		std::cerr << "Erreur lors du changement de priorité : " << GetLastError() << "\n";
+	}
+
 	SetConsoleOutputCP(CP_UTF8);
 
 	SetConsoleCP(CP_UTF8);
@@ -179,8 +190,8 @@ void trUserInterface::SetupConsole()
 
 	Render->UpdateSizeWindow();
 
-	KB->CreateBTN(trBTN_Key(VK_LEFT, OnRelease, PressToTrigger, bind(&trUserInterface::SelectPrevious, this), this));
-	KB->CreateBTN(trBTN_Key(VK_RIGHT, OnRelease, PressToTrigger, bind(&trUserInterface::SelectNext, this), this));
+	KB->CreateBTN(new trBTN_Key(VK_LEFT, OnRelease, PressToTrigger, bind(&trUserInterface::SelectPrevious, this), this));
+	KB->CreateBTN(new trBTN_Key(VK_RIGHT, OnRelease, PressToTrigger, bind(&trUserInterface::SelectNext, this), this));
 }
 
 /// SELECTION ///
@@ -189,101 +200,112 @@ void trUserInterface::Select(const string& name)
 {
 	for (auto& widg : World->GetActors())
 	{
+		trSelector* sltr = dynamic_cast<trSelector*>(widg.second);
+		if (sltr)
+		{
+			sltr->SetSelected(sltr->GetName().GetDataActual() == name);
+		}
+
+		else
+		{
+			MessageBox(
+				NULL,
+				L"Ce n'est pas un selector",
+				L"Message",
+				MB_ICONERROR | MB_OK
+			);
+		}
+	}
+}
+
+void trUserInterface::SelectNext()
+{
+	// Récupérer la liste des selectors uniquement
+	std::vector<trSelector*> selectors;
+	for (auto& widg : World->GetActors())
+	{
 		if (trSelector* sltr = dynamic_cast<trSelector*>(widg.second))
 		{
-			sltr->SetSelected(sltr->trWidget::GetName().GetDataActual() == name);
-			sltr->trWidget::SetChange(true);
+			selectors.push_back(sltr);
 		}
 	}
+
+	if (selectors.empty())
+		return; // Rien à faire s'il n'y a pas de selectors
+
+	// Trouver l'index du selector sélectionné actuellement
+	int currentIndex = -1;
+	for (size_t i = 0; i < selectors.size(); ++i)
+	{
+		if (selectors[i]->IsSelected().GetDataActual())
+		{
+			currentIndex = static_cast<int>(i);
+			break;
+		}
+	}
+
+	// Désélectionner l'actuel si trouvé
+	if (currentIndex != -1)
+	{
+		selectors[currentIndex]->SetSelected(false);
+		selectors[currentIndex]->SetChange(true);
+	}
+
+	// Calculer l'index du suivant (boucle)
+	int nextIndex = (currentIndex + 1) % selectors.size();
+
+	// Sélectionner le suivant
+	selectors[nextIndex]->SetSelected(true);
 }
 
-void trUserInterface::SelectNext() // <-- a refaire en entier (car pas optimiser + non-utilisation de vector)
+void trUserInterface::SelectPrevious()
 {
-	// std::lock_guard<std::mutex> lock(*Mutex); ça fait crash, par ce que le lock est appeler dnas un meme lock
-
-	cout << "droite";
-
-	/*bool found = false;
-
-	for (auto& widg : Actors)
+	// Récupérer la liste des selectors uniquement
+	std::vector<trSelector*> selectors;
+	for (auto& widg : World->GetActors())
 	{
 		if (trSelector* sltr = dynamic_cast<trSelector*>(widg.second))
 		{
-			if (found)
-			{
-				sltr->SetSelected(true);
-				sltr->SetChange(true);
-				found = false;
-				i = Actors.size();
-			}
-
-			else if (sltr->IsSelected().GetDataActual())
-			{
-				found = true;
-				sltr->SetSelected(false);
-				sltr->SetChange(true);
-			}
+			selectors.push_back(sltr);
 		}
 	}
 
-	if (found)
+	if (selectors.empty())
+		return; // Rien à faire s'il n'y a pas de selectors
+
+	// Trouver l'index du selector sélectionné actuellement
+	int currentIndex = -1;
+	for (size_t i = 0; i < selectors.size(); ++i)
 	{
-		for (size_t i = 0; i < Actors.size(); i++)
+		if (selectors[i]->IsSelected().GetDataActual())
 		{
-			if (trSelector* sltr = dynamic_cast<trSelector*>(Actors[i]))
-			{
-				sltr->SetSelected(true);
-				sltr->SetChange(true);
-				found = false;
-				i = Actors.size();
-			}
-		}
-	}*/
-}
-
-void trUserInterface::SelectPrevious() // <-- a refaire en entier (car pas optimiser + non-utilisation de vector)
-{
-	// std::lock_guard<std::mutex> lock(*Mutex); ça fait crash, par ce que le lock est appeler dnas un meme lock
-
-	cout << "gauche";
-
-	/*bool found = false;
-
-	for (int i = int(Actors.size()) - 1; i >= 0; i--)
-	{
-		if (trSelector* sltr = dynamic_cast<trSelector*>(Actors[i]))
-		{
-			if (found)
-			{
-				sltr->SetSelected(true);
-				sltr->SetChange(true);
-				found = false;
-				i = 0;
-			}
-
-			else if (sltr->IsSelected().GetDataActual())
-			{
-				found = true;
-				sltr->SetSelected(false);
-				sltr->SetChange(true);
-			}
+			currentIndex = static_cast<int>(i);
+			break;
 		}
 	}
 
-	if (found)
+	// Désélectionner l'actuel si trouvé
+	if (currentIndex != -1)
 	{
-		for (int i = int(Actors.size()) - 1; i > 0; i--)
-		{
-			if (trSelector* sltr = dynamic_cast<trSelector*>(Actors[i]))
-			{
-				sltr->SetSelected(true);
-				sltr->SetChange(true);
-				found = false;
-				i = 0;
-			}
-		}
-	}*/
+		selectors[currentIndex]->SetSelected(false);
+		selectors[currentIndex]->SetChange(true);
+	}
+
+	// Calculer l'index du précédent (boucle en arrière)
+	int prevIndex;
+	if (currentIndex == -1) // Si aucun sélectionné, prendre le dernier
+	{
+		prevIndex = static_cast<int>(selectors.size()) - 1;
+	}
+	else
+	{
+		prevIndex = (currentIndex - 1 + static_cast<int>(selectors.size())) % selectors.size();
+	}
+
+	// Sélectionner le précédent
+	selectors[prevIndex]->SetSelected(true);
 }
+
 
 // private FNC
 

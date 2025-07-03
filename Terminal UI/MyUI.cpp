@@ -86,12 +86,11 @@ void MyUI::Start()
 
 	vector<wstring> hello3;
 
-	/*hello3.push_back(L"\033[38;2;50;100;125m _   _      _ _        \033[38;2;50;100;150m__        __         _     _\033[38;2;50;100;255m _\n"); // 54
+	hello3.push_back(L"\033[38;2;50;100;125m _   _      _ _        \033[38;2;50;100;150m__        __         _     _\033[38;2;50;100;255m _\n"); // 54
 	hello3.push_back(L"\033[38;2;50;100;125m| | | | ___| | | ___   \033[38;2;50;100;150m\\ \\      / /__  _ __| | __| \033[38;2;50;100;255m| |"); // 54
 	hello3.push_back(L"\033[38;2;50;100;125m| |_| |/ _ \\ | |/ _ \\\033[38;2;50;100;150m   \\ \\ /\\ / / _ \\| '__| |/ _` \033[38;2;50;100;255m| |"); // 54
 	hello3.push_back(L"\033[38;2;50;100;125m|  _  |  __/ | | (_) | \033[38;2;50;100;150m  \\ V  V / (_) | |  | | (_| \033[38;2;50;100;255m|_|"); // 54
-	hello3.push_back(L"\033[38;2;50;100;125m|_| |_|\\___|_|_|\\___/\033[38;2;50;100;150m     \\_/\\_/ \\___/|_|  |_|\\__,_\033[38;2;50;100;255m(_)"); // 54*/
-
+	hello3.push_back(L"\033[38;2;50;100;125m|_| |_|\\___|_|_|\\___/\033[38;2;50;100;150m     \\_/\\_/ \\___/|_|  |_|\\__,_\033[38;2;50;100;255m(_)"); // 54
 	hello3.push_back(applyColorToText(L" _   _      _ _        __        __         _     _ _ ", 0)); // 54
 	hello3.push_back(applyColorToText(L"| | | | ___| | | ___   \\ \\      / /__  _ __| | __| | |", 0)); // 54
 	hello3.push_back(applyColorToText(L"| |_| |/ _ \\ | |/ _ \\   \\ \\ /\\ / / _ \\| '__| |/ _` | |", 0)); // 54
@@ -120,9 +119,15 @@ void MyUI::Start()
 
 	CreateWidgetWait(new trWidget(100, -1, 22, 5, MiddleCenter, hello_, "Hello"));
 
+	World->SetActor<trWidget>(
+		"Hello",
+		static_cast<void (trWidget::*)(uint8_t, uint8_t, uint8_t, bool)>(&trWidget::SetColor),
+		uint8_t(0), uint8_t(0), uint8_t(255), false
+	);
+
 	for (int i = 0; i < 115; i++)
 	{
-		World->SetActor("Hello", &trWidget::AddToPosition, -1, 0);
+		World->SetActor<trWidget>("Hello", &trWidget::AddToPosition, -1, 0);
 
 		Sleep(10);
 	}
@@ -154,21 +159,21 @@ void MyUI::Start()
 
 		hello3_ = hello3[0] + hello3[1] + hello3[2] + hello3[3] + hello3[4];
 
-		World->SetActor("Hello3", &trWidget::SetContent, hello3_);
+		World->SetActor<trWidget>("Hello3", &trWidget::SetContent, hello3_);
 
 		Sleep(26);
 	}
 
 	for (int i = 0; i < 10; i++)
 	{
-		World->SetActor("Hello3", &trWidget::AddToPosition, 0, 1);
+		World->SetActor<trWidget>("Hello3", &trWidget::AddToPosition, 0, 1);
 
 		Sleep(100);
 	}
 
 	for (int i = 0; i < 5; i++)
 	{
-		World->SetActor("Hello3", &trWidget::AddToSize, 0, -1);
+		World->SetActor<trWidget>("Hello3", &trWidget::AddToSize, 0, -1);
 
 		Sleep(100);
 	}
@@ -193,7 +198,7 @@ void MyUI::Start()
 				std::wstring ansiSeq = paragColor.substr(i, endSeq - i + 1);  // +1 pour inclure 'm'
 
 				// On ajoute la séquence ANSI à l'interface
-				World->SetActor("Paragraphe", &trWidget::AddToContent, ansiSeq);
+				World->SetActor<trWidget>("Paragraphe", &trWidget::AddToContent, ansiSeq);
 
 				// On saute l'indice de la séquence ANSI pour ne pas la traiter à nouveau
 				i += static_cast<int>(ansiSeq.size() - 1); // -1 car on a déjà ajouté un caractère
@@ -203,7 +208,7 @@ void MyUI::Start()
 		else
 		{
 			// Si ce n'est pas une séquence ANSI, on ajoute un seul caractère
-			World->SetActor("Paragraphe", &trWidget::AddToContent, wstring(1, paragColor[i]));
+			World->SetActor<trWidget>("Paragraphe", &trWidget::AddToContent, wstring(1, paragColor[i]));
 		}
 		
 		Sleep(50);
@@ -213,55 +218,55 @@ void MyUI::Start()
 
 	paragColor = L"\033[38;2;255;182;193mSalutations, brave lache ! \033[38;2;176;224;230mMo\033[48;2;255;255;255m\033[38;2;0;0;0mn\033[0m\033[38;2;176;224;230m projet est une application maléfique\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\033[0m\033[38;2;152;251;152mapplication magique qui ouvre les portes des marchés financiers.\033[0m\nÀ l'aide de la puissante technique de \033[38;2;216;191;216mDiCaprio\b\b\b\b\b\b\b\bMonte-Carlo\033[0m, \033[38;2;240;230;140mje simule des trajectoires aléatoires\033[0m pour les options (calls et \033[38;2;250;235;215mputain\b\b\bs\033[0m).\n\033[38;2;255;222;173mImagine-toi chevauchant un dragon volant au-dessus des courbes de prix, scrutant les volatilités et les risques.\033[0m\nLes prix d'\033[38;2;255;228;196moptions\033[0m se révèlent tels des trésors cachés dans les profondeurs du marché. \033[38;2;240;255;255mTu attends quoi pour jouer avec les courbes !\033[0m\n\033[38;2;245;222;179mJe te propose donc cette application pour que tu fasses tes propres simulations et découvre les secrets enfouis\033[0m dans\f\033[38;2;216;191;216mles volutes des courbes financières.\033[0m 🎉";
 
-	World->SetActor("Paragraphe", &trWidget::SetContent, wstring(paragColor));
+	World->SetActor<trWidget>("Paragraphe", &trWidget::SetContent, wstring(paragColor));
 
 	Sleep(1400);
 
 	paragColor = L"\033[38;2;255;182;193mSalutations, brave lache ! \033[38;2;176;224;230mM\033[48;2;255;255;255m\033[38;2;0;0;0mo\033[0m\033[38;2;176;224;230mn projet est une application maléfique\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\033[0m\033[38;2;152;251;152mapplication magique qui ouvre les portes des marchés financiers.\033[0m\nÀ l'aide de la puissante technique de \033[38;2;216;191;216mDiCaprio\b\b\b\b\b\b\b\bMonte-Carlo\033[0m, \033[38;2;240;230;140mje simule des trajectoires aléatoires\033[0m pour les options (calls et \033[38;2;250;235;215mputain\b\b\bs\033[0m).\n\033[38;2;255;222;173mImagine-toi chevauchant un dragon volant au-dessus des courbes de prix, scrutant les volatilités et les risques.\033[0m\nLes prix d'\033[38;2;255;228;196moptions\033[0m se révèlent tels des trésors cachés dans les profondeurs du marché. \033[38;2;240;255;255mTu attends quoi pour jouer avec les courbes !\033[0m\n\033[38;2;245;222;179mJe te propose donc cette application pour que tu fasses tes propres simulations et découvre les secrets enfouis\033[0m dans\f\033[38;2;216;191;216mles volutes des courbes financières.\033[0m 🎉";
 
-	World->SetActor("Paragraphe", &trWidget::SetContent, wstring(paragColor));
+	World->SetActor<trWidget>("Paragraphe", &trWidget::SetContent, wstring(paragColor));
 
-	Sleep(500);
+	Sleep(400);
 
 	paragColor = L"\033[38;2;255;182;193mSalutations, brave lache ! \033[38;2;176;224;230m\033[48;2;255;255;255m\033[38;2;0;0;0mM\033[0m\033[38;2;176;224;230mon projet est une application maléfique\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\033[0m\033[38;2;152;251;152mapplication magique qui ouvre les portes des marchés financiers.\033[0m\nÀ l'aide de la puissante technique de \033[38;2;216;191;216mDiCaprio\b\b\b\b\b\b\b\bMonte-Carlo\033[0m, \033[38;2;240;230;140mje simule des trajectoires aléatoires\033[0m pour les options (calls et \033[38;2;250;235;215mputain\b\b\bs\033[0m).\n\033[38;2;255;222;173mImagine-toi chevauchant un dragon volant au-dessus des courbes de prix, scrutant les volatilités et les risques.\033[0m\nLes prix d'\033[38;2;255;228;196moptions\033[0m se révèlent tels des trésors cachés dans les profondeurs du marché. \033[38;2;240;255;255mTu attends quoi pour jouer avec les courbes !\033[0m\n\033[38;2;245;222;179mJe te propose donc cette application pour que tu fasses tes propres simulations et découvre les secrets enfouis\033[0m dans\f\033[38;2;216;191;216mles volutes des courbes financières.\033[0m 🎉";
 
-	World->SetActor("Paragraphe", &trWidget::SetContent, wstring(paragColor));
+	World->SetActor<trWidget>("Paragraphe", &trWidget::SetContent, wstring(paragColor));
 
-	Sleep(500);
+	Sleep(400);
 
 	paragColor = L"\033[38;2;255;182;193mSalutations, brave lache !\033[48;2;255;255;255m\033[38;2;0;0;0m \033[0m\033[38;2;176;224;230mMon projet est une application maléfique\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\033[0m\033[38;2;152;251;152mapplication magique qui ouvre les portes des marchés financiers.\033[0m\nÀ l'aide de la puissante technique de \033[38;2;216;191;216mDiCaprio\b\b\b\b\b\b\b\bMonte-Carlo\033[0m, \033[38;2;240;230;140mje simule des trajectoires aléatoires\033[0m pour les options (calls et \033[38;2;250;235;215mputain\b\b\bs\033[0m).\n\033[38;2;255;222;173mImagine-toi chevauchant un dragon volant au-dessus des courbes de prix, scrutant les volatilités et les risques.\033[0m\nLes prix d'\033[38;2;255;228;196moptions\033[0m se révèlent tels des trésors cachés dans les profondeurs du marché. \033[38;2;240;255;255mTu attends quoi pour jouer avec les courbes !\033[0m\n\033[38;2;245;222;179mJe te propose donc cette application pour que tu fasses tes propres simulations et découvre les secrets enfouis\033[0m dans\f\033[38;2;216;191;216mles volutes des courbes financières.\033[0m 🎉";
 
-	World->SetActor("Paragraphe", &trWidget::SetContent, wstring(paragColor));
+	World->SetActor<trWidget>("Paragraphe", &trWidget::SetContent, wstring(paragColor));
 
-	Sleep(500);
+	Sleep(400);
 
 	paragColor = L"\033[38;2;255;182;193mSalutations, brave lache \033[48;2;255;255;255m\033[38;2;0;0;0m!\033[0m\033[0m\033[38;2;176;224;230m Mon projet est une application maléfique\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\033[0m\033[38;2;152;251;152mapplication magique qui ouvre les portes des marchés financiers.\033[0m\nÀ l'aide de la puissante technique de \033[38;2;216;191;216mDiCaprio\b\b\b\b\b\b\b\bMonte-Carlo\033[0m, \033[38;2;240;230;140mje simule des trajectoires aléatoires\033[0m pour les options (calls et \033[38;2;250;235;215mputain\b\b\bs\033[0m).\n\033[38;2;255;222;173mImagine-toi chevauchant un dragon volant au-dessus des courbes de prix, scrutant les volatilités et les risques.\033[0m\nLes prix d'\033[38;2;255;228;196moptions\033[0m se révèlent tels des trésors cachés dans les profondeurs du marché. \033[38;2;240;255;255mTu attends quoi pour jouer avec les courbes !\033[0m\n\033[38;2;245;222;179mJe te propose donc cette application pour que tu fasses tes propres simulations et découvre les secrets enfouis\033[0m dans\f\033[38;2;216;191;216mles volutes des courbes financières.\033[0m 🎉";
 
-	World->SetActor("Paragraphe", &trWidget::SetContent, wstring(paragColor));
+	World->SetActor<trWidget>("Paragraphe", &trWidget::SetContent, wstring(paragColor));
 
-	Sleep(800);
+	Sleep(700);
 
 	paragColor = L"\033[38;2;255;182;193mSalutations, \033[48;2;255;255;255m\033[38;2;0;0;0mbrave lache !\033[0m\033[0m\033[38;2;176;224;230m Mon projet est une application maléfique\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\033[0m\033[38;2;152;251;152mapplication magique qui ouvre les portes des marchés financiers.\033[0m\nÀ l'aide de la puissante technique de \033[38;2;216;191;216mDiCaprio\b\b\b\b\b\b\b\bMonte-Carlo\033[0m, \033[38;2;240;230;140mje simule des trajectoires aléatoires\033[0m pour les options (calls et \033[38;2;250;235;215mputain\b\b\bs\033[0m).\n\033[38;2;255;222;173mImagine-toi chevauchant un dragon volant au-dessus des courbes de prix, scrutant les volatilités et les risques.\033[0m\nLes prix d'\033[38;2;255;228;196moptions\033[0m se révèlent tels des trésors cachés dans les profondeurs du marché. \033[38;2;240;255;255mTu attends quoi pour jouer avec les courbes !\033[0m\n\033[38;2;245;222;179mJe te propose donc cette application pour que tu fasses tes propres simulations et découvre les secrets enfouis\033[0m dans\f\033[38;2;216;191;216mles volutes des courbes financières.\033[0m 🎉";
 
-	World->SetActor("Paragraphe", &trWidget::SetContent, wstring(paragColor));
+	World->SetActor<trWidget>("Paragraphe", &trWidget::SetContent, wstring(paragColor));
 
 	Sleep(1000);
 
 	paragColor = L"\033[38;2;255;182;193mSalutations, \033[0m\033[38;2;176;224;230mMon projet est une application maléfique\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\033[0m\033[38;2;152;251;152mapplication magique qui ouvre les portes des marchés financiers.\033[0m\nÀ l'aide de la puissante technique de \033[38;2;216;191;216mDiCaprio\b\b\b\b\b\b\b\bMonte-Carlo\033[0m, \033[38;2;240;230;140mje simule des trajectoires aléatoires\033[0m pour les options (calls et \033[38;2;250;235;215mputain\b\b\bs\033[0m).\n\033[38;2;255;222;173mImagine-toi chevauchant un dragon volant au-dessus des courbes de prix, scrutant les volatilités et les risques.\033[0m\nLes prix d'\033[38;2;255;228;196moptions\033[0m se révèlent tels des trésors cachés dans les profondeurs du marché. \033[38;2;240;255;255mTu attends quoi pour jouer avec les courbes !\033[0m\n\033[38;2;245;222;179mJe te propose donc cette application pour que tu fasses tes propres simulations et découvre les secrets enfouis\033[0m dans\f\033[38;2;216;191;216mles volutes des courbes financières.\033[0m 🎉";
 
-	World->SetActor("Paragraphe", &trWidget::SetContent, wstring(paragColor));
+	World->SetActor<trWidget>("Paragraphe", &trWidget::SetContent, wstring(paragColor));
 
 	Sleep(1100);
 
 	paragColor = L"\033[38;2;255;182;193mSalutations, brave aventurier !\033[0m\033[38;2;176;224;230m Mon projet est une application maléfique\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\033[0m\033[38;2;152;251;152mapplication magique qui ouvre les portes des marchés financiers.\033[0m\nÀ l'aide de la puissante technique de \033[38;2;216;191;216mDiCaprio\b\b\b\b\b\b\b\bMonte-Carlo\033[0m, \033[38;2;240;230;140mje simule des trajectoires aléatoires\033[0m pour les options (calls et \033[38;2;250;235;215mputain\b\b\bs\033[0m).\n\033[38;2;255;222;173mImagine-toi chevauchant un dragon volant au-dessus des courbes de prix, scrutant les volatilités et les risques.\033[0m\nLes prix d'\033[38;2;255;228;196moptions\033[0m se révèlent tels des trésors cachés dans les profondeurs du marché. \033[38;2;240;255;255mTu attends quoi pour jouer avec les courbes !\033[0m\n\033[38;2;245;222;179mJe te propose donc cette application pour que tu fasses tes propres simulations et découvre les secrets enfouis\033[0m dans\f\033[38;2;216;191;216mles volutes des courbes financières.\033[0m 🎉";
 
-	World->SetActor("Paragraphe", &trWidget::SetContent, wstring(paragColor));
+	World->SetActor<trWidget>("Paragraphe", &trWidget::SetContent, wstring(paragColor));
 
 	Sleep(1200);
 
 	for (int i = 0; i < 6; i++)
 	{
-		World->SetActor("Paragraphe", &trWidget::AddToSize, 0, -1);
+		World->SetActor<trWidget>("Paragraphe", &trWidget::AddToSize, 0, -1);
 
 		Sleep(250);
 	}
@@ -308,7 +313,11 @@ void MyUI::Menu1()
 
 	wstring SimCarlo_ = SimCarlo[0] + SimCarlo[1] + SimCarlo[2] + SimCarlo[3] + SimCarlo[4];
 
-	CreateSelectorWait(new trSelector(-25, 5, static_cast<int>(SimCarlo[0].size()), 5, MiddleCenter, SimCarlo_, "SimCarlo"));
+	CreateSelectorWait(new trSelector(-40, 5, static_cast<int>(SimCarlo[0].size()), 5, MiddleCenter, SimCarlo_, "SimCarlo"));
+
+	World->SetActor<trSelector>("SimCarlo", &trSelector::SetSelected, bool(true));
+
+	CreateSelectorWait(new trSelector(40, 5, static_cast<int>(SimCarlo[0].size()), 5, MiddleCenter, SimCarlo_, "SimCarlo2"));
 
 	// je vais tenter d'abord de pouvoir déplacer le bloc "SimCarlo" pour voir si mon trKeyBoardManagment fonctionne
 
@@ -318,9 +327,19 @@ void MyUI::Menu1()
 
 	// TEST
 
-	// KB->CreateBTN(trBTN_Key(0x57, OnPress, HoldToTrigger, bind(&trWidget::AddToPosition, GetPtrActor("Simulation"), 0, -1), GetPtrActor("Simulation")));
+	// trObject *an_obj = new trObject();
 
-	KB->CreateBTN(trBTN_Key(
+	KB->CreateBTN(new trBTN_Key(
+		KEY_W,
+		OnPress,
+		HoldToTrigger,
+		std::bind(&trWidget::AddToPosition, static_cast<trWidget*>(World->GetPtrActor("Simulation")), 0, -1),
+		World->GetPtrActor("Simulation")
+	));
+
+	// KB->CreateBTN(trBTN_Key(0x57, OnPress, HoldToTrigger, bind(&trWidget::AddToPosition, World->GetPtrActor("Simulation"), 0, -1), World->GetPtrActor("Simulation")));
+
+	/*KB->CreateBTN(trBTN_Key(
 		0x57,
 		OnPress,
 		HoldToTrigger,
@@ -330,9 +349,9 @@ void MyUI::Menu1()
 			}
 		},
 		World->GetPtrActor("Simulation")
-	));
+	));*/
 
-	KB->CreateBTN(trBTN_Key(
+	KB->CreateBTN(new trBTN_Key(
 		0x41,
 		OnPress,
 		HoldToTrigger,
@@ -342,7 +361,7 @@ void MyUI::Menu1()
 		World->GetPtrActor("Simulation")
 	));
 
-	KB->CreateBTN(trBTN_Key(
+	KB->CreateBTN(new trBTN_Key(
 		0x53,
 		OnPress,
 		HoldToTrigger,
@@ -352,7 +371,7 @@ void MyUI::Menu1()
 		World->GetPtrActor("Simulation")
 	));
 
-	KB->CreateBTN(trBTN_Key(
+	KB->CreateBTN(new trBTN_Key(
 		0x44,
 		OnPress,
 		HoldToTrigger,
@@ -362,6 +381,12 @@ void MyUI::Menu1()
 		World->GetPtrActor("Simulation")
 	));
 
+	/*Sleep(10000);
+
+	delete an_obj;*/
+
+	/*an_obj = nullptr;*/
+
 	// ancienne version que je veux retravailler pour l'optimiser
 	// KB->CreateBTN(trBTN_Key(0x41, OnPress, HoldToTrigger, bind(&trWidget::AddToPosition, dynamic_cast<trWidget*>GetPtrActor("Simulation"), -1, 0), GetPtrActor("Simulation")));
 	/*KB->CreateBTN(trBTN_Key(0x53, OnPress, HoldToTrigger, bind(&trWidget::AddToPosition, GetPtrActor("Simulation"), 0, 1), GetPtrActor("Simulation")));
@@ -369,14 +394,16 @@ void MyUI::Menu1()
 	KB->CreateBTN(trBTN_Key(KEY_J, OnPress, HoldToTrigger, bind(&trUserInterface::CreateActor, GetPtrActor("Simulation"), new Munition(0, 0, TopLeft, L"*", "Bullet_")), GetPtrActor("Simulation")));
 	*/
 
-	KB->CreateBTN(trBTN_Key(
+	trWidget* Ptr = dynamic_cast<trWidget*>(World->GetPtrActor("Simulation"));
+
+	KB->CreateBTN(new trBTN_Key(
 		KEY_J,            // La touche J
 		OnPress,          // Appui
 		PressToTrigger,    // Mode d'utilisation
-		[this]() {        // Lambda sans argument, qui capture this
-			CreateWidgetWait(new Munition(0, 0, TopLeft, L"*", "Bullet_"));
+		[Ptr, this]() {        // Lambda sans argument, qui capture this
+			World->CreateActor(new Munition(Ptr->GetPosition().GetX().GetDataActual(), Ptr->GetPosition().GetY().GetDataActual(), MiddleCenter, L"**", "Bullet_"));
 		},
-		this  // Pointeur vers widget parent
+		Ptr  // Pointeur vers widget parentda
 	));
 
 	int a = 0;

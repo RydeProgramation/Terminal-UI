@@ -20,10 +20,12 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="trSelector.h" />
+    <ClInclude Include="trText.h" />
     <ClInclude Include="trWidget.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="trSelector.cpp" />
+    <ClCompile Include="trText.cpp" />
     <ClCompile Include="trWidget.cpp" />
   </ItemGroup>
   <PropertyGroup Label="Globals">

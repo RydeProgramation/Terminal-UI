@@ -1,4 +1,4 @@
-#pragma once
+﻿#pragma once
 
 #include "include.h"
 
@@ -16,13 +16,15 @@
 #define TERMINAL_COMPONENTS_API __declspec(dllimport)
 #endif
 
-struct TERMINAL_COMPONENTS_API trSelector : trWidget
+struct TERMINAL_COMPONENTS_API trSelector : public trWidget
 {
 public:
 
 	// INI default
 
 	trSelector();
+
+	virtual void Init() override;
 
 	// INI
 
@@ -40,15 +42,23 @@ public:
 
 	void SetSelected(bool Slct);
 
-	void SetColorSelected(int color);
+	void SetColorSelected(uint8_t R, uint8_t G, uint8_t B, bool Backround);
+
+	void SetColorSelected(const std::wstring& CodeCouleurAnsi);
+
+	void SetColorUnSelected(uint8_t R, uint8_t G, uint8_t B, bool Backround);
+
+	void SetColorUnSelected(const std::wstring& CodeCouleurAnsi);
 
 	// GET
 
 	const trData<bool> IsSelected() const;
 
-	const trData<int> GetColorSelected() const;
+	const trData<std::wstring> GetColorSelected() const;
 
 	// APPLY
+
+	bool VerificationProprety() override;
 
 	void APPLY_(const trSize<uint16_t>& SizeWindow) override;
 
@@ -62,7 +72,9 @@ private:
 
 	trData<bool> *Selected;
 
-	trData<int> *ColorSelected;
+	trData<std::wstring> *ColorSelected;
+
+	trData<std::wstring> *ColorUnSelected;
 };
 
 #endif

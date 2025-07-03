@@ -29,6 +29,19 @@ int main()
 
 	cout << WstringToUtf8(L"Ensuite clique sur n'importe quelle touche (entrée)") << endl;
 
+	// TEST
+
+	int* a = new int(5435);
+
+	delete a;
+
+	if (a)
+		std::cout << "POINTEUR VIDÉ ✅\n";
+
+
+
+	// fin TEST
+
 	cin.ignore();
 
 	MyUI UI;

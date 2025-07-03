@@ -32,18 +32,27 @@ class Munition : public trWidget
 public:
 
 	Munition(int x_, int y_, int RelativePosition_, std::wstring content_, std::string name_)
-		: trWidget(x_, y_, 1, 1, RelativePosition_, content_, name_ + std::to_string(bulletCount))
+		: trWidget(x_, y_, 3, 5, RelativePosition_, content_, name_ + std::to_string(bulletCount))
 	{
-		this->SetContent(L"*");
+		this->SetContent(L"****************");
 		bulletCount++;
+
+		if (bulletCount >= 20)
+		{
+			// dajasdjjjjjjjjjjjjjjjjjajjwwdjjajjjjjjjjjjjjjjsjdjjjjjjdjjjjjjjjjjjjjjjjjasjjajjjjjjjajjjjjjjajjjwdasdwsadwdwdasdwasdwasdwasdwasdwadsthis->SetDestroy(true);
+		}
 	}
 
 	void APPLY_Implementation() override
 	{
-		if (a <= 10)
+		if (a <= 800)
 		{
-			this->AddToPosition(0, -1);
+			this->AddToPosition(0, -static_cast<int>(std::floor(b)));
+			b += 0.15f;
 			a++;
+
+			if (b >= 1.1)
+				b = 0;
 		}
 		
 		else
@@ -52,7 +61,13 @@ public:
 		}
 	}
 
+	~Munition()
+	{
+		// bulletCount--;
+	}
+
 	int a = 0;
+	float b = 0;
 
 	static int bulletCount;
 };

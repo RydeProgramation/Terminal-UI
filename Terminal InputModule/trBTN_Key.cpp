@@ -4,14 +4,14 @@ using namespace std;
 
 // INI default
 
-trBTN_Key::trBTN_Key() : Key(0), KeyState(false), Action(nullptr), Protect(false), Ptr(nullptr), Mode(OnPress), UsingMode(HoldToTrigger)
+trBTN_Key::trBTN_Key() : Key(0), KeyState(false), Action(nullptr), Protect(false), Ptr(nullptr), Mode(OnPress), UsingMode(HoldToTrigger) // avoir
 {
 
 }
 
 // INI
 
-trBTN_Key::trBTN_Key(int key_, int Mode_, int UsingMode_, std::function<void()> action_, trObject* Ptr_) : Key(key_), KeyState(false), Mode(Mode_), UsingMode(UsingMode_), Action(new std::function<void()>(action_)), Protect(false), Ptr(Ptr_)
+trBTN_Key::trBTN_Key(int Key_, int PressOrRelease_, int UsingMode_, const std::function<void()>& Action_, trObject* Ptr_) : Key(Key_), KeyState(false), Mode(PressOrRelease_), UsingMode(UsingMode_), Action(new std::function<void()>(Action_)), Protect(Ptr_), Ptr(new trWeakPointer(Ptr_))
 {
 
 }
@@ -42,7 +42,7 @@ trBTN_Key& trBTN_Key::operator=(const trBTN_Key& other)
 	Mode = other.Mode;
 	UsingMode = other.UsingMode;
 	// FAIRE BELEK ICI
-	Ptr = other.Ptr;
+    Ptr = other.Ptr;
 
 	return *this;
 }
@@ -62,7 +62,13 @@ void trBTN_Key::SetAction(std::function<void()> action_)
 
 void trBTN_Key::SetPointer(trObject* Ptr_)
 {
-	Ptr = Ptr_; // fait belek mon reuf
+	MessageBox(
+		NULL,
+		L"NON",
+		L"Message",
+		MB_ICONERROR | MB_OK
+	);
+	// *Ptr = Ptr_; // fait belek mon reuf
 }
 
 // GET
@@ -80,6 +86,11 @@ const int trBTN_Key::GetKeyState() const
 const int trBTN_Key::GetKey() const
 {
 	return Key;
+}
+
+trWeakPointer* trBTN_Key::GetPtr() const 
+{
+	return Ptr;  // retourne un shared_ptr (peut être null si l'objet a été détruit)
 }
 
 // UPDATE
@@ -148,4 +159,6 @@ void trBTN_Key::DoAction()
 trBTN_Key::~trBTN_Key()
 {
 	delete Action;
+
+	delete Ptr; // faire belek
 }

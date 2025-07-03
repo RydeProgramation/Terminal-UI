@@ -111,14 +111,27 @@ public:
 	/// <param Name="Name_">Le nom du Widget</param>
 	/// <param Name="func">L'adresse de la fonction par exemple (&trWidget::AddToContent)</param>
 	/// <param Name="...args">Les argument</param>
-	template <typename Func, typename... Args>
+	/*template <typename Func, typename... Args>
 	void SetActor(const std::string& Name, Func&& func, Args&&... args)
 	{
-		trWidget* widget = dynamic_cast<trWidget*>((*Actors)[Name]);
+		trPawn* widget = dynamic_cast<trPawn*>((*Actors)[Name]);
 
-		if (/*(*Actors)[Name]*/widget != nullptr)
+		if (/ *(*Actors)[Name]* /widget != nullptr)
 		{
-			std::invoke(std::forward<Func>(func), /*(*Actors)[Name]*/widget, std::forward<Args>(args)...);
+			std::invoke(std::forward<Func>(func), / *(*Actors)[Name]* /widget, std::forward<Args>(args)...);
+		}
+	}*/
+
+	template <typename T, typename Func, typename... Args>
+	void SetActor(const std::string& Name, Func&& func, Args&&... args)
+	{
+		auto it = Actors->find(Name);
+		if (it != Actors->end())
+		{
+			if (auto* casted = dynamic_cast<T*>(it->second))
+			{
+				std::invoke(std::forward<Func>(func), casted, std::forward<Args>(args)...);
+			}
 		}
 	}
 

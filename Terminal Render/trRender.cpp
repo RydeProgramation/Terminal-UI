@@ -363,6 +363,7 @@ void trRender::DisplayWidget(trWidget* WIDG)
 		std::vector<trPair<std::wstring, trCoordinate<int>>> rstColortemp;
 
 		wstring tempAdd = L"";
+		wstring outputtemp = L"";
 
 		uint16_t maxSizeX = GetConsoleSize(BorderWidth).GetSizeX().GetDataActual();
 		uint16_t maxSizeY = GetConsoleSize(BorderWidth).GetSizeY().GetDataActual();
@@ -378,15 +379,15 @@ void trRender::DisplayWidget(trWidget* WIDG)
 			
 			if (!IsOutSide(trCoordinate<int>(widgetPosX, ln), BorderWidth))
 			{
-				output << L"\x1b[" + to_wstring(ln + BorderWidth + 1) + L";" + to_wstring(widgetPosX + 2 * BorderWidth + 1) + L"H"; // MoveCursorToOstream(trCoordinate<int>(WIDG->GetAbsolutePosition().GetX().GetDataActual(), ln), Render_, *SizeWindow, BorderWidth);
+				output << L"\x1b[" + to_wstring(ln + BorderWidth + 1) + L";" + to_wstring(widgetPosX + 2 * BorderWidth + 1) + L"H";
 
 				output << L"\033[0m" + *BaseColor; // Reset color + BaseColor
 
-				// tempAdd = WIDG->GetContent().GetDataActual();
-
 				tempAdd = WIDG->GetColoredContent().GetDataActual();
 
-				output << substrAnsiSafe(tempAdd, min(col, tempAdd.size()), widgetSizeX - max(widgetPosX + widgetSizeX - maxSizeX, 0));
+				outputtemp = substrAnsiSafe(tempAdd, min(col, tempAdd.size()), widgetSizeX - max(widgetPosX + widgetSizeX - maxSizeX, 0));
+
+				output << outputtemp;
 
 				// output << tempAdd.substr(min(col, tempAdd.size()), widgetSizeX - max(widgetPosX + widgetSizeX - maxSizeX, 0));
 
@@ -506,17 +507,19 @@ void trRender::CleanWidget(trWidget* WIDG)
 
 	else if (RenderType == RENDER_SYSTEM)
 	{
-		// j'ai réutilisé le code de BUFFER_SYSTEM pour l'instant, mais il faut le faire pour RENDER_SYSTEM
-
 		Render_->seekp(0, std::ios::end);
 
-		for (int ln = WIDG->GetAbsolutePosition().GetY().GetDataOld(); ln <= WIDG->GetAbsolutePosition().GetY().GetDataOld() + WIDG->GetSize().GetSizeY().GetDataOld(); ln++)
+		uint16_t OldPosY = WIDG->GetAbsolutePosition().GetY().GetDataOld();
+		uint16_t OldPosX = WIDG->GetAbsolutePosition().GetX().GetDataOld();
+		uint16_t OldSizeY = WIDG->GetSize().GetSizeY().GetDataOld();
+		uint16_t OldSizeX = WIDG->GetSize().GetSizeX().GetDataOld();
+
+		for (int ln = OldPosY; ln < OldPosY + OldSizeY; ln++)
 		{
-			if (!IsOutSide(trCoordinate<int>(WIDG->GetAbsolutePosition().GetX().GetDataOld(), ln), BorderWidth))
+			if (!IsOutSide(trCoordinate<int>(OldPosX, ln), BorderWidth))
 			{
-				wstring clean(WIDG->GetSize().GetSizeX().GetDataOld() - max((WIDG->GetAbsolutePosition().GetX().GetDataOld() + WIDG->GetSize().GetSizeX().GetDataOld() - GetConsoleSize(BorderWidth).GetSizeX().GetDataActual()), 0), ' ');
-				*Render_ << L"\x1b[" + to_wstring(ln + BorderWidth + 1) + L";" + to_wstring(WIDG->GetAbsolutePosition().GetX().GetDataOld() + 2 * BorderWidth + 1) + L"H" + clean; // MoveCursorToOstream(trCoordinate<int>(WIDG->GetAbsolutePosition().GetX().GetDataOld(), ln), Render_, *SizeWindow, BorderWidth);
-				// *Render_ << clean;
+				wstring clean(OldSizeX - max((OldPosX + OldSizeX - GetConsoleSize(BorderWidth).GetSizeX().GetDataActual()), 0), ' ');
+				*Render_ << L"\x1b[" + to_wstring(ln + BorderWidth + 1) + L";" + to_wstring(OldPosX + 2 * BorderWidth + 1) + L"H" + clean;
 			}
 		}
 	}

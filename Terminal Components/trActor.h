@@ -8,6 +8,7 @@
 #include "trPair.h"
 #include "trMap.h"
 #include "trRect.h"
+#include "trWeakPointer.h"
 
 #ifndef __TR_ACTOR__
 #define __TR_ACTOR__

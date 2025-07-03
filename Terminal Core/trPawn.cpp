@@ -171,6 +171,8 @@ void trPawn::APPLY_(const trSize<uint16_t>& SizeWindow)
 		}*/
 
 		SetChange(true); // on met a jour les collisions
+
+		PawnCollision->clear();
 	}
 }
 

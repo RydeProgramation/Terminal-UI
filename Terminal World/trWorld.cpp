@@ -87,7 +87,7 @@ bool trWorld::DestroyActor(const string& name) // VERIF SI BUG
 
 bool trWorld::Destroy()
 {
-	for (auto it = Actors->begin(); it != Actors->end(); )
+	for (auto it = Actors->begin(); it != Actors->end();)
 	{
 		if (it->second->GetDestroy().GetDataActual())
 		{
@@ -223,7 +223,7 @@ void trWorld::DetectCollisionsOptimized(const std::map<trActor*, trRect<int>>& r
 				break;
 
 			// Collision si chevauchement vertical
-			if (!(A.bottom() <= B.top() || A.top() >= B.bottom()))
+			if (!(A.bottom() < B.top() || A.top() > B.bottom()))
 			{
 				trPawn* pawn = dynamic_cast<trPawn*>(actorA);
 

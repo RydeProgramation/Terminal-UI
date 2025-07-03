@@ -4,13 +4,13 @@ using namespace std;
 using namespace UIToolsCore;
 
 // INI
-trKeyBoardManagement::trKeyBoardManagement() : Start_(false), BTNS(new std::unordered_map<int, trBTN_Key>()), ActiveKeysBufferWrite(new std::vector<trPair<int, bool>>()), ActiveKeysBufferRead(new std::vector<trPair<int, bool>>()), MutexKB(new std::mutex())
+trKeyBoardManagement::trKeyBoardManagement() : Start_(false), BTNS(new std::unordered_map<int, trBTN_Key*>()), ActiveKeysBufferWrite(new std::vector<trPair<int, bool>>()), ActiveKeysBufferRead(new std::vector<trPair<int, bool>>()), MutexKB(new std::mutex())
 {
 	
 }
 
 // INI deep copy
-trKeyBoardManagement::trKeyBoardManagement(const trKeyBoardManagement& other) : Start_(other.Start_), BTNS(new std::unordered_map<int, trBTN_Key>(*other.BTNS)), ActiveKeysBufferWrite(new std::vector<trPair<int, bool>>(*other.ActiveKeysBufferWrite)), ActiveKeysBufferRead(new std::vector<trPair<int, bool>>(*other.ActiveKeysBufferRead)), MutexKB(new std::mutex())
+trKeyBoardManagement::trKeyBoardManagement(const trKeyBoardManagement& other) : Start_(other.Start_), BTNS(new std::unordered_map<int, trBTN_Key*>(*other.BTNS)), ActiveKeysBufferWrite(new std::vector<trPair<int, bool>>(*other.ActiveKeysBufferWrite)), ActiveKeysBufferRead(new std::vector<trPair<int, bool>>(*other.ActiveKeysBufferRead)), MutexKB(new std::mutex())
 {
 
 }
@@ -21,7 +21,7 @@ trKeyBoardManagement& trKeyBoardManagement::operator=(const trKeyBoardManagement
 	if (this == &other) { return *this; }
 	
 	if (BTNS == nullptr) {
-		BTNS = new std::unordered_map<int, trBTN_Key>(*other.BTNS);
+		BTNS = new std::unordered_map<int, trBTN_Key*>(*other.BTNS);
 	}
 	else {
 		*BTNS = *other.BTNS;
@@ -54,11 +54,11 @@ trKeyBoardManagement& trKeyBoardManagement::operator=(const trKeyBoardManagement
 }
 
 // FNC
-bool trKeyBoardManagement::CreateBTN(const trBTN_Key& Btn)
+bool trKeyBoardManagement::CreateBTN(trBTN_Key* Btn)
 {
 	// FAUDERAIT MUTEX ?
 
-	(*BTNS)[Btn.GetKey()] = Btn;
+	(*BTNS)[Btn->GetKey()] = Btn;
 
 	return true;
 }
@@ -66,11 +66,11 @@ bool trKeyBoardManagement::CreateBTN(const trBTN_Key& Btn)
 // SET
 void trKeyBoardManagement::SetActionBtnKey(int Key, void (*Action)()) 
 {
-	(*BTNS)[Key].SetAction(Action);
+	(*BTNS)[Key]->SetAction(Action);
 }
 
 // GET
-const std::unordered_map<int, trBTN_Key>& trKeyBoardManagement::GetBTNS() const
+const std::unordered_map<int, trBTN_Key*>& trKeyBoardManagement::GetBTNS() const
 {
 	return *BTNS;
 }
@@ -99,15 +99,15 @@ void trKeyBoardManagement::Update()
 	// On vide le buffer
 	for (auto& it : *ActiveKeysBufferRead)
 	{
-		(*BTNS)[*it.first].Update(*it.second);
+		(*BTNS)[*it.first]->Update(*it.second);
 	}
 
 	// Traiter les boutons
 	for (auto& it : *BTNS)
 	{
-		if (it.second.GetActionState())
+		if (it.second->GetActionState())
 		{
-			it.second.DoAction();
+			it.second->DoAction();
 		}
 	}
 
@@ -141,11 +141,17 @@ void trKeyBoardManagement::Loop()
 	{
 		LocalBuffer.clear();
 
-		for (auto& it : *BTNS) 
+		for (auto it = BTNS->begin(); it != BTNS->end(); )
 		{
-			kState = (GetAsyncKeyState(it.first) & 0x8000);
+			key = it->first;
 
-			key = it.first;
+			if (!it->second->GetPtr()->IsValid())
+			{
+				it = BTNS->erase(it);  // erase renvoie l'itérateur suivant, donc pas besoin de ++it ici
+			}
+
+			kState = (GetAsyncKeyState(key) & 0x8000);
+
 			lastState = GetLastKeyState(LocalBuffer, key);
 			prevState = LocalKeyState[key];
 
@@ -167,6 +173,8 @@ void trKeyBoardManagement::Loop()
 			}
 
 			LocalKeyState[key] = kState;
+
+			it++;
 		}
 
 		if (!LocalBuffer.empty()) 

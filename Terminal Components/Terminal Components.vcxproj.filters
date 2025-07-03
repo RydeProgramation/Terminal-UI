@@ -21,12 +21,18 @@
     <ClInclude Include="trSelector.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="trText.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="trSelector.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="trWidget.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="trText.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
