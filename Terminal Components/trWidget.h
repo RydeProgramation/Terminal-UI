@@ -76,9 +76,13 @@ public:
 
 	const trData<std::wstring>& GetColor() const;
 
+protected:
+
 	virtual void APPLY_(const trSize<uint16_t>& SizeWindow) override;
 
 	// FNC
+
+public:
 
 	bool VerificationProprety() override;
 

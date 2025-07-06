@@ -16,7 +16,7 @@
 #define TERMINAL_COMPONENTS_API __declspec(dllimport)
 #endif
 
-struct TERMINAL_COMPONENTS_API trText : public trWidget
+class TERMINAL_COMPONENTS_API trText : public trWidget
 {
 public:
 
@@ -40,17 +40,33 @@ public:
 
 	// SET
 
-
+	void SetAnimationVector(const std::vector<trPair<uint16_t, std::wstring>>& AnimationVector_);
 
 	// GET
 
+	const std::vector<trPair<uint16_t, std::wstring>>& GetAnimationVector() const;
 
+	// ADD
+	
+	void AddAnimation(const trPair<uint16_t, std::wstring>& Animation_);
+
+	// FNC
+
+	void DoCharToCharAnimation(uint16_t SleepTime_, const std::wstring& Content_);
+
+	void DoNextFrameAnimation();
+
+	void DoAnimation();
 
 	// APPLY
 
 	bool VerificationProprety() override;
 
+protected:
+
 	void APPLY_(const trSize<uint16_t>& SizeWindow) override;
+
+public:
 
 	// DESTRUCTEUR
 
@@ -58,7 +74,9 @@ public:
 
 private:
 
-	
+	std::vector<trPair<uint16_t, std::wstring>> *AnimationVector;
+	uint16_t indexAnimation;
 };
+
 
 #endif

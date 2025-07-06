@@ -74,6 +74,24 @@ namespace UIToolsCore
 	/// <param name="input"> Chaîne de caractères d'entrée contenant des séquences de couleurs ANSI </param>
 	/// <returns> Permet de retourner la chaines de charactère sans code ansii de couleur </returns>
 	TERMINAL_CORE_API std::wstring RemoveColor(const std::wstring& input);
+	
+	/// <summary>
+	/// 
+	/// </summary>
+	/// <param name="value"></param>
+	/// <param name="out"></param>
+	/// <returns></returns>
+	TERMINAL_CORE_API inline void FastToWString(int value, std::wstring& out);
+
+	/// <summary>
+	/// 
+	/// </summary>
+	/// <param name="input"></param>
+	/// <param name="startVisible"></param>
+	/// <param name="countVisible"></param>
+	/// <param name="result"></param>
+	/// <returns></returns>
+	TERMINAL_CORE_API void substrAnsiSafeUltraFast(const std::wstring& input, size_t startVisible, size_t countVisible, std::wstring& result);
 
 	/// <summary>
 	/// FONCTION VIDE

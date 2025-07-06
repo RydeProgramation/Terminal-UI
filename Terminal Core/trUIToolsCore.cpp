@@ -104,3 +104,69 @@ std::wstring UIToolsCore::RemoveColor(const std::wstring& input)
 
 	return result;
 }
+
+inline void UIToolsCore::FastToWString(int value, std::wstring& out)
+{
+	out.clear();
+
+	if (value < 0) {
+		out += L'-';
+		value = -value;
+	}
+
+	wchar_t temp[20];
+	size_t i = 0;
+
+	do {
+		temp[i++] = L'0' + (value % 10);
+		value /= 10;
+	} while (value != 0);
+
+	while (i-- > 0) {
+		out += temp[i];
+	}
+}
+
+void UIToolsCore::substrAnsiSafeUltraFast(
+	const std::wstring& input,
+	size_t startVisible,
+	size_t countVisible,
+	std::wstring& result
+) {
+	result.clear();
+	result.reserve(countVisible + 16); // marge pour séquences ANSI
+
+	// 🧠 Écrire en direct sur result
+	size_t writeIndex = 0;
+	size_t visibleCount = 0;
+	bool inAnsi = false;
+
+	for (size_t i = 0; i < input.size(); ++i) {
+		wchar_t c = input[i];
+
+		if (c == L'\033') {
+			inAnsi = true;
+		}
+
+		if (inAnsi) {
+			if (writeIndex >= result.size()) result.resize(writeIndex + 1);
+			result[writeIndex++] = c;
+
+			if ((c >= L'A' && c <= L'Z') || (c >= L'a' && c <= L'z')) {
+				inAnsi = false;
+			}
+		}
+		else {
+			if (visibleCount >= startVisible && visibleCount < startVisible + countVisible) {
+				if (writeIndex >= result.size()) result.resize(writeIndex + 1);
+				result[writeIndex++] = c;
+			}
+			++visibleCount;
+
+			if (visibleCount >= startVisible + countVisible) break;
+		}
+	}
+
+	// Finalise la taille réelle
+	result.resize(writeIndex);
+}

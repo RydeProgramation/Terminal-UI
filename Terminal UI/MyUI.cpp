@@ -1,6 +1,6 @@
-﻿#include "Header.h"
+﻿#include "MyUI.h"
 
-#include "MyUI.h"
+REGISTER_TYPE(Munition, int, int, int, std::wstring, std::string);
 
 using namespace std;
 using namespace UITools;
@@ -117,34 +117,33 @@ void MyUI::Start()
 	wstring hello_ = hello[0] + hello[1] + hello[2] + hello[3] + hello[4];
 	wstring hello2_ = hello2[0] + hello2[1] + hello2[2] + hello2[3] + hello2[4];
 
-	CreateWidgetWait(new trWidget(100, -1, 22, 5, MiddleCenter, hello_, "Hello"));
+	trWidget* Hello = new trWidget(100, -1, 22, 5, MiddleCenter, hello_, "Hello");
+	trObject* Hellotest = trLoad::Load("Hello.widg");
+	trWidget* Hello2 = new trWidget(0, -1, 52, 5, MiddleCenter, hello2_, "Hello2");
+	trWidget* Hello3 = new trWidget(1, -1, 54, 5, MiddleCenter, hello3_, "Hello3");
 
-	World->SetActor<trWidget>(
-		"Hello",
-		static_cast<void (trWidget::*)(uint8_t, uint8_t, uint8_t, bool)>(&trWidget::SetColor),
-		uint8_t(0), uint8_t(0), uint8_t(255), false
-	);
+	CreateWidgetWait(Hello);
+
+	Hello->SetColor(uint8_t(0), uint8_t(0), uint8_t(255), false);
 
 	for (int i = 0; i < 115; i++)
 	{
-		World->SetActor<trWidget>("Hello", &trWidget::AddToPosition, -1, 0);
+		Hello->AddToPosition(-1, 0);
 
 		Sleep(10);
 	}
 
 	Sleep(1500);
 
-	CreateWidgetWait(new trWidget(0, -1, 52, 5, MiddleCenter, hello2_, "Hello2"));
+	CreateWidgetWait(Hello2);
 
-	World->DestroyActor("Hello");
+	Hello->Destroy();
 
-	Sleep(20 * 100); 
+	Sleep(2000); 
 
-	CreateWidgetWait(new trWidget(1, -1, 54, 5, MiddleCenter, hello3_, "Hello3"));
+	CreateWidgetWait(Hello3);
 
-	World->DestroyActor("Hello2");
-	
-	int i = 0;
+	Hello2->Destroy();
 
 	for (int i = 0; i <= 500; i += 5)
 	{
@@ -159,60 +158,36 @@ void MyUI::Start()
 
 		hello3_ = hello3[0] + hello3[1] + hello3[2] + hello3[3] + hello3[4];
 
-		World->SetActor<trWidget>("Hello3", &trWidget::SetContent, hello3_);
+		Hello3->SetContent(hello3_);
 
-		Sleep(26);
+		Sleep(20);
 	}
 
 	for (int i = 0; i < 10; i++)
 	{
-		World->SetActor<trWidget>("Hello3", &trWidget::AddToPosition, 0, 1);
+		Hello3->AddToPosition(0, 1);
 
 		Sleep(100);
 	}
 
 	for (int i = 0; i < 5; i++)
 	{
-		World->SetActor<trWidget>("Hello3", &trWidget::AddToSize, 0, -1);
+		Hello3->AddToSize(0, -1);
 
 		Sleep(100);
 	}
 
-	World->DestroyActor("Hello3");
+	Hello3->Destroy();
 
-	wstring paragColor = L"\033[38;2;255;182;193mSalutations, brave lache !\033[0m\033[38;2;176;224;230m Mon projet est une application maléfique\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\033[0m\033[38;2;152;251;152mapplication magique qui ouvre les portes des marchés financiers.\033[0m\nÀ l'aide de la puissante technique de \033[38;2;216;191;216mDiCaprio\b\b\b\b\b\b\b\bMonte-Carlo\033[0m, \033[38;2;240;230;140mje simule des trajectoires aléatoires\033[0m pour les options (calls et \033[38;2;250;235;215mputain\b\b\bs\033[0m).\n\033[38;2;255;222;173mImagine-toi chevauchant un dragon volant au-dessus des courbes de prix, scrutant les volatilités et les risques.\033[0m\nLes prix d'\033[38;2;255;228;196moptions\033[0m se révèlent tels des trésors cachés dans les profondeurs du marché. \033[38;2;240;255;255mTu attends quoi pour jouer avec les courbes !\033[0m\n\033[38;2;245;222;179mJe te propose donc cette application pour que tu fasses tes propres simulations et découvre les secrets enfouis\033[0m dans\f\033[38;2;216;191;216mles volutes des courbes financières.\033[0m 🎉";
+	/*wstring paragColor = L"\033[38;2;255;182;193mSalutations, brave lache !\033[0m\033[38;2;176;224;230m Mon projet est une application maléfique\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\033[0m\033[38;2;152;251;152mapplication magique qui ouvre les portes des marchés financiers.\033[0m\nÀ l'aide de la puissante technique de \033[38;2;216;191;216mDiCaprio\b\b\b\b\b\b\b\bMonte-Carlo\033[0m, \033[38;2;240;230;140mje simule des trajectoires aléatoires\033[0m pour les options (calls et \033[38;2;250;235;215mputain\b\b\bs\033[0m).\n\033[38;2;255;222;173mImagine-toi chevauchant un dragon volant au-dessus des courbes de prix, scrutant les volatilités et les risques.\033[0m\nLes prix d'\033[38;2;255;228;196moptions\033[0m se révèlent tels des trésors cachés dans les profondeurs du marché. \033[38;2;240;255;255mTu attends quoi pour jouer avec les courbes !\033[0m\n\033[38;2;245;222;179mJe te propose donc cette application pour que tu fasses tes propres simulations et découvre les secrets enfouis\033[0m dans\f\033[38;2;216;191;216mles volutes des courbes financières.\033[0m 🎉";
 
-	trSize<uint16_t>* size_ = new trSize<uint16_t>(GetConsoleSize());
+	// trSize<uint16_t>* size_ = new trSize<uint16_t>(GetConsoleSize());
 
-	CreateWidgetWait(new trWidget(0, 0, 135, 6, MiddleCenter, L"", "Paragraphe"));
+	trText* Paragraphe = new trText(0, 0, 135, 6, MiddleCenter, L"", "Paragraphe");
 
-	for (int i = 0; i < paragColor.size(); i++)
-	{
-		if (paragColor[i] == L'\033') // ca serait cool que ça fonctionne tout le temps
-		{
-			// Trouve la fin de la séquence ANSI (caractère 'm' à la fin)
-			size_t endSeq = paragColor.find(L'm', i);
+	CreateWidgetWait(Paragraphe);
 
-			if (endSeq != std::wstring::npos) {
-				// On prend toute la séquence ANSI, en incluant le 'm'
-				std::wstring ansiSeq = paragColor.substr(i, endSeq - i + 1);  // +1 pour inclure 'm'
-
-				// On ajoute la séquence ANSI à l'interface
-				World->SetActor<trWidget>("Paragraphe", &trWidget::AddToContent, ansiSeq);
-
-				// On saute l'indice de la séquence ANSI pour ne pas la traiter à nouveau
-				i += static_cast<int>(ansiSeq.size() - 1); // -1 car on a déjà ajouté un caractère
-			}
-		}
-
-		else
-		{
-			// Si ce n'est pas une séquence ANSI, on ajoute un seul caractère
-			World->SetActor<trWidget>("Paragraphe", &trWidget::AddToContent, wstring(1, paragColor[i]));
-		}
-		
-		Sleep(50);
-	}
+	Paragraphe->DoCharToCharAnimation(50, paragColor);
 
 	Sleep(1400);
 
@@ -271,7 +246,7 @@ void MyUI::Start()
 		Sleep(250);
 	}
 
-	World->DestroyActor("Paragraphe");
+	World->DestroyActor("Paragraphe");*/
 
 	Menu1();
 }
@@ -333,7 +308,7 @@ void MyUI::Menu1()
 		KEY_W,
 		OnPress,
 		HoldToTrigger,
-		std::bind(&trWidget::AddToPosition, static_cast<trWidget*>(World->GetPtrActor("Simulation")), 0, -1),
+		std::bind(&trWidget::AddToPosition, dynamic_cast<trWidget*>(World->GetPtrActor("Simulation")), 0, -1),
 		World->GetPtrActor("Simulation")
 	));
 
@@ -381,12 +356,6 @@ void MyUI::Menu1()
 		World->GetPtrActor("Simulation")
 	));
 
-	/*Sleep(10000);
-
-	delete an_obj;*/
-
-	/*an_obj = nullptr;*/
-
 	// ancienne version que je veux retravailler pour l'optimiser
 	// KB->CreateBTN(trBTN_Key(0x41, OnPress, HoldToTrigger, bind(&trWidget::AddToPosition, dynamic_cast<trWidget*>GetPtrActor("Simulation"), -1, 0), GetPtrActor("Simulation")));
 	/*KB->CreateBTN(trBTN_Key(0x53, OnPress, HoldToTrigger, bind(&trWidget::AddToPosition, GetPtrActor("Simulation"), 0, 1), GetPtrActor("Simulation")));
@@ -401,12 +370,16 @@ void MyUI::Menu1()
 		OnPress,          // Appui
 		PressToTrigger,    // Mode d'utilisation
 		[Ptr, this]() {        // Lambda sans argument, qui capture this
-			World->CreateActor(new Munition(Ptr->GetPosition().GetX().GetDataActual(), Ptr->GetPosition().GetY().GetDataActual(), MiddleCenter, L"**", "Bullet_"));
+			World->CreateActor(trCREATE(Munition, int(Ptr->GetPosition().GetX().GetDataActual()), int(Ptr->GetPosition().GetY().GetDataActual()), int(MiddleCenter), wstring(L"**"), string("Bullet_")));
 		},
 		Ptr  // Pointeur vers widget parentda
 	));
 
-	int a = 0;
+	trObject* test = trCREATE(Munition, 1, 1, 1, wstring(L"TEST ahahahahaha"), string("TEST"));
+
+	Munition* test2 = dynamic_cast<Munition*>(test);
+
+	string testname = test2->GetName().GetDataActual();
 
 	const trWidget* widget = dynamic_cast<const trWidget*>(&World->GetActor("Simulation"));
 
@@ -433,6 +406,5 @@ void MyUI::CreateSelectorWait(trSelector* WIDG)
 
 	while (WIDG->IsCreated()) {} // faire attention ici
 }
-
 
 int Munition::bulletCount;

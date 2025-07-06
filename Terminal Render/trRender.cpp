@@ -14,7 +14,7 @@ trRender::trRender() : trRender(BUFFER_SYSTEM, 6, L"\033[0m")
 
 // INI
 
-trRender::trRender(uint8_t RenderType_, int BordW_, std::wstring RstClr) : SizeWindow(new trSize<uint16_t>(0, 0)), CursorSelector(new trData<int>(0)), Render_(new std::wostringstream()), RenderColor_(new std::wostringstream()), BaseColor(new std::wstring(RstClr)), PreviousRender_(new std::string("")), RenderType(0)
+trRender::trRender(uint8_t RenderType_, int BordW_, std::wstring RstClr) : SizeWindow(new trSize<uint16_t>(0, 0)), SizeWindow_Border(new trSize<uint16_t>(0, 0)), CursorSelector(new trData<int>(0)), Render_(new std::wostringstream()), RenderColor_(new std::wostringstream()), BaseColor(new std::wstring(RstClr)), PreviousRender_(new std::string("")), RenderType(0)
 {
 	switch (RenderType_)
 	{
@@ -40,7 +40,7 @@ trRender::trRender(uint8_t RenderType_, int BordW_, std::wstring RstClr) : SizeW
 
 // INI deep copy
 
-trRender::trRender(const trRender& other) : SizeWindow(new trSize<uint16_t>(*other.SizeWindow)), CursorSelector(new trData<int>(*other.CursorSelector)), Render_(new std::wostringstream()), RenderColor_(new std::wostringstream()), RenderType(other.RenderType), BaseColor(new std::wstring(*other.BaseColor)), PreviousRender_(new std::string())
+trRender::trRender(const trRender& other) : SizeWindow(new trSize<uint16_t>(*other.SizeWindow)), SizeWindow_Border(new trSize<uint16_t>(*other.SizeWindow_Border)), CursorSelector(new trData<int>(*other.CursorSelector)), Render_(new std::wostringstream()), RenderColor_(new std::wostringstream()), RenderType(other.RenderType), BaseColor(new std::wstring(*other.BaseColor)), PreviousRender_(new std::string())
 {
 
 }
@@ -55,6 +55,13 @@ trRender& trRender::operator=(const trRender& other)
 		SizeWindow = new trSize<uint16_t>(*other.SizeWindow);
 	} else {
 		*SizeWindow = *other.SizeWindow;
+	}
+
+	if (SizeWindow_Border == nullptr) {
+		SizeWindow_Border = new trSize<uint16_t>(*other.SizeWindow_Border);
+	}
+	else {
+		*SizeWindow_Border = *other.SizeWindow_Border;
 	}
 
 	if (CursorSelector == nullptr) {
@@ -116,6 +123,11 @@ const trSize<uint16_t>& trRender::GetSizeWindow() const
 	return *SizeWindow;
 }
 
+const trSize<uint16_t>& trRender::GetSizeWindowBorder() const
+{
+	return *SizeWindow_Border;
+}
+
 const trData<int>& trRender::GetCursorSelector() const
 {
 	return *CursorSelector;
@@ -141,7 +153,9 @@ const uint8_t trRender::GetRenderType() const
 void trRender::UpdateSizeWindow()
 {
 	SizeWindow->SetSize(GetConsoleSize().GetSizeX().GetDataActual(), GetConsoleSize().GetSizeY().GetDataActual());
+	SizeWindow_Border->SetSize(GetConsoleSize(BorderWidth).GetSizeX().GetDataActual(), GetConsoleSize(BorderWidth).GetSizeY().GetDataActual());
 	SizeWindow->Update();
+	SizeWindow_Border->Update();
 }
 
 void trRender::Border()
@@ -233,44 +247,6 @@ void trRender::Border()
 
 // FNC
 
-// TEST
-
-wstring substrAnsiSafe(const wstring& input, size_t startVisible, size_t countVisible) {
-	wstring result;
-	size_t visibleCount = 0;
-	bool inAnsi = false;
-
-	for (size_t i = 0; i < input.size(); ++i) {
-		wchar_t c = input[i];
-
-		if (c == L'\033') {
-			// Début d'une séquence ANSI
-			inAnsi = true;
-			result += c;
-		}
-		else if (inAnsi) {
-			result += c;
-			if ((c >= L'A' && c <= L'Z') || (c >= L'a' && c <= L'z')) {
-				// Fin possible de la séquence ANSI (ex: 'm', 'K', etc.)
-				inAnsi = false;
-			}
-		}
-		else {
-			// Caractère visible
-			if (visibleCount >= startVisible && visibleCount < startVisible + countVisible) {
-				result += c;
-			}
-			++visibleCount;
-
-			if (visibleCount >= startVisible + countVisible) {
-				break;
-			}
-		}
-	}
-
-	return result;
-} // fin TEST
-
 void trRender::DisplayWidget(trWidget* WIDG)
 {
 	///
@@ -347,8 +323,6 @@ void trRender::DisplayWidget(trWidget* WIDG)
 
 	else if (RenderType == RENDER_SYSTEM)
 	{
-		// j'ai réutilisé le code de BUFFER_SYSTEM pour l'instant, mais il faut le faire pour RENDER_SYSTEM
-
 		Render_->seekp(0, std::ios::end);
 
 		if (!Refreshed)
@@ -356,17 +330,19 @@ void trRender::DisplayWidget(trWidget* WIDG)
 			CleanWidget(WIDG);
 		}
 
-		std::wostringstream output;
+		std::wstring output = L"";
+		output.reserve(WIDG->GetColoredContent().GetDataActual().size());
 
 		int col = 0;
 
 		std::vector<trPair<std::wstring, trCoordinate<int>>> rstColortemp;
 
 		wstring tempAdd = L"";
-		wstring outputtemp = L"";
+		wstring temp = L"";
+		wstring OutPutTemp = L"";
 
-		uint16_t maxSizeX = GetConsoleSize(BorderWidth).GetSizeX().GetDataActual();
-		uint16_t maxSizeY = GetConsoleSize(BorderWidth).GetSizeY().GetDataActual();
+		uint16_t maxSizeX = SizeWindow_Border->GetSizeX().GetDataActual();
+		uint16_t maxSizeY = SizeWindow_Border->GetSizeY().GetDataActual();
 
 		uint16_t widgetSizeX = WIDG->GetSize().GetSizeX().GetDataActual();
 		uint16_t widgetSizeY = WIDG->GetSize().GetSizeY().GetDataActual();
@@ -374,32 +350,48 @@ void trRender::DisplayWidget(trWidget* WIDG)
 		uint16_t widgetPosX = WIDG->GetAbsolutePosition().GetX().GetDataActual();
 		uint16_t widgetPosY = WIDG->GetAbsolutePosition().GetY().GetDataActual();
 
+		wstring Ligne = L"";
+		wstring Colone = L"";
+
+
 		for (int ln = widgetPosY; ln < widgetPosY + widgetSizeY; ln++)
 		{
-			
-			if (!IsOutSide(trCoordinate<int>(widgetPosX, ln), BorderWidth))
+			if (!IsOutSideFast(widgetPosX, ln, maxSizeX, maxSizeY))
 			{
-				output << L"\x1b[" + to_wstring(ln + BorderWidth + 1) + L";" + to_wstring(widgetPosX + 2 * BorderWidth + 1) + L"H";
+				FastToWString(ln + BorderWidth + 1, Ligne); 
+				FastToWString(widgetPosX + 2 * BorderWidth + 1, Colone);
 
-				output << L"\033[0m" + *BaseColor; // Reset color + BaseColor
+				output.append(L"\x1b[");
+				output.append(Ligne);
+				output.append(L";");
+				output.append(Colone);
+				output.append(L"H");
+
+				output.append(L"\033[0m"); // Reset color + BaseColor
+				output.append(*BaseColor);
 
 				tempAdd = WIDG->GetColoredContent().GetDataActual();
 
-				outputtemp = substrAnsiSafe(tempAdd, min(col, tempAdd.size()), widgetSizeX - max(widgetPosX + widgetSizeX - maxSizeX, 0));
+				// temp = substrAnsiSafe(tempAdd, min(col, tempAdd.size()), widgetSizeX - max(widgetPosX + widgetSizeX - maxSizeX, 0)); // ça bouffe des perfs de fou
+				substrAnsiSafeUltraFast(
+					tempAdd,
+					min(col, tempAdd.size()), // 🧮 startVisible
+					widgetSizeX - max(widgetPosX + widgetSizeX - maxSizeX, 0), // 🧮 countVisible
+					temp // 🧠 buffer de sortie
+				);
 
-				output << outputtemp;
+				output.append(temp);
+				output.append(L"\033[0m"); 
 
-				// output << tempAdd.substr(min(col, tempAdd.size()), widgetSizeX - max(widgetPosX + widgetSizeX - maxSizeX, 0));
-
-				output << L"\033[0m"; // Reset color 
-
-				*Render_ << output.str();
+				OutPutTemp.append(output);
 			}
 
-			output.str(L"");
+			output = L"";
 
 			col += widgetSizeX;
 		}
+
+		*Render_ << OutPutTemp;
 
 		WIDG->SetResetColor(rstColortemp);
 
@@ -514,14 +506,53 @@ void trRender::CleanWidget(trWidget* WIDG)
 		uint16_t OldSizeY = WIDG->GetSize().GetSizeY().GetDataOld();
 		uint16_t OldSizeX = WIDG->GetSize().GetSizeX().GetDataOld();
 
+		uint16_t maxSizeX = SizeWindow_Border->GetSizeX().GetDataActual();
+		uint16_t maxSizeY = SizeWindow_Border->GetSizeY().GetDataActual();
+
+		wstring outputTemp = L"";
+		outputTemp.reserve(WIDG->GetColoredContent().GetDataActual().size());
+
+		wstring Ligne = L"";
+		wstring Colone = L"";
+		wstring clean = L"";
+		clean.reserve(WIDG->GetColoredContent().GetDataActual().size());
+
+		// À faire AVANT la boucle
+		uint16_t maxCleanLen = OldSizeX;
+		wstring blankLine(maxCleanLen, L' ');
+
+		uint16_t cut;
+		uint16_t effectiveCleanLen;
+
+		// ⚠️ En dehors de la boucle (à faire une seule fois)
+		const uint16_t MaxSpaceLen = OldSizeX;
+		const std::wstring BlankLine(MaxSpaceLen, L' ');
+
 		for (int ln = OldPosY; ln < OldPosY + OldSizeY; ln++)
 		{
-			if (!IsOutSide(trCoordinate<int>(OldPosX, ln), BorderWidth))
+			if (!IsOutSideFast(OldPosX, ln, maxSizeX, maxSizeY))
 			{
-				wstring clean(OldSizeX - max((OldPosX + OldSizeX - GetConsoleSize(BorderWidth).GetSizeX().GetDataActual()), 0), ' ');
-				*Render_ << L"\x1b[" + to_wstring(ln + BorderWidth + 1) + L";" + to_wstring(OldPosX + 2 * BorderWidth + 1) + L"H" + clean;
+				cut = max((OldPosX + OldSizeX - maxSizeX), 0);
+				effectiveCleanLen = max(0, OldSizeX - cut);
+
+				// 🔥 Plus besoin de clean = substr(...)
+				// 🔄 Écriture directe dans outputTemp
+
+				FastToWString(ln + BorderWidth + 1, Ligne);
+				FastToWString(OldPosX + 2 * BorderWidth + 1, Colone);
+
+				outputTemp.append(L"\x1b[");
+				outputTemp.append(Ligne);
+				outputTemp.append(L";");
+				outputTemp.append(Colone);
+				outputTemp.append(L"H");
+
+				// ⚡ Ajout direct des blancs, sans créer d'objet clean
+				outputTemp.append(BlankLine.data(), effectiveCleanLen);
 			}
 		}
+
+		*Render_ << outputTemp;
 	}
 }
 

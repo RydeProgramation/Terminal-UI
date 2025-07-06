@@ -114,7 +114,7 @@ void trUserInterface::Update()
 
 	World->Update();
 	
-	World->UpdateActors();
+	World->UpdateActors(Render->GetSizeWindowBorder());
 
 	const std::unordered_map<std::string, trActor*> &Actors = World->GetActors();
 

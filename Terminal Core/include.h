@@ -25,6 +25,8 @@
 #include <map>
 #include <print>
 #include <unordered_map>
+#include <typeindex>
+#include <typeinfo>
 
 #pragma comment(lib, "winmm.lib")
 

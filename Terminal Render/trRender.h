@@ -58,6 +58,8 @@ public:
 
 	const trSize<uint16_t>& GetSizeWindow() const;
 
+	const trSize<uint16_t>& GetSizeWindowBorder() const;
+
 	const trData<int>& GetCursorSelector() const;
 
 	const std::wostringstream& GetRender() const;
@@ -127,6 +129,8 @@ protected:
 	std::wstring* BaseColor;
 
 	trSize<uint16_t>* SizeWindow;
+
+	trSize<uint16_t>* SizeWindow_Border;
 
 	trData<int>* CursorSelector;
 

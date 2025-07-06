@@ -13,35 +13,21 @@
       <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
       <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
     </Filter>
-    <Filter Include="Tool">
-      <UniqueIdentifier>{1ef6f912-5680-4dfd-a051-bc259249b227}</UniqueIdentifier>
-    </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="trWidget.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="trSelector.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="trText.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-  </ItemGroup>
-  <ItemGroup>
-    <ClCompile Include="trSelector.cpp">
+    <ClCompile Include="trLoadFile.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="trWidget.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="trText.cpp">
+    <ClCompile Include="trSaveFile.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <None Include="Pre_Build.py">
-      <Filter>Tool</Filter>
-    </None>
+    <ClInclude Include="trLoadFile.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="trSaveFile.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>

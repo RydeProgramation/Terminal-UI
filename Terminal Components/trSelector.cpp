@@ -1,6 +1,8 @@
 ﻿#include "trSelector.h"
 #include "trUIToolsCore.h"
 
+REGISTER_TYPE(trSelector, int, int, int, int, uint8_t, std::wstring, std::string);
+
 using namespace std;
 using namespace UIToolsCore;
 
@@ -11,7 +13,7 @@ trSelector::trSelector() : trWidget(), Selected(new trData<bool>(false)), ColorS
 
 }
 
-// INI
+// INI.
 
 trSelector::trSelector(int x_, int y_, int size_x_, int size_y_, uint8_t RelativePosition_, wstring content_, string name_) : trWidget(x_, y_, size_x_, size_y_, RelativePosition_, content_, name_), Selected(new trData<bool>(false)), ColorSelected(new trData<wstring>(L"\033[38;2;255;255;255m\033[48;2;50;100;255m")), ColorUnSelected(new trData<wstring>(L"\x1b[0m"))
 {

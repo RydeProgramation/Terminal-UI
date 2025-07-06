@@ -28,6 +28,9 @@
     <ClCompile Include="trText.cpp" />
     <ClCompile Include="trWidget.cpp" />
   </ItemGroup>
+  <ItemGroup>
+    <None Include="Pre_Build.py" />
+  </ItemGroup>
   <PropertyGroup Label="Globals">
     <VCProjectVersion>17.0</VCProjectVersion>
     <Keyword>Win32Proj</Keyword>
@@ -80,6 +83,9 @@
     <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
   </ImportGroup>
   <PropertyGroup Label="UserMacros" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+    <CustomBuildBeforeTargets />
+  </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>
       <WarningLevel>Level3</WarningLevel>
@@ -130,6 +136,13 @@
       <AdditionalDependencies>$(CoreLibraryDependencies);%(AdditionalDependencies);Terminal Core.lib;</AdditionalDependencies>
       <AdditionalLibraryDirectories>$(SolutionDir)$(IntDir)</AdditionalLibraryDirectories>
     </Link>
+    <PreBuildEvent>
+      <Command>python "Pre_Build.py"</Command>
+    </PreBuildEvent>
+    <CustomBuildStep>
+      <Command>
+      </Command>
+    </CustomBuildStep>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <ClCompile>

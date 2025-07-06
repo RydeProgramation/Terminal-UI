@@ -5,7 +5,6 @@
 #ifndef __MYUI__
 #define __MYUI__
 
-
 class MyUI : trUserInterface
 {
 public:
@@ -39,7 +38,7 @@ public:
 
 		if (bulletCount >= 20)
 		{
-			// dajasdjjjjjjjjjjjjjjjjjajjwwdjjajjjjjjjjjjjjjjsjdjjjjjjdjjjjjjjjjjjjjjjjjasjjajjjjjjjajjjjjjjajjjwdasdwsadwdwdasdwasdwasdwasdwasdwadsthis->SetDestroy(true);
+			// this->SetDestroy(true);
 		}
 	}
 

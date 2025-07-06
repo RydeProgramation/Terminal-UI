@@ -1,4 +1,4 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
+<?xml version="1.0" encoding="utf-8"?>
 <Project DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup Label="ProjectConfigurations">
     <ProjectConfiguration Include="Debug|Win32">
@@ -19,38 +19,18 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="..\Terminal Components\trActor.h" />
-    <ClInclude Include="include.h" />
-    <ClInclude Include="trCoordinate.h" />
-    <ClInclude Include="trData.h" />
-    <ClInclude Include="trMap.h" />
-    <ClInclude Include="trObject.h" />
-    <ClInclude Include="trObjectFactory.h" />
-    <ClInclude Include="trPair.h" />
-    <ClInclude Include="trPawn.h" />
-    <ClInclude Include="trRect.h" />
-    <ClInclude Include="trSize.h" />
-    <ClInclude Include="trUIToolsCore.h" />
-    <ClInclude Include="trWeakPointer.h" />
+    <ClCompile Include="trLoadFile.cpp" />
+    <ClCompile Include="trSaveFile.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="..\Terminal Components\trActor.cpp" />
-    <ClCompile Include="trCoordinate.cpp" />
-    <ClCompile Include="trData.cpp" />
-    <ClCompile Include="trMap.cpp" />
-    <ClCompile Include="trObjectFactory.cpp" />
-    <ClCompile Include="trPair.cpp" />
-    <ClCompile Include="trPawn.cpp" />
-    <ClCompile Include="trRect.cpp" />
-    <ClCompile Include="trSize.cpp" />
-    <ClCompile Include="trUIToolsCore.cpp" />
-    <ClCompile Include="trWeakPointer.cpp" />
+    <ClInclude Include="trLoadFile.h" />
+    <ClInclude Include="trSaveFile.h" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <VCProjectVersion>17.0</VCProjectVersion>
     <Keyword>Win32Proj</Keyword>
-    <ProjectGuid>{67271c97-8720-4808-adf6-4fb928bec6d9}</ProjectGuid>
-    <RootNamespace>TerminalCore</RootNamespace>
+    <ProjectGuid>{c740a887-c018-477a-9839-d70915328304}</ProjectGuid>
+    <RootNamespace>TerminalLoadModule</RootNamespace>
     <WindowsTargetPlatformVersion>10.0</WindowsTargetPlatformVersion>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
@@ -98,15 +78,11 @@
     <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
   </ImportGroup>
   <PropertyGroup Label="UserMacros" />
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
-    <LinkIncremental>
-    </LinkIncremental>
-  </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>
       <WarningLevel>Level3</WarningLevel>
       <SDLCheck>true</SDLCheck>
-      <PreprocessorDefinitions>WIN32;_DEBUG;TERMINALCORE_EXPORTS;_WINDOWS;_USRDLL;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>WIN32;_DEBUG;TERMINALLOADMODULE_EXPORTS;_WINDOWS;_USRDLL;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
       <PrecompiledHeader>Use</PrecompiledHeader>
       <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
@@ -123,7 +99,7 @@
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <SDLCheck>true</SDLCheck>
-      <PreprocessorDefinitions>WIN32;NDEBUG;TERMINALCORE_EXPORTS;_WINDOWS;_USRDLL;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>WIN32;NDEBUG;TERMINALLOADMODULE_EXPORTS;_WINDOWS;_USRDLL;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
       <PrecompiledHeader>Use</PrecompiledHeader>
       <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
@@ -138,10 +114,10 @@
     <ClCompile>
       <WarningLevel>Level3</WarningLevel>
       <SDLCheck>true</SDLCheck>
-      <PreprocessorDefinitions>_DEBUG;TERMINAL_CORE_EXPORTS;_WINDOWS;_USRDLL;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>_DEBUG;TERMINAL_LOAD_MODULE_EXPORTS;_WINDOWS;_USRDLL;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
       <PrecompiledHeader>NotUsing</PrecompiledHeader>
-      <PrecompiledHeaderFile>Not Using</PrecompiledHeaderFile>
+      <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
       <LanguageStandard>stdcpplatest</LanguageStandard>
       <AdditionalIncludeDirectories>$(SolutionDir)Terminal Core;$(SolutionDir)Terminal AudioModule;$(SolutionDir)Terminal Components;$(SolutionDir)Terminal Engine;$(SolutionDir)Terminal InputModule;$(SolutionDir)Terminal Tool;$(SolutionDir)Terminal Render;$(SolutionDir)Terminal World;$(SolutionDir)Terminal PrintModule</AdditionalIncludeDirectories>
     </ClCompile>
@@ -150,6 +126,7 @@
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <EnableUAC>false</EnableUAC>
       <AdditionalLibraryDirectories>$(SolutionDir)$(IntDir)</AdditionalLibraryDirectories>
+      <AdditionalDependencies>$(CoreLibraryDependencies);%(AdditionalDependencies);Terminal Core.lib;</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
@@ -158,18 +135,15 @@
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <SDLCheck>true</SDLCheck>
-      <PreprocessorDefinitions>NDEBUG;TERMINAL_CORE_EXPORTS;_WINDOWS;_USRDLL;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>NDEBUG;TERMINALLOADMODULE_EXPORTS;_WINDOWS;_USRDLL;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
-      <PrecompiledHeader>NotUsing</PrecompiledHeader>
+      <PrecompiledHeader>Use</PrecompiledHeader>
       <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
-      <AdditionalIncludeDirectories>$(SolutionDir)Terminal Core;$(SolutionDir)Terminal AudioModule;$(SolutionDir)Terminal Components;$(SolutionDir)Terminal Engine;$(SolutionDir)Terminal InputModule;$(SolutionDir)Terminal Tool;</AdditionalIncludeDirectories>
-      <LanguageStandard>stdcpplatest</LanguageStandard>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <EnableUAC>false</EnableUAC>
-      <AdditionalLibraryDirectories>$(SolutionDir)$(IntDir)</AdditionalLibraryDirectories>
     </Link>
   </ItemDefinitionGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

@@ -46,7 +46,17 @@ namespace UITools
 	/// <param name="WIDG"></param>
 	/// <param name="trCoordinate"></param>
 	/// <returns></returns>
-	TERMINAL_TOOL_API bool IsOutSide(const trCoordinate<int>& xy, uint8_t BorderWidth_);
+	TERMINAL_TOOL_API inline bool IsOutSide(const trCoordinate<int>& xy, uint8_t BorderWidth_);
+
+	/// <summary>
+	/// 
+	/// </summary>
+	/// <param name="x"></param>
+	/// <param name="y"></param>
+	/// <param name="maxX"></param>
+	/// <param name="maxY"></param>
+	/// <returns></returns>
+	TERMINAL_TOOL_API inline bool IsOutSideFast(uint16_t x, uint16_t y, uint16_t maxX, uint16_t maxY);
 
 	/// <summary>
 	/// Permet de verfier si les coordonnées données sont en dehors de la fenêtre
@@ -55,7 +65,7 @@ namespace UITools
 	/// <param name="trCoordinate"></param>
 	/// <param name="CountTouch"></param>
 	/// <returns></returns>
-	TERMINAL_TOOL_API bool IsOutSide(const trCoordinate<int>& xy, uint8_t BorderWidth_, bool CountTouch);
+	TERMINAL_TOOL_API inline bool IsOutSide(const trCoordinate<int>& xy, uint8_t BorderWidth_, bool CountTouch);
 
 	/// <summary>
 	/// Permet de verifier si c'est en dehors juste avec les coord 1 dimensions
@@ -63,7 +73,7 @@ namespace UITools
 	/// <param name="z"></param>
 	/// <param name="BorderWidth"></param>
 	/// <returns></returns>
-	TERMINAL_TOOL_API bool IsOutSide(int z, uint8_t BorderWidth_, bool CountTouch);
+	TERMINAL_TOOL_API inline bool IsOutSide(int z, uint8_t BorderWidth_, bool CountTouch);
 
 	/// <summary>
 	/// Permet de verifier si c'est en dehors juste avec les coord 1 dimensions
@@ -71,7 +81,7 @@ namespace UITools
 	/// <param name="z"></param>
 	/// <param name="BorderWidth"></param>
 	/// <returns></returns>
-	TERMINAL_TOOL_API bool IsOutSide(int z, uint8_t BorderWidth_);
+	TERMINAL_TOOL_API inline bool IsOutSide(int z, uint8_t BorderWidth_);
 
 	/// <summary>
 	/// Permet de verfier si les coordonnées données sont en dehors de la fenêtre
@@ -79,7 +89,7 @@ namespace UITools
 	/// <param name="WIDG"></param>
 	/// <param name="trCoordinate"></param>
 	/// <returns></returns>
-	TERMINAL_TOOL_API bool IsOutSide(const trCoordinate<int>& xy);
+	TERMINAL_TOOL_API inline bool IsOutSide(const trCoordinate<int>& xy);
 
 	/// <summary>
 	/// Permet de verfier si les coordonnées données sont en dehors de la fenêtre
@@ -88,21 +98,28 @@ namespace UITools
 	/// <param name="trCoordinate"></param>
 	/// <param name="CountTouch"></param>
 	/// <returns></returns>
-	TERMINAL_TOOL_API bool IsOutSide(const trCoordinate<int>& xy, bool CountTouch);
+	TERMINAL_TOOL_API inline bool IsOutSide(const trCoordinate<int>& xy, bool CountTouch);
 
 	/// <summary>
 	/// Permet de verifier si c'est en dehors juste avec les coord 1 dimensions
 	/// </summary>
 	/// <param name="z"></param>
 	/// <returns></returns>
-	TERMINAL_TOOL_API bool IsOutSide(int z);
+	TERMINAL_TOOL_API inline bool IsOutSide(int z);
 	
 	/// <summary>
 	/// Permet de verifier si c'est en dehors juste avec les coord 1 dimensions
 	/// </summary>
 	/// <param name="z"></param>
 	/// <returns></returns>
-	TERMINAL_TOOL_API bool IsOutSide(int z, bool CountTouch);
+	TERMINAL_TOOL_API inline bool IsOutSide(int z, bool CountTouch);
+
+	/// <summary>
+	/// Permet de verifier si c'est en dehors juste avec les coord 1 dimensions
+	/// </summary>
+	/// <param name="z"></param>
+	/// <returns></returns>
+	TERMINAL_TOOL_API inline bool IsOutSide(const trCoordinate<int>& xy, uint8_t BorderWidth_, const trSize<uint16_t>& WindowSize_Border);
 
 	/// <summary>
 	/// 

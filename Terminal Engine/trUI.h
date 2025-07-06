@@ -13,6 +13,9 @@
 #include "trRender.h"
 #include "trWorld.h"
 #include "trActor.h"
+#include "trText.h"
+#include "trLoadFile.h"
+#include "trSaveFile.h"
 
 #ifndef __TR_UI__
 #define __TR_UI__

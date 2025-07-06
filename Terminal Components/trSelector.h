@@ -16,7 +16,7 @@
 #define TERMINAL_COMPONENTS_API __declspec(dllimport)
 #endif
 
-struct TERMINAL_COMPONENTS_API trSelector : public trWidget
+class TERMINAL_COMPONENTS_API trSelector : public trWidget
 {
 public:
 

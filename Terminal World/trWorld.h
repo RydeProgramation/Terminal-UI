@@ -50,7 +50,7 @@ public:
 	/// <summary>
 	/// Met à jour un widget (rafraichit son contenu, sa position, etc.)
 	/// </summary>
-	void UpdateActors();
+	void UpdateActors(const trSize<uint16_t>& ConsoleSize_Border);
 
 	/// <summary>
 	/// Pour mettre à jour les interactions entre les actors
@@ -111,17 +111,6 @@ public:
 	/// <param Name="Name_">Le nom du Widget</param>
 	/// <param Name="func">L'adresse de la fonction par exemple (&trWidget::AddToContent)</param>
 	/// <param Name="...args">Les argument</param>
-	/*template <typename Func, typename... Args>
-	void SetActor(const std::string& Name, Func&& func, Args&&... args)
-	{
-		trPawn* widget = dynamic_cast<trPawn*>((*Actors)[Name]);
-
-		if (/ *(*Actors)[Name]* /widget != nullptr)
-		{
-			std::invoke(std::forward<Func>(func), / *(*Actors)[Name]* /widget, std::forward<Args>(args)...);
-		}
-	}*/
-
 	template <typename T, typename Func, typename... Args>
 	void SetActor(const std::string& Name, Func&& func, Args&&... args)
 	{
@@ -130,41 +119,10 @@ public:
 		{
 			if (auto* casted = dynamic_cast<T*>(it->second))
 			{
-				std::invoke(std::forward<Func>(func), casted, std::forward<Args>(args)...);
+				std::invoke(std::forward<Func>(func), casted, std::forward<Args>(args)...); // a voir du coup c'est inutile ?
 			}
 		}
 	}
-
-	// TEST
-
-	/*/// invoke_if_possible : appelle la fonction si elle est valide
-	template <typename T, typename Func, typename... Args>
-	auto invoke_if_possible(T* object, Func&& func, Args&&... args)
-		-> std::enable_if_t<std::is_invocable_v<Func, T*, Args...>>
-	{
-		std::invoke(std::forward<Func>(func), object, std::forward<Args>(args)...);
-	}
-
-	/// Surcharge : si la fonction n'est pas invocable, ne fait rien
-	template <typename T, typename Func, typename... Args>
-	auto invoke_if_possible(T* / *object* /, Func&& / *func* /, Args&&... / *args* /)
-		-> std::enable_if_t<!std::is_invocable_v<Func, T*, Args...>>
-	{
-		// Rien du tout 😄
-	}
-
-	/// Et ta fonction principale :
-	template <typename Func, typename... Args>
-	void SetActor(const std::string& Name, Func&& func, Args&&... args)
-	{
-		auto it = Actors->find(Name);
-		if (it != Actors->end() && it->second)
-		{
-			// On ne sait pas le type réel, donc on tente dynamiquement
-			trActor* base = it->second;
-			invoke_if_possible(base, std::forward<Func>(func), std::forward<Args>(args)...);
-		}
-	}*/
 
 protected:
 

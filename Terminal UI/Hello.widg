@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<Object type="trPawn" name="MonPawn">
+    <Properties>
+        <Property name="Activate" type="bool">true</Property>
+        <Property name="Protect" type="bool">false</Property>
+        <Property name="Change" type="bool">false</Property>
+        <Property name="Destroy" type="bool">false</Property>
+    </Properties>
+
+    <Position x="10" y="20" />
+
+    <Pawn>
+        <RelativePosition type="uint8">2</RelativePosition>
+    </Pawn>
+
+    <Widget>
+        <Size width="100" height="50" />
+        <Content>Texte affiché</Content>
+        <Color foreground="#FFFFFF" background="#000000" />
+    </Widget>
+</Object>

@@ -106,7 +106,7 @@
       <PreprocessorDefinitions>_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
       <LanguageStandard>stdcpplatest</LanguageStandard>
-      <AdditionalIncludeDirectories>$(SolutionDir)Terminal Core;$(SolutionDir)Terminal AudioModule;$(SolutionDir)Terminal Components;$(SolutionDir)Terminal Engine;$(SolutionDir)Terminal InputModule;$(SolutionDir)Terminal Tool;$(SolutionDir)Terminal Render;$(SolutionDir)Terminal World;$(SolutionDir)Terminal PrintModule</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)Terminal Core;$(SolutionDir)Terminal AudioModule;$(SolutionDir)Terminal Components;$(SolutionDir)Terminal Engine;$(SolutionDir)Terminal InputModule;$(SolutionDir)Terminal Tool;$(SolutionDir)Terminal Render;$(SolutionDir)Terminal World;$(SolutionDir)Terminal PrintModule;$(SolutionDir)Terminal LoadModule</AdditionalIncludeDirectories>
       <AdditionalOptions>/utf-8 %(AdditionalOptions)</AdditionalOptions>
       <PrecompiledHeaderFile>include.h</PrecompiledHeaderFile>
     </ClCompile>
@@ -114,8 +114,11 @@
       <SubSystem>Console</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <AdditionalLibraryDirectories>$(SolutionDir)$(IntDir)</AdditionalLibraryDirectories>
-      <AdditionalDependencies>Terminal Engine.lib;%(AdditionalDependencies);Terminal Core.lib;Terminal Tool.lib;Terminal InputModule.lib;Terminal Components.lib;Terminal AudioModule.lib;Terminal World.lib;Terminal Render.lib</AdditionalDependencies>
+      <AdditionalDependencies>Terminal Engine.lib;%(AdditionalDependencies);Terminal Core.lib;Terminal Tool.lib;Terminal InputModule.lib;Terminal Components.lib;Terminal AudioModule.lib;Terminal World.lib;Terminal Render.lib;Terminal LoadModule.lib</AdditionalDependencies>
     </Link>
+    <PreBuildEvent>
+      <Command>python "Pre_Build.py"</Command>
+    </PreBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <ClCompile>
@@ -144,6 +147,10 @@
   <ItemGroup>
     <ClInclude Include="Header.h" />
     <ClInclude Include="MyUI.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Hello.widg" />
+    <None Include="Pre_Build.py" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

@@ -1,6 +1,8 @@
 ﻿#include "trWidget.h"
 #include "trUIToolsCore.h"
 
+REGISTER_TYPE(trWidget, int, int, int, int, uint8_t, std::wstring, std::string);
+
 using namespace std;
 using namespace UIToolsCore;
 

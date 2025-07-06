@@ -4,7 +4,7 @@
 using namespace std;
 using namespace UIToolsCore;
 
-// INI default
+REGISTER_TYPE(trActor, std::string);
 
 trActor::trActor() : trActor("None")
 {
@@ -94,6 +94,11 @@ void trActor::SetChange(bool Change_)
 void trActor::SetDestroy(bool Destroy_)
 {
 	ToDestroy->SetData(Destroy_);
+}
+
+void trActor::Destroy()
+{
+	ToDestroy->SetData(true);
 }
 
 // GET

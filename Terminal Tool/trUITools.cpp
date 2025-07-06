@@ -31,7 +31,7 @@ void UITools::hideCursor()
 	SetConsoleCursorInfo(hConsole, &cursorInfo);
 }
 
-bool UITools::IsOutSide(const trCoordinate<int>& xy, uint8_t BorderWidth_)
+inline bool UITools::IsOutSide(const trCoordinate<int>& xy, uint8_t BorderWidth_)
 {
 	if (xy.GetY().GetDataActual() >= GetConsoleSize(BorderWidth_).GetSizeY().GetDataActual() || xy.GetX().GetDataActual() >= GetConsoleSize(BorderWidth_).GetSizeX().GetDataActual())
 	{
@@ -46,7 +46,27 @@ bool UITools::IsOutSide(const trCoordinate<int>& xy, uint8_t BorderWidth_)
 	return false;
 }
 
-bool UITools::IsOutSide(const trCoordinate<int>& xy, uint8_t BorderWidth_, bool CountTouch)
+bool UITools::IsOutSideFast(uint16_t x, uint16_t y, uint16_t maxX, uint16_t maxY)
+{
+	return (x >= maxX || y >= maxY || x < 0 || y < 0);
+}
+
+inline bool UITools::IsOutSide(const trCoordinate<int>& xy, uint8_t BorderWidth_, const trSize<uint16_t>& WindowSize_Border)
+{
+	if (xy.GetY().GetDataActual() >= WindowSize_Border.GetSizeY().GetDataActual() || xy.GetX().GetDataActual() >= WindowSize_Border.GetSizeX().GetDataActual())
+	{
+		return true;
+	}
+
+	else if (xy.GetY().GetDataActual() < 0 || xy.GetX().GetDataActual() < 0)
+	{
+		return true;
+	}
+
+	return false;
+}
+
+inline bool UITools::IsOutSide(const trCoordinate<int>& xy, uint8_t BorderWidth_, bool CountTouch)
 {
 	if (CountTouch)
 	{
@@ -77,7 +97,7 @@ bool UITools::IsOutSide(const trCoordinate<int>& xy, uint8_t BorderWidth_, bool 
 	return false;
 }
 
-bool UITools::IsOutSide(int z, uint8_t BorderWidth_, bool CountTouch)
+inline bool UITools::IsOutSide(int z, uint8_t BorderWidth_, bool CountTouch)
 {
 	MessageBox(
 		NULL,                           // Pas de fenêtre parente
@@ -119,7 +139,7 @@ bool UITools::IsOutSide(int z, uint8_t BorderWidth_, bool CountTouch)
 	return false;
 }
 
-bool UITools::IsOutSide(int z, uint8_t BorderWidth_)
+inline bool UITools::IsOutSide(int z, uint8_t BorderWidth_)
 {
 	MessageBox(
 		NULL,                           // Pas de fenêtre parente
@@ -145,7 +165,7 @@ bool UITools::IsOutSide(int z, uint8_t BorderWidth_)
 	return false;
 }
 
-bool UITools::IsOutSide(const trCoordinate<int>& xy)
+inline bool UITools::IsOutSide(const trCoordinate<int>& xy)
 {
 	if (xy.GetY().GetDataActual() >= GetConsoleSize().GetSizeY().GetDataActual() || xy.GetX().GetDataActual() >= GetConsoleSize().GetSizeX().GetDataActual())
 	{
@@ -160,7 +180,7 @@ bool UITools::IsOutSide(const trCoordinate<int>& xy)
 	return false;
 }
 
-bool UITools::IsOutSide(const trCoordinate<int>& xy, bool CountTouch)
+inline bool UITools::IsOutSide(const trCoordinate<int>& xy, bool CountTouch)
 {
 	if (CountTouch)
 	{
@@ -191,7 +211,7 @@ bool UITools::IsOutSide(const trCoordinate<int>& xy, bool CountTouch)
 	return false;
 }
 
-bool UITools::IsOutSide(int z)
+inline bool UITools::IsOutSide(int z)
 {
 	MessageBox(
 		NULL,                           // Pas de fenêtre parente
@@ -217,7 +237,7 @@ bool UITools::IsOutSide(int z)
 	return false;
 }
 
-bool UITools::IsOutSide(int z, bool CountTouch)
+inline bool UITools::IsOutSide(int z, bool CountTouch)
 {
 	MessageBox(
 		NULL,                           // Pas de fenêtre parente

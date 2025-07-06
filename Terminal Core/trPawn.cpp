@@ -4,6 +4,8 @@
 using namespace std;
 using namespace UIToolsCore;
 
+REGISTER_TYPE(trPawn, int, int, int, string)
+
 // INI default
 
 trPawn::trPawn() : trPawn(0, 0, TopLeft, "None")

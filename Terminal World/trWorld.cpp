@@ -155,11 +155,11 @@ trActor* trWorld::GetPtrActor(const std::string& Name) const
 	}
 }
 
-void trWorld::UpdateActors()
+void trWorld::UpdateActors(const trSize<uint16_t>& ConsoleSize_Border)
 {
 	for (auto& widg : *Actors)
 	{
-		widg.second->APPLY(GetConsoleSize(BorderWidth));
+		widg.second->APPLY(ConsoleSize_Border);
 	}
 }
 

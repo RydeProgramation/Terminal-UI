@@ -9,6 +9,7 @@
 #include "trMap.h"
 #include "trRect.h"
 #include "trWeakPointer.h"
+#include "trObjectFactory.h"
 
 #ifndef __TR_ACTOR__
 #define __TR_ACTOR__
@@ -18,6 +19,8 @@
 #else
 #define TERMINAL_CORE_API __declspec(dllimport)
 #endif
+
+class trWorld;
 
 class TERMINAL_CORE_API trActor : public trObject
 {
@@ -53,6 +56,8 @@ public:
 
 	void SetDestroy(bool Destroy_);
 
+	void Destroy();
+
 	// GET
 
 	const trData<std::string>& GetName() const;
@@ -68,6 +73,10 @@ public:
 	const bool IsCreated() const;
 
 	// APPLY
+
+protected:
+
+	friend trWorld;
 
 	void APPLY(const trSize<uint16_t>& SizeWindow);
 
@@ -107,5 +116,7 @@ public:
 
 	static trActor EmptyActor;
 };
+
+// SET_TYPE_OBJECT(trActor, std::string);
 
 #endif
