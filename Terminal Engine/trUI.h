@@ -53,6 +53,15 @@ public:
 	/// </summary>
 	virtual void Start();
 
+	// GET
+
+	const trData<double>& GetDeltaTime();
+
+	/// <summary>
+	/// 
+	/// </summary>
+	void UpdateTime();
+
 	/// <summary>
 	/// Update (cote...);
 	/// </summary>
@@ -116,6 +125,10 @@ protected:
 	trWorld* World;
 
 private:
+
+	trData<TimePoint> *Time;
+
+	trData<double> *DeltaTime;
 
 	std::thread *ThrUI;
 

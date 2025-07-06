@@ -56,6 +56,8 @@ public:
 
 	void SetDestroy(bool Destroy_);
 
+	void SetDeltaTime(const double& DeltaTime_);
+
 	void Destroy();
 
 	// GET
@@ -69,6 +71,8 @@ public:
 	const trData<bool>& GetChange() const;
 
 	const trData<bool>& GetDestroy() const;
+
+	const trData<double>& GetDeltaTime() const;
 
 	const bool IsCreated() const;
 
@@ -98,11 +102,13 @@ public:
 
 private:
 
-	trData<bool>* Activate;
+	trData<bool> *Activate;
 
-	trData<bool>* Protected;
+	trData<bool> *Protected;
 
-	trData<bool>* ToChange;
+	trData<bool> *ToChange;
+
+	trData<double>* DeltaTime;
 
 	trData<std::string>* Name;
 

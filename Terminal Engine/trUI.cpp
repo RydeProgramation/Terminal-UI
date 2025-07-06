@@ -30,14 +30,14 @@ trUserInterface::trUserInterface() : trUserInterface(BUFFER_SYSTEM, 6, L"\033[0m
 
 // INI
 
-trUserInterface::trUserInterface(uint8_t RenderType_, int BordW_, wstring RstClr) : Mutex(new std::mutex), KB(new trKeyBoardManagement()), ThrUI(new std::thread()), ThrKB(new std::thread()), Render(new trRender(RenderType_, BordW_, RstClr)), World(new trWorld())
+trUserInterface::trUserInterface(uint8_t RenderType_, int BordW_, wstring RstClr) : Mutex(new std::mutex), KB(new trKeyBoardManagement()), ThrUI(new std::thread()), ThrKB(new std::thread()), Render(new trRender(RenderType_, BordW_, RstClr)), World(new trWorld()), Time(new trData<TimePoint>()), DeltaTime(new trData<double>())
 {
 	BorderWidth = BordW_;
 }
 
 // INI deep copy
 
-trUserInterface::trUserInterface(const trUserInterface& other) : Mutex(new std::mutex), KB(new trKeyBoardManagement()), ThrUI(new std::thread()), ThrKB(new std::thread()), Render(new trRender(*other.Render)), World(new trWorld(*other.World))
+trUserInterface::trUserInterface(const trUserInterface& other) : Mutex(new std::mutex), KB(new trKeyBoardManagement()), ThrUI(new std::thread()), ThrKB(new std::thread()), Render(new trRender(*other.Render)), World(new trWorld(*other.World)), Time(new trData<TimePoint>(*other.Time)), DeltaTime(new trData<double>(*other.DeltaTime))
 {
 
 }
@@ -84,6 +84,20 @@ trUserInterface& trUserInterface::operator=(const trUserInterface& other)
 		*World = *other.World;
 	}
 
+	if (Time == nullptr) {
+		Time = new trData<TimePoint>();
+	}
+	else {
+		*Time = *other.Time;
+	}
+
+	if (DeltaTime == nullptr) {
+		DeltaTime = new trData<double>();
+	}
+	else {
+		*DeltaTime = *other.DeltaTime;
+	}
+
 	return *this;
 }
 
@@ -97,11 +111,36 @@ void trUserInterface::Start()
 
 	ThrUI = new std::thread([this]() { this->Loop(); });
 	ThrKB = new std::thread([this]() { this->KB->Start(); });
+
+	Time->SetData(Clock::now());
+}
+
+// GET
+
+const trData<double>& trUserInterface::GetDeltaTime()
+{
+	return *DeltaTime;
+}
+
+// UPDATE
+
+void trUserInterface::UpdateTime()
+{
+	Time->SetData(Clock::now());
+	Time->Update();
+	Nanoseconds delta = std::chrono::duration_cast<Nanoseconds>(Time->GetDataOld() - Time->GetDataActual());
+
+	long long deltaTime_ns = delta.count(); // ✅ delta time en nanosecondes
+
+	DeltaTime->SetData(-(static_cast<double>(deltaTime_ns) / 1'000'000.0));
+	DeltaTime->Update();
 }
 
 void trUserInterface::Update()
 {
 	std::lock_guard<std::mutex> lock(*Mutex); // <<-- A voir pourquoi quand on l'enlève ça crée des prblms
+
+	UpdateTime();
 
 	Render->UpdateSizeWindow();
 
@@ -114,7 +153,7 @@ void trUserInterface::Update()
 
 	World->Update();
 	
-	World->UpdateActors(Render->GetSizeWindowBorder());
+	World->UpdateActors(Render->GetSizeWindowBorder(), DeltaTime->GetDataActual());
 
 	const std::unordered_map<std::string, trActor*> &Actors = World->GetActors();
 
@@ -332,6 +371,10 @@ trUserInterface::~trUserInterface()
 	delete Render;
 
 	delete World;
+
+	delete Time;
+
+	delete DeltaTime;
 
 	timeEndPeriod(1);    // Libère la résolution demandée
 }

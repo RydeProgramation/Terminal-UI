@@ -30,6 +30,11 @@
 
 #pragma comment(lib, "winmm.lib")
 
+// Alias pour raccourcir les types
+using Clock = std::chrono::high_resolution_clock;
+using TimePoint = Clock::time_point;
+using Nanoseconds = std::chrono::nanoseconds;
+
 // ───────────── LETTRES ─────────────
 #define KEY_A 0x41
 #define KEY_B 0x42

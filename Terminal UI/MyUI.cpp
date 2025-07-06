@@ -91,6 +91,7 @@ void MyUI::Start()
 	hello3.push_back(L"\033[38;2;50;100;125m| |_| |/ _ \\ | |/ _ \\\033[38;2;50;100;150m   \\ \\ /\\ / / _ \\| '__| |/ _` \033[38;2;50;100;255m| |"); // 54
 	hello3.push_back(L"\033[38;2;50;100;125m|  _  |  __/ | | (_) | \033[38;2;50;100;150m  \\ V  V / (_) | |  | | (_| \033[38;2;50;100;255m|_|"); // 54
 	hello3.push_back(L"\033[38;2;50;100;125m|_| |_|\\___|_|_|\\___/\033[38;2;50;100;150m     \\_/\\_/ \\___/|_|  |_|\\__,_\033[38;2;50;100;255m(_)"); // 54
+
 	hello3.push_back(applyColorToText(L" _   _      _ _        __        __         _     _ _ ", 0)); // 54
 	hello3.push_back(applyColorToText(L"| | | | ___| | | ___   \\ \\      / /__  _ __| | __| | |", 0)); // 54
 	hello3.push_back(applyColorToText(L"| |_| |/ _ \\ | |/ _ \\   \\ \\ /\\ / / _ \\| '__| |/ _` | |", 0)); // 54
@@ -341,7 +342,7 @@ void MyUI::Menu1()
 		OnPress,
 		HoldToTrigger,
 		[ptr = dynamic_cast<trWidget*>(World->GetPtrActor("Simulation"))]() {
-			if (ptr) ptr->AddToPosition(0, 1);
+			if (ptr) ptr->AddToPosition(0, 1));
 		},
 		World->GetPtrActor("Simulation")
 	));
@@ -368,7 +369,7 @@ void MyUI::Menu1()
 	KB->CreateBTN(new trBTN_Key(
 		KEY_J,            // La touche J
 		OnPress,          // Appui
-		PressToTrigger,    // Mode d'utilisation
+		HoldToTrigger,    // Mode d'utilisation
 		[Ptr, this]() {        // Lambda sans argument, qui capture this
 			World->CreateActor(trCREATE(Munition, int(Ptr->GetPosition().GetX().GetDataActual()), int(Ptr->GetPosition().GetY().GetDataActual()), int(MiddleCenter), wstring(L"**"), string("Bullet_")));
 		},

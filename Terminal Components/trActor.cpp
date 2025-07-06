@@ -13,14 +13,14 @@ trActor::trActor() : trActor("None")
 
 // INI
 
-trActor::trActor(string name_) : Name(new trData<string>(name_)), Activate(new trData<bool>(true)), Protected(new trData<bool>(false)), ToChange(new trData<bool>(true)), ToDestroy(new trData<bool>(false))
+trActor::trActor(string name_) : Name(new trData<string>(name_)), Activate(new trData<bool>(true)), Protected(new trData<bool>(false)), ToChange(new trData<bool>(true)), ToDestroy(new trData<bool>(false)), DeltaTime(new trData<double>())
 {
 	
 }
 
 // INI deep copy
 
-trActor::trActor(const trActor& other) : Name(new trData<string>(*other.Name)), Activate(new trData<bool>(*other.Activate)), ToChange(new trData<bool>(true)), ToDestroy(new trData<bool>(*other.ToDestroy)), Protected(new trData<bool>(*other.Protected))
+trActor::trActor(const trActor& other) : Name(new trData<string>(*other.Name)), Activate(new trData<bool>(*other.Activate)), ToChange(new trData<bool>(true)), ToDestroy(new trData<bool>(*other.ToDestroy)), Protected(new trData<bool>(*other.Protected)), DeltaTime(new trData<double>(*other.DeltaTime))
 {
 
 }
@@ -65,6 +65,13 @@ trActor& trActor::operator=(const trActor& other)
 	else {
 		*ToDestroy = *other.ToDestroy;
 	}
+
+	if (DeltaTime == nullptr) {
+		DeltaTime = new trData<double>();
+	}
+	else {
+		*DeltaTime = *other.DeltaTime;
+	}
 	
 	return *this;
 }
@@ -94,6 +101,11 @@ void trActor::SetChange(bool Change_)
 void trActor::SetDestroy(bool Destroy_)
 {
 	ToDestroy->SetData(Destroy_);
+}
+
+void trActor::SetDeltaTime(const double& DeltaTime_)
+{
+	DeltaTime->SetData(DeltaTime_);
 }
 
 void trActor::Destroy()
@@ -128,6 +140,11 @@ const trData<bool>& trActor::GetDestroy() const
 	return *ToDestroy;
 }
 
+const trData<double>& trActor::GetDeltaTime() const 
+{
+	return *DeltaTime;
+}
+
 const bool trActor::IsCreated() const
 {
 	return Created;
@@ -137,6 +154,8 @@ const bool trActor::IsCreated() const
 
 void trActor::APPLY(const trSize<uint16_t>& SizeWindow)
 {	
+	DeltaTime->Update();
+
 	APPLY_Implementation();
 
 	APPLY_(SizeWindow);
@@ -181,4 +200,6 @@ trActor::~trActor()
 	delete Name;
 
 	delete ToDestroy;
+
+	delete DeltaTime;
 }

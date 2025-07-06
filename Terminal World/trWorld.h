@@ -50,7 +50,7 @@ public:
 	/// <summary>
 	/// Met à jour un widget (rafraichit son contenu, sa position, etc.)
 	/// </summary>
-	void UpdateActors(const trSize<uint16_t>& ConsoleSize_Border);
+	void UpdateActors(const trSize<uint16_t>& ConsoleSize_Border, const double& DeltaTime_);
 
 	/// <summary>
 	/// Pour mettre à jour les interactions entre les actors
