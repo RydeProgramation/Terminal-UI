@@ -103,16 +103,133 @@ trUserInterface& trUserInterface::operator=(const trUserInterface& other)
 
 // FNC
 
-void trUserInterface::Start()
+void trUserInterface::Start(int argc, char* argv[])
 {
+	SetConsoleOutputCP(CP_UTF8);
+
 	SetupConsole();
 
-	timeBeginPeriod(2);  // Demande timer à résolution 2 ms
+	std::wstring file = stringToWstring(getArgFileWithExt(argc, argv, ".widg"));
+	std::wstring page_ = stringToWstring(getArgFileWithExt(argc, argv, ".page"));
 
-	ThrUI = new std::thread([this]() { this->Loop(); });
-	ThrKB = new std::thread([this]() { this->KB->Start(); });
+	if (!file.empty()) {
+		std::cout << "Ouverture du fichier : ";
 
-	Time->SetData(Clock::now());
+		std::wcout << file << std::endl;
+
+		LPCTSTR file_c = file.c_str();
+
+		LOAD(trActor, Widg, file_c);
+
+		trPawn* widgL = dynamic_cast<trPawn*>(Widg);
+
+		if (widgL)
+		{
+			widgL->SetPosition(0, 0);
+			widgL->SetTypeRelativePosition(MiddleCenter);
+		}
+
+		// ThrUI = new std::thread([this, Widg]() { this->Load(Widg); });
+		ThrKB = new std::thread([this]() { this->KB->Start(); });
+
+		KB->CreateBTN(new trBTN_Key(KEY_F5, OnRelease, PressToTrigger,
+			[Widg, file_c]() { LOAD(trWidget, T_Widg, file_c); T_Widg->SetPosition(0, 0);  *Widg = *T_Widg; delete T_Widg; }, this));
+
+		trText* T_Text = dynamic_cast<trText*>(Widg);
+
+		bool Lock = false;
+
+		if (T_Text)
+		{
+			KB->CreateBTN(new trBTN_Key(KEY_F6, OnRelease, PressToTrigger,
+				[T_Text, &Lock]() { Lock = false; T_Text->DoCharToCharAnimation(20); T_Text->ResetIndexAnimation(); }, this)); / ça bloque la boucle par ce qu elle Sleep dans la boucle engine // IL FAUT UTILISER UN CHRONO ou deltatime qu'il faut régler
+
+			KB->CreateBTN(new trBTN_Key(KEY_F8, OnRelease, PressToTrigger,
+				[T_Text, &Lock]() { Lock = true; T_Text->DoAnimation(); }, this)); / ça bloque la boucle par ce qu elle Sleep dans la boucle engine // IL FAUT UTILISER UN CHRONO ou deltatime qu'il faut régler
+
+			KB->CreateBTN(new trBTN_Key(KEY_F10, OnRelease, PressToTrigger,
+				[T_Text, &Lock]() { Lock = true; T_Text->DoNextFrameAnimation(); }, this));
+
+			KB->CreateBTN(new trBTN_Key(KEY_F9, OnRelease, PressToTrigger,
+				[T_Text, &Lock]() { Lock = true; T_Text->DoPreviousFrameAnimation(); }, this));
+		}
+
+		World->CreateActor(Widg);
+
+		Load(Widg, file_c, Lock);
+	}
+
+	else if (!page_.empty()) {
+		// std::cout << "Ouverture du fichier : " << file << std::endl;
+		// → Chargement automatique du fichier
+	}
+
+	else {
+		cout << WstringToUtf8(L"Clique sur F11, pour une meilleur experience (sans bug) 😊🎉") << endl << endl << endl;
+
+		cout << WstringToUtf8(L"Ensuite clique sur n'importe quelle touche (entrée)") << endl;
+
+		cin.ignore();
+
+		timeBeginPeriod(2);  // Demande timer à résolution 2 ms
+
+		ThrUI = new std::thread([this]() { this->Loop(); });
+		ThrKB = new std::thread([this]() { this->KB->Start(); });
+
+		Time->SetData(Clock::now());
+	}
+}
+
+void trUserInterface::Load(trObject* LoadObj, LPCTSTR file_c, bool &Lock)
+{
+	trWidget* LoadObjWidg = dynamic_cast<trWidget*>(LoadObj);
+
+	int i = 1;
+
+	while (true)
+	{
+		LoadObjWidg->SetPosition(0, 0);
+
+		std::lock_guard<std::mutex> lock(*Mutex); // <<-- A voir pourquoi quand on l'enlève ça crée des prblms
+
+		UpdateTime();
+
+		Render->UpdateSizeWindow();
+
+		KB->Update();
+
+		if (RefreshVerification())
+		{
+			Refresh();
+		}
+
+		World->UpdateActors(Render->GetSizeWindowBorder(), DeltaTime->GetDataActual());
+
+		const std::unordered_map<std::string, trActor*>& Actors = World->GetActors();
+
+		if (LoadObjWidg)
+		{
+			Render->DisplayWidget(LoadObjWidg);
+		}
+
+		if (Render->GetRenderType() == BUFFER_SYSTEM || Render->GetRenderType() == RENDER_SYSTEM)
+		{
+			Render->Render(Actors);
+		}
+
+		if (i >= 20 && !Lock)
+		{
+			LOAD(trActor, T_Widg, file_c); 
+			*LoadObjWidg = *T_Widg;
+			delete T_Widg;
+
+			i = -1;
+		}
+
+		Refreshed = false;
+
+		i++;
+	}
 }
 
 // GET

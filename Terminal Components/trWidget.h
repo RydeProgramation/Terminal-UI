@@ -38,7 +38,7 @@ public:
 
 	// Copy
 
-	trWidget& operator=(const trWidget& other);
+	virtual trWidget& operator=(const trActor& other) override;
 
 	// SET
 
@@ -53,6 +53,8 @@ public:
 	void ResetColor();
 
 	void SetSize(int x_, int y_);
+
+	virtual void SetProprety(const std::string& name, const std::string& data, const std::string& type) override;
 
 	// ADD
 
@@ -75,6 +77,8 @@ public:
 	const std::vector<trPair<std::wstring, trCoordinate<int>>>& GetResetColor() const;
 
 	const trData<std::wstring>& GetColor() const;
+
+	const trData<std::wstring>& GetBackroundColor() const;
 
 protected:
 
@@ -112,6 +116,8 @@ private:
 	trSize<int> *Size;
 
 	trData<std::wstring> *Color; // A voir pour supprimer
+
+	trData<std::wstring>* BackroundColor; // A voir pour supprimer
 
 	trData<std::wstring>* RawContent;
 

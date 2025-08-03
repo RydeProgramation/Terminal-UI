@@ -41,35 +41,49 @@ trSelector::trSelector(const trSelector& other) : trWidget(other), Selected(new 
 
 // Copy
 
-trSelector& trSelector::operator=(const trSelector& other)
+trSelector& trSelector::operator=(const trActor& other_)
 {
-	// Si on est en train de se copier soi-même, il n'y a rien à faire
-	if (this == &other) { return *this; }
+	try
+	{
+		const trSelector& other = dynamic_cast<const trSelector&>(other_);
 
-	trWidget::operator=(other);
+		// Si on est en train de se copier soi-même, il n'y a rien à faire
+		if (this == &other) { return *this; }
 
-	if (Selected == nullptr) {
-		Selected = new trData<bool>(*other.Selected);
-	}
-	else {
-		*Selected = *other.Selected;
+		trWidget::operator=(other_);
+
+		if (Selected == nullptr) {
+			Selected = new trData<bool>(*other.Selected);
+		}
+		else {
+			*Selected = *other.Selected;
+		}
+
+		if (ColorSelected == nullptr) {
+			ColorSelected = new trData<wstring>(*other.ColorSelected);
+		}
+		else {
+			*ColorSelected = *other.ColorSelected;
+		}
+
+		if (ColorUnSelected == nullptr) {
+			ColorUnSelected = new trData<wstring>(*other.ColorUnSelected);
+		}
+		else {
+			*ColorUnSelected = *other.ColorUnSelected;
+		}
+
+		return *this;
 	}
 
-	if (ColorSelected == nullptr) {
-		ColorSelected = new trData<wstring>(*other.ColorSelected);
-	}
-	else {
-		*ColorSelected = *other.ColorSelected;
-	}
+	catch (const std::bad_cast&)
+	{
+		trWidget& Me = dynamic_cast<trWidget&>(*this);
 
-	if (ColorUnSelected == nullptr) {
-		ColorUnSelected = new trData<wstring>(*other.ColorUnSelected);
-	}
-	else {
-		*ColorUnSelected = *other.ColorUnSelected;
-	}
+		Me = other_;
 
-	return *this;
+		return *this;
+	}
 }
 
 // SET
@@ -128,6 +142,54 @@ void trSelector::SetColorUnSelected(const std::wstring& CodeCouleurAnsi)
 	else {
 		MessageBoxW(nullptr, (L"Le code ANSI est invalide (doit commencer par '\\033['):\n" + CodeCouleurAnsi).c_str(),
 			L"❌ Code ANSI invalide", MB_ICONERROR | MB_OK);
+	}
+}
+
+void trSelector::SetProprety(const std::string& name, const std::string& data, const std::string& type)
+{
+	trWidget::SetProprety(name, data, type);
+
+	if (name == "Selected")
+	{
+		if (type == "bool")
+		{
+			if (data == "true" || data == "1" || data == "True" || data == "TRUE")
+			{
+				SetSelected(true);
+			}
+			else if (data == "false" || data == "0" || data == "False" || data == "FALSE")
+			{
+				SetSelected(false);
+			}
+			else
+			{
+				MessageBox(
+					NULL,
+					L"Invalid value for Selected property",
+					L"Error",
+					MB_ICONERROR | MB_OK
+				);
+			}
+		}
+		else
+		{
+			MessageBox(
+				NULL,
+				L"Invalid type for Selected property",
+				L"Error",
+				MB_ICONERROR | MB_OK
+			);
+		}
+	}
+
+	else if (name == "ColorSelected")
+	{
+		SetColorSelected(wstring(data.begin(), data.end()));
+	}
+
+	else if (name == "ColorUnSelected")
+	{
+		SetColorUnSelected(wstring(data.begin(), data.end()));
 	}
 }
 

@@ -36,7 +36,7 @@ public:
 
 	// Copy
 
-	trSelector& operator=(const trSelector& other);
+	virtual trSelector& operator=(const trActor& other) override;
 
 	// SET
 
@@ -49,6 +49,8 @@ public:
 	void SetColorUnSelected(uint8_t R, uint8_t G, uint8_t B, bool Backround);
 
 	void SetColorUnSelected(const std::wstring& CodeCouleurAnsi);
+
+	virtual void SetProprety(const std::string& name, const std::string& data, const std::string& type) override;
 
 	// GET
 

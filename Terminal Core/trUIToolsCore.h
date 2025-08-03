@@ -94,6 +94,28 @@ namespace UIToolsCore
 	TERMINAL_CORE_API void substrAnsiSafeUltraFast(const std::wstring& input, size_t startVisible, size_t countVisible, std::wstring& result);
 
 	/// <summary>
+	///	
+	/// </summary>
+	/// <returns></returns>
+	TERMINAL_CORE_API bool IsConsoleFocused() /*Ne fonctionne pas*/;
+
+	/// <summary>
+	/// 
+	/// </summary>
+	/// <param name="argc"></param>
+	/// <param name="argv"></param>
+	/// <param name="ext"></param>
+	/// <returns></returns>
+	TERMINAL_CORE_API std::string getArgFileWithExt(int argc, char* argv[], const std::string& ext);
+
+	/// <summary>
+	/// Retourne le chemin du fichier passé en argument s’il correspond à l’extension donnée
+	/// </summary>
+	/// <param name="str"></param>
+	/// <returns></returns>
+	TERMINAL_CORE_API std::wstring stringToWstring(const std::string& str);
+
+	/// <summary>
 	/// FONCTION VIDE
 	/// </summary>
 	/// <param name="name"></param>

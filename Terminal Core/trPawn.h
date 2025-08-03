@@ -38,7 +38,7 @@ public:
 
 	// Copy
 
-	trPawn& operator=(const trPawn& other);
+	virtual trPawn& operator=(const trActor& other) override;
 
 	// SET
 
@@ -61,6 +61,8 @@ public:
 	const trData<uint8_t>& GetRelativePositionType() const;
 
 	const std::vector<trActor*>& GetPawnCollision() const;
+
+	virtual void SetProprety(const std::string& name, const std::string& data, const std::string& type) override;
 
 	// UPDATE APPLY (a mettre en private ?)
 

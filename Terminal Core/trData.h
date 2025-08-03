@@ -41,11 +41,11 @@ public:
 			return *this;
 		}
 
-		if (Old == nullptr) {
-			Old = new DATA_T(*other.Old);
+		if (New == nullptr) {
+			New = new DATA_T(*other.New);
 		}
 		else {
-			*Old = *other.Old;
+			*New = *other.New;
 		}
 
 		if (Actual == nullptr) {
@@ -55,11 +55,11 @@ public:
 			*Actual = *other.Actual;
 		}
 
-		if (New == nullptr) {
-			New = new DATA_T(*other.New);
+		if (Old == nullptr) {
+			Old = new DATA_T(*other.Old);
 		}
 		else {
-			*New = *other.New;
+			*Old = *other.Old;
 		}
 
 		return *this;

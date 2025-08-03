@@ -51,7 +51,9 @@ public:
 	/// <summary>
 	/// Lance l'interface utilisateur
 	/// </summary>
-	virtual void Start();
+	void Start(int argc, char* argv[]);
+
+	void Load(trObject* LoadObj, LPCTSTR file_c, bool &Lock);
 
 	// GET
 

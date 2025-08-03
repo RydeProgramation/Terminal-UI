@@ -36,11 +36,13 @@ public:
 
 	// Copy
 
-	trText& operator=(const trText& other);
+	virtual trText& operator=(const trActor& other) override;
 
 	// SET
 
 	void SetAnimationVector(const std::vector<trPair<uint16_t, std::wstring>>& AnimationVector_);
+
+	virtual void SetProprety(const std::string& name, const std::string& data, const std::string& type) override;
 
 	// GET
 
@@ -50,11 +52,17 @@ public:
 	
 	void AddAnimation(const trPair<uint16_t, std::wstring>& Animation_);
 
+	void AddAnimation(uint16_t Time_, const std::wstring& Animation_);
+
 	// FNC
 
-	void DoCharToCharAnimation(uint16_t SleepTime_, const std::wstring& Content_);
+	void DoCharToCharAnimation(uint16_t SleepTime_, const std::wstring Content_);
+
+	void DoCharToCharAnimation(uint16_t SleepTime_);
 
 	void DoNextFrameAnimation();
+
+	void DoPreviousFrameAnimation();
 
 	void DoAnimation();
 
@@ -75,7 +83,10 @@ public:
 private:
 
 	std::vector<trPair<uint16_t, std::wstring>> *AnimationVector;
+
 	uint16_t indexAnimation;
+public:
+	void ResetIndexAnimation();
 };
 
 

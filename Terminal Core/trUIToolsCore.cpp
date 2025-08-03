@@ -170,3 +170,41 @@ void UIToolsCore::substrAnsiSafeUltraFast(
 	// Finalise la taille réelle
 	result.resize(writeIndex);
 }
+
+bool UIToolsCore::IsConsoleFocused() /*Ne fonctionne pas*/ {
+	HWND consoleWindow = GetConsoleWindow();
+	HWND foregroundWindow = GetForegroundWindow();
+
+	return consoleWindow != nullptr && consoleWindow == foregroundWindow;
+}
+
+std::string UIToolsCore::getArgFileWithExt(int argc, char* argv[], const std::string& ext) {
+	if (argc > 1) {
+		std::string filePath = argv[1];
+		std::filesystem::path path(filePath);
+
+		if (path.has_extension()) {
+			std::string fileExt = path.extension().string();
+			// Gère ext = "ia" ou ".ia"
+			if (fileExt == ext || fileExt == "." + ext) {
+				return filePath;
+			}
+		}
+	}
+	return "";
+}
+
+TERMINAL_CORE_API std::wstring UIToolsCore::stringToWstring(const std::string& str)
+{
+	if (str.empty()) return std::wstring();
+
+	// Utiliser CP_ACP (Windows ANSI Code Page)
+	int size_needed = MultiByteToWideChar(CP_ACP, 0, str.c_str(), -1, nullptr, 0);
+	if (size_needed == 0) return std::wstring(); // erreur
+
+	std::wstring wstr(size_needed, 0);
+	MultiByteToWideChar(CP_ACP, 0, str.c_str(), -1, &wstr[0], size_needed);
+
+	wstr.resize(size_needed - 1); // enlever '\0'
+	return wstr;
+}

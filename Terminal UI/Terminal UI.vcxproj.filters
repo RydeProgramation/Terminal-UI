@@ -32,6 +32,9 @@
     <ClInclude Include="Header.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="resource.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="Hello.widg">
@@ -40,5 +43,27 @@
     <None Include="Pre_Build.py">
       <Filter>Tool</Filter>
     </None>
+    <None Include="PlusTard.page">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="HelloWorld.widg">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="HelloWorldComplete.widg">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="Parag.widg">
+      <Filter>Resource Files</Filter>
+    </None>
+  </ItemGroup>
+  <ItemGroup>
+    <ResourceCompile Include="Terminal UI.rc">
+      <Filter>Resource Files</Filter>
+    </ResourceCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <Image Include="icon.ico">
+      <Filter>Resource Files</Filter>
+    </Image>
   </ItemGroup>
 </Project>

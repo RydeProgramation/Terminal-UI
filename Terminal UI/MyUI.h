@@ -5,7 +5,7 @@
 #ifndef __MYUI__
 #define __MYUI__
 
-class MyUI : trUserInterface
+class MyUI : public trUserInterface
 {
 public:
 
@@ -13,7 +13,7 @@ public:
 
 	virtual ~MyUI();
 
-	void Start() override;
+	void Debut();
 
 	void Menu1();
 
@@ -29,6 +29,18 @@ private:
 class Munition : public trWidget
 {
 public:
+
+	Munition()
+		: trWidget(0, 0, 3, 5, MiddleCenter, L"", "BulletDefault" + std::to_string(bulletCount))
+	{
+		this->SetContent(L"****************");
+		bulletCount++;
+
+		if (bulletCount >= 20)
+		{
+			// this->SetDestroy(true);
+		}
+	}
 
 	Munition(int x_, int y_, int RelativePosition_, std::wstring content_, std::string name_)
 		: trWidget(x_, y_, 3, 5, RelativePosition_, content_, name_ + std::to_string(bulletCount))

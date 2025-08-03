@@ -10,8 +10,8 @@
 
 #pragma comment(lib, "msxml6.lib")
 
-#ifndef __TR_TEXT__
-#define __TR_TEXT__
+#ifndef __TR_SAVEFILE__
+#define __TR_SAVEFILE__
 
 #ifdef TERMINAL_LOAD_MODULE_EXPORTS
 #define TERMINAL_LOAD_MODULE_API __declspec(dllexport)
@@ -19,11 +19,9 @@
 #define TERMINAL_LOAD_MODULE_API __declspec(dllimport)
 #endif
 
-namespace trLoad
+namespace trSave
 {
-
-	void TERMINAL_LOAD_MODULE_API Load();
-
+	void TERMINAL_LOAD_MODULE_API SaveObject();
 };
 
 #endif

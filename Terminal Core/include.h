@@ -21,13 +21,20 @@
 #include <locale>
 #include <chrono>
 #include <codecvt>
+#include <filesystem>
 #include <memory>
 #include <map>
 #include <print>
 #include <unordered_map>
 #include <typeindex>
 #include <typeinfo>
+#include <xmllite.h>
+#include <shlwapi.h>   // pour SHCreateStreamOnFile
+#include <combaseapi.h>
 
+#pragma comment(lib, "xmllite.lib")
+#pragma comment(lib, "ole32.lib")  // pour COM
+#pragma comment(lib, "shlwapi.lib")
 #pragma comment(lib, "winmm.lib")
 
 // Alias pour raccourcir les types

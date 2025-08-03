@@ -4,8 +4,11 @@
 
 #include "trSize.h"
 #include "trCoordinate.h"
+#include "trText.h"
+#include "trSelector.h"
 #include "trWidget.h"
 #include "trData.h"
+#include "trUIToolsCore.h"
 #include <msxml6.h>
 
 #pragma comment(lib, "msxml6.lib")
@@ -21,7 +24,11 @@
 
 namespace trLoad
 {
-	TERMINAL_LOAD_MODULE_API trObject* Load(std::string NameFile_);
+	TERMINAL_LOAD_MODULE_API bool FileExists(LPCWSTR filename);
+	TERMINAL_LOAD_MODULE_API trObject* LoadObject(LPCWSTR NameFile_);
 };
 
 #endif
+
+#define LOAD(Type, Name, path) \
+	Type* Name = dynamic_cast<Type*>(trLoad::LoadObject(path))

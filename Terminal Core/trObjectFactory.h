@@ -32,6 +32,20 @@ struct trAnObject_ : public trAnObjectBase
 	}
 };
 
+struct trAnObjectDefault_ : public trAnObjectBase
+{
+	using CreateFunc = trObject * (*)();
+
+	CreateFunc createFunc;
+	std::type_index typeSignature;
+
+	trAnObjectDefault_(CreateFunc func) : createFunc(func), typeSignature(typeid(trAnObjectDefault_)) {}
+
+	bool matchesSignature(std::type_index otherType) const {
+		return otherType == typeSignature;
+	}
+};
+
 template<typename... T>
 std::string GetTypeNames()
 {
@@ -54,10 +68,17 @@ public:
 	static void RegisterType(const std::string& typeName)
 	{
 		std::map<std::string, trAnObjectBase*>& objectsType = getobjectsType();
+		std::map<std::string, trAnObjectBase*>& objectsTypeDefault = getobjectsTypeDefault();
 
 		objectsType[typeName] = new trAnObject_<Args...>(
 			[](Args&&... args) -> trObject* {
 				return new TypeObject(std::forward<Args>(args)...);
+			}
+		);
+
+		objectsTypeDefault[typeName] = new trAnObjectDefault_(
+			[]() -> trObject* {
+				return new TypeObject();
 			}
 		);
 	}
@@ -68,11 +89,18 @@ public:
 		std::map<std::string, trAnObjectBase*>& objectsType = getobjectsType();
 
 		auto it = objectsType.find(typeName);
-		if (it == objectsType.end()) return nullptr;
+
+		if (it == objectsType.end())
+		{
+			std::wstring errTypeName = std::wstring(typeName.begin(), typeName.end());
+			MessageBoxW(NULL, (L"TYPE NON ENREGISTRÉ : " + errTypeName).c_str(), L"Erreur", MB_ICONERROR | MB_OK);
+			return nullptr;
+		}
 
 		trAnObjectBase* base = it->second;
 
 		auto typed = dynamic_cast<trAnObject_<Args...>*>(base);
+
 		if (!typed) {
 			std::wstring errTypeName = std::wstring(typeName.begin(), typeName.end());
 
@@ -91,6 +119,26 @@ public:
 		}
 
 		return typed->createFunc(std::forward<Args>(args)...);
+	}
+
+	static trObject* Create(const std::string& typeName)
+	{
+		std::map<std::string, trAnObjectBase*>& objectsTypeDefault = getobjectsTypeDefault();
+
+		auto it = objectsTypeDefault.find(typeName);
+
+		if (it == objectsTypeDefault.end())
+		{
+			std::wstring errTypeName = std::wstring(typeName.begin(), typeName.end());
+			MessageBoxW(NULL, (L"TYPE NON ENREGISTRÉ : " + errTypeName).c_str(), L"Erreur", MB_ICONERROR | MB_OK);
+			return nullptr;
+		}
+
+		trAnObjectBase* base = it->second;
+
+		auto typed = dynamic_cast<trAnObjectDefault_*>(base);
+
+		return typed->createFunc();
 	}
 
 	/*template<typename... Args>
@@ -133,6 +181,17 @@ public:
 		return *objectsType;
 	}
 
+	static std::map<std::string, trAnObjectBase*>& getobjectsTypeDefault()
+	{
+		static std::map<std::string, trAnObjectBase*>* objectsType;
+
+		if (!objectsType) {
+			objectsType = new std::map<std::string, trAnObjectBase*>;
+		}
+
+		return *objectsType;
+	}
+
 private:
 	// static std::map<std::string, trAnObjectBase*> *objectsType;
 };
@@ -149,3 +208,6 @@ static AutoRegister##Type globalAutoRegister##Type;
 
 #define trCREATE(Type, ...) \
     dynamic_cast<Type*>(trObjectFactory::Create(#Type, __VA_ARGS__))
+
+#define trCREATEDefault(Type) \
+    dynamic_cast<Type*>(trObjectFactory::Create(#Type))

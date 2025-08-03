@@ -1,4 +1,4 @@
-#include "include.h"
+﻿#include "include.h"
 
 #include "trUI.h"
 #include "trSize.h"
@@ -10,3 +10,5 @@
 #include "trMap.h"
 #include "trPair.h"
 #include "trActor.h"
+
+#include "resource.h"

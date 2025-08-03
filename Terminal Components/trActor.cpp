@@ -108,6 +108,113 @@ void trActor::SetDeltaTime(const double& DeltaTime_)
 	DeltaTime->SetData(DeltaTime_);
 }
 
+void trActor::SetProprety(const std::string& name, const std::string& data, const std::string& type)
+{
+	if (name == "Activate")
+	{
+		if (type == "bool")
+		{
+			if (data == "true" || data == "1" || data == "True" || data == "TRUE")
+			{
+				Activate->SetData(true);
+			}
+			else if (data == "false" || data == "0" || data == "False" || data == "FALSE")
+			{
+				Activate->SetData(false);
+			}
+			else
+			{
+				MessageBox(
+					NULL,
+					L"Invalid value for Activate property",
+					L"Error",
+					MB_ICONERROR | MB_OK
+				);
+			}
+		}
+	}
+
+	if (name == "Protected")
+	{
+		if (type == "bool")
+		{
+			if (data == "true" || data == "1" || data == "True" || data == "TRUE")
+			{
+				Protected->SetData(true);
+			}
+			else if (data == "false" || data == "0" || data == "False" || data == "FALSE")
+			{
+				Protected->SetData(false);
+			}
+			else
+			{
+				MessageBox(
+					NULL,
+					L"Invalid value for Activate property",
+					L"Error",
+					MB_ICONERROR | MB_OK
+				);
+			}
+		}
+	}
+
+	if (name == "ToChange")
+	{
+		if (type == "bool")
+		{
+			if (data == "true" || data == "1" || data == "True" || data == "TRUE")
+			{
+				ToChange->SetData(true);
+			}
+			else if (data == "false" || data == "0" || data == "False" || data == "FALSE")
+			{
+				ToChange->SetData(false);
+			}
+			else
+			{
+				MessageBox(
+					NULL,
+					L"Invalid value for Activate property",
+					L"Error",
+					MB_ICONERROR | MB_OK
+				);
+			}
+		}
+	}
+
+	if (name == "Name")
+	{
+		if (type == "string")
+		{
+			Name->SetData(data);
+		}
+	}
+
+	if (name == "ToDestroy")
+	{
+		if (type == "bool")
+		{
+			if (data == "true" || data == "1" || data == "True" || data == "TRUE")
+			{
+				ToDestroy->SetData(true);
+			}
+			else if (data == "false" || data == "0" || data == "False" || data == "FALSE")
+			{
+				ToDestroy->SetData(false);
+			}
+			else
+			{
+				MessageBox(
+					NULL,
+					L"Invalid value for Activate property",
+					L"Error",
+					MB_ICONERROR | MB_OK
+				);
+			}
+		}
+	}
+}
+
 void trActor::Destroy()
 {
 	ToDestroy->SetData(true);

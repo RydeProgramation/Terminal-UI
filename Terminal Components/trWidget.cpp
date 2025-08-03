@@ -14,14 +14,14 @@ trWidget::trWidget() : trWidget(0, 0, 0, 0, TopLeft, L"", "None")
 
 // INI
 
-trWidget::trWidget(int x_, int y_, int size_x_, int size_y_, uint8_t RelativePositionType_, wstring content_, string name_) : trPawn(x_, y_, RelativePositionType_, name_), Size(new trSize<int>(size_x_, size_y_)), ColoredMap(new trData<trMap<int, trPair<std::wstring, trCoordinate<int>>>>()), BaseColor(new std::vector<trPair<std::wstring, trCoordinate<int>>>()), RawContent(new trData<wstring>(content_)), Color(new trData<wstring>(L"\x1B[0m")), Content(new trData<wstring>(ContentReorganisation(content_, trSize<int>(size_x_, size_y_)))), ColoredContent(new trData<wstring>(ContentReorganisationKeepColor(content_, trSize<int>(size_x_, size_y_))))
+trWidget::trWidget(int x_, int y_, int size_x_, int size_y_, uint8_t RelativePositionType_, wstring content_, string name_) : trPawn(x_, y_, RelativePositionType_, name_), Size(new trSize<int>(size_x_, size_y_)), ColoredMap(new trData<trMap<int, trPair<std::wstring, trCoordinate<int>>>>()), BaseColor(new std::vector<trPair<std::wstring, trCoordinate<int>>>()), RawContent(new trData<wstring>(content_)), Color(new trData<wstring>(L"\x1B[0m")), BackroundColor(new trData<wstring>(L"\x1B[0m")), Content(new trData<wstring>(ContentReorganisation(content_, trSize<int>(size_x_, size_y_)))), ColoredContent(new trData<wstring>(ContentReorganisationKeepColor(content_, trSize<int>(size_x_, size_y_))))
 {
 	
 }
 
 // INI deep copy
 
-trWidget::trWidget(const trWidget& other) : trPawn(other), Size(new trSize<int>(*other.Size)), ColoredMap(new trData<trMap<int, trPair<std::wstring, trCoordinate<int>>>>(*other.ColoredMap)), BaseColor(new std::vector<trPair<std::wstring, trCoordinate<int>>>(*other.BaseColor)), RawContent(new trData<wstring>(*other.RawContent)), Color(new trData<wstring>(*other.Color)), Content(new trData<wstring>(*other.Content)), ColoredContent(new trData<wstring>(*other.ColoredContent))
+trWidget::trWidget(const trWidget& other) : trPawn(other), Size(new trSize<int>(*other.Size)), ColoredMap(new trData<trMap<int, trPair<std::wstring, trCoordinate<int>>>>(*other.ColoredMap)), BaseColor(new std::vector<trPair<std::wstring, trCoordinate<int>>>(*other.BaseColor)), RawContent(new trData<wstring>(*other.RawContent)), Color(new trData<wstring>(*other.Color)), BackroundColor(new trData<wstring>(*other.BackroundColor)), Content(new trData<wstring>(*other.Content)), ColoredContent(new trData<wstring>(*other.ColoredContent))
 {
 
 }
@@ -33,62 +33,76 @@ void trWidget::Init()
 
 // Copy
 
-trWidget& trWidget::operator=(const trWidget& other)
+trWidget& trWidget::operator=(const trActor& other_)
 {
-	if (this == &other) { return *this; }
+	try
+	{
+		const trWidget& other = dynamic_cast<const trWidget&>(other_);
 
-	trPawn::operator=(other);
+		if (this == &other) { return *this; }
 
-	if (Size == nullptr) {
-		Size = new trSize<int>(*other.Size);
-	}
-	else {
-		*Size = *other.Size;
+		trPawn::operator=(other_);
+
+		if (Size == nullptr) {
+			Size = new trSize<int>(*other.Size);
+		}
+		else {
+			*Size = *other.Size;
+		}
+
+		if (ColoredMap == nullptr) {
+			ColoredMap = new trData<trMap<int, trPair<std::wstring, trCoordinate<int>>>>(*other.ColoredMap);
+		}
+		else {
+			*ColoredMap = *other.ColoredMap;
+		}
+
+		if (BaseColor == nullptr) {
+			BaseColor = new std::vector<trPair<std::wstring, trCoordinate<int>>>(*other.BaseColor);
+		}
+		else {
+			*BaseColor = *other.BaseColor;
+		}
+
+		if (RawContent == nullptr) {
+			RawContent = new trData<wstring>(*other.RawContent);
+		}
+		else {
+			*RawContent = *other.RawContent;
+		}
+
+		if (Color == nullptr) {
+			Color = new trData<wstring>(*other.Color);
+		}
+		else {
+			*Color = *other.Color;
+		}
+
+		if (Content == nullptr) {
+			Content = new trData<wstring>(*other.Content);
+		}
+		else {
+			*Content = *other.Content;
+		}
+
+		if (ColoredContent == nullptr) {
+			ColoredContent = new trData<wstring>(*other.ColoredContent);
+		}
+		else {
+			*ColoredContent = *other.ColoredContent;
+		}
+
+		return *this;
 	}
 
-	if (ColoredMap == nullptr) {
-		ColoredMap = new trData<trMap<int, trPair<std::wstring, trCoordinate<int>>>>(*other.ColoredMap);
-	}
-	else {
-		*ColoredMap = *other.ColoredMap;
-	}
+	catch (const std::bad_cast&)
+	{
+		trPawn& Me = dynamic_cast<trPawn&>(*this);
 
-	if (BaseColor == nullptr) {
-		BaseColor = new std::vector<trPair<std::wstring, trCoordinate<int>>>(*other.BaseColor);
-	}
-	else {
-		*BaseColor = *other.BaseColor;
-	}
+		Me = other_;
 
-	if (RawContent == nullptr) {
-		RawContent = new trData<wstring>(*other.RawContent);
+		return *this;
 	}
-	else {
-		*RawContent = *other.RawContent;
-	}
-
-	if (Color == nullptr) {
-		Color = new trData<wstring>(*other.Color);
-	}
-	else {
-		*Color = *other.Color;
-	}
-
-	if (Content == nullptr) {
-		Content = new trData<wstring>(*other.Content);
-	}
-	else {
-		*Content = *other.Content;
-	}
-
-	if (ColoredContent == nullptr) {
-		ColoredContent = new trData<wstring>(*other.ColoredContent);
-	}
-	else {
-		*ColoredContent = *other.ColoredContent;
-	}
-
-	return *this;
 }
 
 // SET
@@ -97,6 +111,11 @@ void trWidget::SetSize(int x_, int y_)
 {
 	Size->SetSize(x_, y_);
 	Content->SetData(ContentReorganisation(RawContent->GetDataNew(), trSize<int>(x_, y_)));
+}
+
+void trWidget::SetProprety(const std::string& name, const std::string& data, const std::string& type)
+{
+	trPawn::SetProprety(name, data, type);
 }
 
 void trWidget::SetContent(const wstring& content_)
@@ -113,11 +132,18 @@ void trWidget::SetResetColor(const vector<trPair<std::wstring, trCoordinate<int>
 
 void trWidget::SetColor(uint8_t R, uint8_t G, uint8_t B, bool Backround)
 {
-	wstring BackRoundOrNot = Backround ? to_wstring(48) : to_wstring(38);
+	if (Backround)
+	{
+		BackroundColor->SetData(L"\x1b[48;2;" + to_wstring(R) + L";" + to_wstring(G) + L";" + to_wstring(B) + L"m");
+	}
 
-	Color->SetData(L"\x1b[" + BackRoundOrNot + L";" + L"2" + L";" + to_wstring(R) + L";" + to_wstring(G) + L";" + to_wstring(B) + L"m");
-	Content->SetData(ContentReorganisation(RawContent->GetDataActual(), *Size));
-	ColoredContent->SetData(ContentReorganisationKeepColor(RawContent->GetDataActual(), *Size));
+	else
+	{
+		Color->SetData(L"\x1b[38;2;" + to_wstring(R) + L";" + to_wstring(G) + L";" + to_wstring(B) + L"m");
+	}
+	
+	Content->SetData(ContentReorganisation(RawContent->GetDataNew(), *Size));
+	ColoredContent->SetData(ContentReorganisationKeepColor(RawContent->GetDataNew(), *Size));
 }
 
 void trWidget::SetColor(const std::wstring& CodeCouleurAnsi)
@@ -198,6 +224,11 @@ const trData<wstring>& trWidget::GetColor() const
 	return *Color;
 }
 
+const trData<wstring>& trWidget::GetBackroundColor() const
+{
+	return *BackroundColor;
+}
+
 // APPLY
 
 void trWidget::APPLY_(const trSize<uint16_t>& SizeWindow)
@@ -209,8 +240,9 @@ void trWidget::APPLY_(const trSize<uint16_t>& SizeWindow)
 
 	Content->Update();
 	RawContent->Update();
-	ColoredMap->Update();
+	ColoredMap->Update(); // des fois crach
 	Color->Update();
+	BackroundColor->Update();
 	ColoredContent->Update();
 }
 
@@ -234,34 +266,37 @@ void trWidget::UpdateRelativePositionPoint(const trSize<uint16_t>& SizeWindow)
 	int ConsoleSize_x = SizeWindow.GetSizeX().GetDataActual();
 	int ConsoleSize_y = SizeWindow.GetSizeY().GetDataActual();
 
+	int SizeX = Size->GetSizeX().GetDataActual();
+	int SizeY = Size->GetSizeY().GetDataActual();
+
 	switch (RpType->GetDataActual())
 	{
 	case TopLeft:
 		RelativePositionPoint->SetCoord(0, 0);
 		break;
 	case TopCenter:
-		RelativePositionPoint->SetCoord((ConsoleSize_x / 2) - (Size->GetSizeX().GetDataActual() / 2), 0);
+		RelativePositionPoint->SetCoord((ConsoleSize_x / 2) - (SizeX / 2), 0);
 		break;
 	case TopRight:
-		RelativePositionPoint->SetCoord(ConsoleSize_x - Size->GetSizeX().GetDataActual(), 0);
+		RelativePositionPoint->SetCoord(ConsoleSize_x - SizeX, 0);
 		break;
 	case MiddleLeft:
-		RelativePositionPoint->SetCoord(0, (ConsoleSize_y / 2) - (Size->GetSizeY().GetDataActual() / 2));
+		RelativePositionPoint->SetCoord(0, (ConsoleSize_y / 2) - (SizeY / 2));
 		break;
 	case MiddleCenter:
-		RelativePositionPoint->SetCoord((ConsoleSize_x / 2) - (Size->GetSizeX().GetDataActual() / 2), (ConsoleSize_y / 2) - (Size->GetSizeY().GetDataActual() / 2));
+		RelativePositionPoint->SetCoord((ConsoleSize_x / 2) - (SizeX / 2), (ConsoleSize_y / 2) - (SizeY / 2));
 		break;
 	case MiddleRight:
-		RelativePositionPoint->SetCoord(ConsoleSize_x - Size->GetSizeX().GetDataActual(), (ConsoleSize_y / 2) - (Size->GetSizeY().GetDataActual() / 2));
+		RelativePositionPoint->SetCoord(ConsoleSize_x - SizeX, (ConsoleSize_y / 2) - (SizeY / 2));
 		break;
 	case BottomLeft:
-		RelativePositionPoint->SetCoord(0, ConsoleSize_y - Size->GetSizeY().GetDataActual());
+		RelativePositionPoint->SetCoord(0, ConsoleSize_y - SizeY);
 		break;
 	case BottomCenter:
-		RelativePositionPoint->SetCoord((ConsoleSize_x / 2) - (Size->GetSizeX().GetDataActual() / 2), ConsoleSize_y - Size->GetSizeY().GetDataActual());
+		RelativePositionPoint->SetCoord((ConsoleSize_x / 2) - (SizeX / 2), ConsoleSize_y - SizeY);
 		break;
 	case BottomRight:
-		RelativePositionPoint->SetCoord(ConsoleSize_x - Size->GetSizeX().GetDataActual(), ConsoleSize_y - Size->GetSizeY().GetDataActual());
+		RelativePositionPoint->SetCoord(ConsoleSize_x - SizeX, ConsoleSize_y - SizeY);
 		break;
 	default:
 		std::cerr << "AUCUN NE CORESPOND";
@@ -327,8 +362,8 @@ std::wstring trWidget::ContentReorganisation(std::wstring _content, const trSize
 			{
 				if (IsPureColor(_content.substr(Cherche, Cherche_ - Cherche)))
 				{
-					int coordX = static_cast<int>(Cherche) % SizeWidget.GetSizeX().GetDataActual();
-					int coordY = static_cast<int>(Cherche) / SizeWidget.GetSizeX().GetDataActual();
+					int coordX = static_cast<int>(Cherche) % (SizeWidget.GetSizeX().GetDataActual() == 0 ? 1 : SizeWidget.GetSizeX().GetDataActual());
+					int coordY = static_cast<int>(Cherche) / (SizeWidget.GetSizeX().GetDataActual() == 0 ? 1 : SizeWidget.GetSizeX().GetDataActual());
 
 					wstring couleur = _content.substr(Cherche, Cherche_ - Cherche);
 					
@@ -340,7 +375,6 @@ std::wstring trWidget::ContentReorganisation(std::wstring _content, const trSize
 					{
 						coloredtemp[i * SizeWidget.GetSizeX().GetDataActual()] = trPair<wstring, trCoordinate<int>>(couleur, trCoordinate<int>(0, i));
 					}
-
 				}
 
 				_content.erase(Cherche, Cherche_ - Cherche);
@@ -366,8 +400,10 @@ std::wstring trWidget::ContentReorganisation(std::wstring _content, const trSize
 
 		if (Cherche != std::wstring::npos && _content.find('\b') == std::wstring::npos && _content.find('\t') == std::wstring::npos && Cherche == min(min(_content.find('\n'), _content.find('\f')), _content.find('\v')))
 		{
-			size_t ligne = (Cherche) / (SizeWidget.GetSizeX().GetDataActual());
-			size_t espace_a_remplir = (SizeWidget.GetSizeX().GetDataActual()) - (Cherche % SizeWidget.GetSizeX().GetDataActual()); // changer le calcul
+			int SizeX_w = SizeWidget.GetSizeX().GetDataActual() == 0 ? 1 : SizeWidget.GetSizeX().GetDataActual();
+
+			size_t ligne = (Cherche) / (SizeX_w);
+			size_t espace_a_remplir = (SizeX_w) - (Cherche % SizeX_w); // changer le calcul
 
 			_content.erase(Cherche, 1);
 
@@ -385,8 +421,8 @@ std::wstring trWidget::ContentReorganisation(std::wstring _content, const trSize
 
 		if (Cherche != std::wstring::npos)
 		{
-			size_t ligne = (Cherche) / (SizeWidget.GetSizeX().GetDataActual());
-			size_t espace_a_suppr = Cherche % SizeWidget.GetSizeX().GetDataActual();
+			size_t ligne = (Cherche) / (SizeWidget.GetSizeX().GetDataActual() == 0 ? 1 : SizeWidget.GetSizeX().GetDataActual());
+			size_t espace_a_suppr = Cherche % (SizeWidget.GetSizeX().GetDataActual() == 0 ? 1 : SizeWidget.GetSizeX().GetDataActual());
 
 			_content.erase(Cherche, 1);
 			_content.erase(Cherche - espace_a_suppr, espace_a_suppr);
@@ -437,7 +473,9 @@ std::wstring trWidget::ContentReorganisationKeepColor(std::wstring _content, con
 
 	const int max_ = static_cast<int>(_content.size());
 
-	_content = GetColor().GetDataNew() + _content;
+	_content = GetBackroundColor().GetDataNew() + GetColor().GetDataNew() + _content;
+
+	int SizeWidgetX = SizeWidget.GetSizeX().GetDataActual() == 0 ? SizeWidget.GetSizeX().GetDataNew() : SizeWidget.GetSizeX().GetDataActual(); // a voir
 
 	for (int i = 0; i < max_; i++)
 	{
@@ -467,10 +505,124 @@ std::wstring trWidget::ContentReorganisationKeepColor(std::wstring _content, con
 			_content.insert(Cherche, space);
 		}
 
-		else if (Cherche == _content.find('\b'))
+		/*else if (Cherche == _content.find('\b'))
 		{
 			_content.erase(Cherche, 1);
 			_content.erase(Cherche - 1, 1);
+		}*/
+
+		/*else if (Cherche == _content.find('\b'))
+		{
+			if (Cherche >= 1)
+			{
+				// Cas : séquence ANSI juste avant \b
+				if (_content[Cherche - 1] == L'm') // Fin typique d'une séquence ANSI
+				{
+					size_t t = Cherche - 2;
+					while (t > 0 && _content[t] != L'\033' && _content[t] != L'\xb1')
+					{
+						--t;
+					}
+
+					if (_content[t] == L'\033' && _content[t + 1] == L'[' && t >= 1)
+					{ 
+						// On a une vraie séquence ANSI collée au \b → supprimer le caractère avant l’ESC
+						_content.erase(Cherche, 1); // Supprimer le \b
+						_content.erase(t - 1, 1); // Caractère avant la séquence
+					}
+
+					else
+					{
+						// m pas dans une séquence ANSI
+						_content.erase(Cherche, 1);
+						_content.erase(Cherche - 1, 1);
+					}
+				}
+
+				else
+				{
+					// Aucun code ANSI → suppression normale
+					_content.erase(Cherche, 1);
+					_content.erase(Cherche - 1, 1);
+				}
+			}
+
+			else
+			{
+				// \b au tout début ? on le supprime juste
+				_content.erase(Cherche, 1);
+			}
+		}*/
+
+		else if (Cherche == _content.find('\b'))
+		{
+			if (Cherche >= 1)
+			{
+				// Essayer de trouver une vraie séquence ANSI terminée par 'm' juste avant le \b
+				if (_content[Cherche - 1] == L'm')
+				{
+					// On remonte pour chercher le début de la séquence ANSI (ESC + [)
+					int t = Cherche - 2;
+					int t_temp = Cherche;
+
+					bool m_found = true;
+
+					for (int o = 0; o < Cherche; o++)
+					{
+						if (t > 0 && _content[t] == L'\x1b')
+						{
+							if (_content[max(t - 1, 0)] != L'm')
+							{
+								break;
+							}
+
+							if (_content[max(t - 1, 0)] == L'm')
+							{
+								m_found = true;
+								t_temp = t;
+								--t;
+							}
+						}
+
+						else if (m_found && _content[max(t - 1, 0)] == L'm')
+						{
+							t = t_temp;
+
+							break;
+						}
+						
+						else
+						{
+							--t;
+						}
+					}
+
+					// Vérifier qu’on a bien ESC + [ au bon endroit
+					if (_content[t] == L'\033' && _content[t + 1] == L'[' && t >= 1)
+					{
+						// ✅ Vraie séquence ANSI trouvée : on supprime le caractère AVANT le ESC
+						_content.erase(Cherche, 1); // Supprimer le \b
+						_content.erase(t - 1, 1); // Caractère avant ESC
+					}
+					else
+					{
+						// ❌ Ce n’était pas une séquence ANSI → suppression normale
+						_content.erase(Cherche, 1);
+						_content.erase(Cherche - 1, 1);
+					}
+				}
+				else
+				{
+					// Aucun code ANSI → suppression normale
+					_content.erase(Cherche, 1);
+					_content.erase(Cherche - 1, 1);
+				}
+			}
+			else
+			{
+				// \b au tout début
+				_content.erase(Cherche, 1);
+			}
 		}
 
 		else if (Cherche == _content.find('\n') || Cherche == _content.find('\f') || Cherche == _content.find('\v'))
@@ -481,8 +633,8 @@ std::wstring trWidget::ContentReorganisationKeepColor(std::wstring _content, con
 
 			size_t ChercheTemp = tempContent.size(); 
 
-			size_t ligne = (ChercheTemp) / (SizeWidget.GetSizeX().GetDataActual());
-			size_t espace_a_remplir = (SizeWidget.GetSizeX().GetDataActual()) - (ChercheTemp % SizeWidget.GetSizeX().GetDataActual()); // changer le calcul
+			size_t ligne = (ChercheTemp) / (SizeWidgetX);
+			size_t espace_a_remplir = (SizeWidgetX) - (ChercheTemp % SizeWidgetX); // changer le calcul
 
 			wstring toinsert = L"";
 			toinsert.insert(0, espace_a_remplir, ' ');
@@ -491,8 +643,8 @@ std::wstring trWidget::ContentReorganisationKeepColor(std::wstring _content, con
 
 		else if (Cherche == _content.find('\r'))
 		{
-			size_t ligne = (Cherche) / (SizeWidget.GetSizeX().GetDataActual());
-			size_t espace_a_suppr = Cherche % SizeWidget.GetSizeX().GetDataActual();
+			size_t ligne = (Cherche) / (SizeWidgetX);
+			size_t espace_a_suppr = Cherche % SizeWidgetX;
 
 			_content.erase(Cherche, 1);
 			_content.erase(Cherche - espace_a_suppr, espace_a_suppr);
@@ -552,6 +704,8 @@ trWidget::~trWidget()
 	delete Size;
 
 	delete Color;
+
+	delete BackroundColor;
 
 	delete Content; 
 

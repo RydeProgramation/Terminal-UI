@@ -1,22 +1,30 @@
-<?xml version="1.0" encoding="utf-8"?>
+﻿<?xml version="1.0" encoding="utf-8"?>
 
-<Object type="trPawn" name="MonPawn">
-    <Properties>
-        <Property name="Activate" type="bool">true</Property>
-        <Property name="Protect" type="bool">false</Property>
-        <Property name="Change" type="bool">false</Property>
-        <Property name="Destroy" type="bool">false</Property>
-    </Properties>
+<trObject type="trWidget" name="Hello1">
+	<Properties>
+		<Property name="Activate" type="bool">true</Property>
+		<Property name="Protected" type="bool">false</Property>
+		<Property name="ToChange" type="bool">true</Property>
+	</Properties>
 
-    <Position x="10" y="20" />
+	<trActor>
+		<APPLY_Implementation Code="" />  # a enlever
+	</trActor>
 
-    <Pawn>
-        <RelativePosition type="uint8">2</RelativePosition>
-    </Pawn>
+	<trPawn>
+		<Position x="100" y="-1" />
+		<RelativePositionType RpType="MiddleCenter" />
+	</trPawn>
 
-    <Widget>
-        <Size width="100" height="50" />
-        <Content>Texte affiché</Content>
-        <Color foreground="#FFFFFF" background="#000000" />
-    </Widget>
-</Object>
+	<trWidget>
+		<Size width="22" height="5" />
+		<Content>
+			<Line Content=" _   _      _ _" />
+			<Line Content="| | | | ___| | | ___" />
+			<Line Content="| |_| |/ _ \ | |/ _ \" />
+			<Line Content="|  _  |  __/ | | (_) |" />
+			<Line Content="|_| |_|\___|_|_|\___/" />
+		</Content>
+		<Color foreground="#FF00FF" background="#440000" />
+	</trWidget>
+</trObject>

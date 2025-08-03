@@ -42,7 +42,7 @@ public:
 
 	// Copy
 
-	trActor& operator=(const trActor& other);
+	virtual trActor& operator=(const trActor& other);
 
 	// SET
 
@@ -57,6 +57,8 @@ public:
 	void SetDestroy(bool Destroy_);
 
 	void SetDeltaTime(const double& DeltaTime_);
+
+	virtual void SetProprety(const std::string& name, const std::string& data, const std::string& type);
 
 	void Destroy();
 

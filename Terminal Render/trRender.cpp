@@ -465,7 +465,7 @@ void trRender::HideWidget(trWidget* WIDG) // < ----- BUUUG
 
 	CleanWidget(WIDG);
 
-	throw std::out_of_range("code pas fait (utiliser cleanwidget ?)"); // jsp pas pk ln'utilise out of range ;(((((((((((((((((
+	// throw std::out_of_range("code pas fait (utiliser cleanwidget ?)"); // jsp pas pk ln'utilise out of range ;(((((((((((((((((
 }
 
 void trRender::CleanWidget(trWidget* WIDG)

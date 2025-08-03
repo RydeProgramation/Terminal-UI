@@ -43,6 +43,16 @@ bool trWorld::CreateActor(trActor* WIDG)
 	{
 		(*Actors)[WIDG->GetName().GetDataActual()] = WIDG;
 		WIDG->Init();
+		WIDG->APPLY(GetConsoleSize());
+	}
+
+	else if (Actors->find(WIDG->GetName().GetDataNew()) == Actors->end())
+	{
+		WIDG->APPLY(GetConsoleSize(BorderWidth));
+
+		(*Actors)[WIDG->GetName().GetDataActual()] = WIDG;
+		WIDG->Init();
+		WIDG->APPLY(GetConsoleSize());
 	}
 
 	else
