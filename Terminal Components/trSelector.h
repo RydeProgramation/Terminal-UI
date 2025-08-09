@@ -36,7 +36,9 @@ public:
 
 	// Copy
 
-	virtual trSelector& operator=(const trActor& other) override;
+	trSelector& operator=(const trActor& other);
+
+	virtual trSelector& Clone(const trActor& other_) override;
 
 	// SET
 

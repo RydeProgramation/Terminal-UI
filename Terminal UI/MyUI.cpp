@@ -82,13 +82,12 @@ wstring applyColorToText(const wstring& text, float offset) {
 
 void MyUI::Debut()
 {
+	LOAD(trWidget, Hello, L"Hello.widg")
+	LOAD(trWidget, Hello2, L"HelloWorld.widg")
+	LOAD(trWidget, Hello3, L"HelloWorldComplete.widg")
+
 	vector<wstring> hello3;
-
-	wstring hello3_ = L"";
-
-	LOAD(trWidget, Hello, L"Hello.widg");
-	LOAD(trWidget, Hello2, L"HelloWorld.widg");
-	LOAD(trWidget, Hello3, L"HelloWorldComplete.widg");
+	wstring hello3_;
 
 	CreateWidgetWait(Hello);
 
@@ -96,7 +95,7 @@ void MyUI::Debut()
 	{
 		Hello->AddToPosition(-1, 0);
 
-		Sleep(10);
+		Sleep(max(0, int(10 - Hello->GetDeltaTime().GetDataActual())));
 	}
 
 	Sleep(1500);
@@ -126,74 +125,38 @@ void MyUI::Debut()
 
 		Hello3->SetContent(hello3_);
 
-		Sleep(20);
+		Sleep(max(0, int(20 - Hello3->GetDeltaTime().GetDataActual())));
 	}
 
 	for (int i = 0; i < 10; i++)
 	{
 		Hello3->AddToPosition(0, 1);
 
-		Sleep(100);
+		Sleep(max(0, int(100 - Hello3->GetDeltaTime().GetDataActual())));
 	}
 
 	for (int i = 0; i < 5; i++)
 	{
 		Hello3->AddToSize(0, -1);
 
-		Sleep(100);
+		Sleep(max(0, int(100 - Hello3->GetDeltaTime().GetDataActual())));
 	}
 
 	Hello3->Destroy();
-
-	wstring paragColor = L"\033[38;2;255;182;193mSalutations, brave lache !\033[0m\033[38;2;176;224;230m Mon projet est une application maléfique\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\033[0m\033[38;2;152;251;152mapplication magique qui ouvre les portes des marchés financiers.\033[0m\nÀ l'aide de la puissante technique de \033[38;2;216;191;216mDiCaprio\b\b\b\b\b\b\b\bMonte-Carlo\033[0m, \033[38;2;240;230;140mje simule des trajectoires aléatoires\033[0m pour les options (calls et \033[38;2;250;235;215mputain\b\b\bs\033[0m).\n\033[38;2;255;222;173mImagine-toi chevauchant un dragon volant au-dessus des courbes de prix, scrutant les volatilités et les risques.\033[0m\nLes prix d'\033[38;2;255;228;196moptions\033[0m se révèlent tels des trésors cachés dans les profondeurs du marché. \033[38;2;240;255;255mTu attends quoi pour jouer avec les courbes !\033[0m\n\033[38;2;245;222;179mJe te propose donc cette application pour que tu fasses tes propres simulations et découvre les secrets enfouis\033[0m dans\f\033[38;2;216;191;216mles volutes des courbes financières.\033[0m 🎉";
-
-	// trSize<uint16_t>* size_ = new trSize<uint16_t>(GetConsoleSize());
-
-	// trText* Paragraphe = new trText(0, 0, 135, 6, MiddleCenter, paragColor, "Paragraphe");
 
 	LOAD(trText, Paragraphe, L"parag.widg");
 
 	CreateWidgetWait(Paragraphe);
 
-	Paragraphe->DoCharToCharAnimation(1); // 50 de base
+	bool IsFinished = false;
 
-	//////////
+	Paragraphe->DoCharToCharAnimation(3); // 50 de base
 
-	/*paragColor = L"\033[38;2;255;182;193mSalutations, brave lache ! \033[38;2;176;224;230mMo\033[48;2;255;255;255m\033[38;2;0;0;0mn\033[0m\033[38;2;176;224;230m projet est une application maléfique\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\033[0m\033[38;2;152;251;152mapplication magique qui ouvre les portes des marchés financiers.\033[0m\nÀ l'aide de la puissante technique de \033[38;2;216;191;216mDiCaprio\b\b\b\b\b\b\b\bMonte-Carlo\033[0m, \033[38;2;240;230;140mje simule des trajectoires aléatoires\033[0m pour les options (calls et \033[38;2;250;235;215mputain\b\b\bs\033[0m).\n\033[38;2;255;222;173mImagine-toi chevauchant un dragon volant au-dessus des courbes de prix, scrutant les volatilités et les risques.\033[0m\nLes prix d'\033[38;2;255;228;196moptions\033[0m se révèlent tels des trésors cachés dans les profondeurs du marché. \033[38;2;240;255;255mTu attends quoi pour jouer avec les courbes !\033[0m\n\033[38;2;245;222;179mJe te propose donc cette application pour que tu fasses tes propres simulations et découvre les secrets enfouis\033[0m dans\f\033[38;2;216;191;216mles volutes des courbes financières.\033[0m 🎉";
+	Paragraphe->DoAnimation(IsFinished);
 
-	Paragraphe->AddAnimation(1400, paragColor);
+	wait(!IsFinished);
 
-	paragColor = L"\033[38;2;255;182;193mSalutations, brave lache ! \033[38;2;176;224;230mM\033[48;2;255;255;255m\033[38;2;0;0;0mo\033[0m\033[38;2;176;224;230mn projet est une application maléfique\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\033[0m\033[38;2;152;251;152mapplication magique qui ouvre les portes des marchés financiers.\033[0m\nÀ l'aide de la puissante technique de \033[38;2;216;191;216mDiCaprio\b\b\b\b\b\b\b\bMonte-Carlo\033[0m, \033[38;2;240;230;140mje simule des trajectoires aléatoires\033[0m pour les options (calls et \033[38;2;250;235;215mputain\b\b\bs\033[0m).\n\033[38;2;255;222;173mImagine-toi chevauchant un dragon volant au-dessus des courbes de prix, scrutant les volatilités et les risques.\033[0m\nLes prix d'\033[38;2;255;228;196moptions\033[0m se révèlent tels des trésors cachés dans les profondeurs du marché. \033[38;2;240;255;255mTu attends quoi pour jouer avec les courbes !\033[0m\n\033[38;2;245;222;179mJe te propose donc cette application pour que tu fasses tes propres simulations et découvre les secrets enfouis\033[0m dans\f\033[38;2;216;191;216mles volutes des courbes financières.\033[0m 🎉";
-
-	Paragraphe->AddAnimation(1400, paragColor);
-
-	paragColor = L"\033[38;2;255;182;193mSalutations, brave lache ! \033[38;2;176;224;230m\033[48;2;255;255;255m\033[38;2;0;0;0mM\033[0m\033[38;2;176;224;230mon projet est une application maléfique\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\033[0m\033[38;2;152;251;152mapplication magique qui ouvre les portes des marchés financiers.\033[0m\nÀ l'aide de la puissante technique de \033[38;2;216;191;216mDiCaprio\b\b\b\b\b\b\b\bMonte-Carlo\033[0m, \033[38;2;240;230;140mje simule des trajectoires aléatoires\033[0m pour les options (calls et \033[38;2;250;235;215mputain\b\b\bs\033[0m).\n\033[38;2;255;222;173mImagine-toi chevauchant un dragon volant au-dessus des courbes de prix, scrutant les volatilités et les risques.\033[0m\nLes prix d'\033[38;2;255;228;196moptions\033[0m se révèlent tels des trésors cachés dans les profondeurs du marché. \033[38;2;240;255;255mTu attends quoi pour jouer avec les courbes !\033[0m\n\033[38;2;245;222;179mJe te propose donc cette application pour que tu fasses tes propres simulations et découvre les secrets enfouis\033[0m dans\f\033[38;2;216;191;216mles volutes des courbes financières.\033[0m 🎉";
-
-	Paragraphe->AddAnimation(400, paragColor);
-
-	paragColor = L"\033[38;2;255;182;193mSalutations, brave lache !\033[48;2;255;255;255m\033[38;2;0;0;0m \033[0m\033[38;2;176;224;230mMon projet est une application maléfique\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\033[0m\033[38;2;152;251;152mapplication magique qui ouvre les portes des marchés financiers.\033[0m\nÀ l'aide de la puissante technique de \033[38;2;216;191;216mDiCaprio\b\b\b\b\b\b\b\bMonte-Carlo\033[0m, \033[38;2;240;230;140mje simule des trajectoires aléatoires\033[0m pour les options (calls et \033[38;2;250;235;215mputain\b\b\bs\033[0m).\n\033[38;2;255;222;173mImagine-toi chevauchant un dragon volant au-dessus des courbes de prix, scrutant les volatilités et les risques.\033[0m\nLes prix d'\033[38;2;255;228;196moptions\033[0m se révèlent tels des trésors cachés dans les profondeurs du marché. \033[38;2;240;255;255mTu attends quoi pour jouer avec les courbes !\033[0m\n\033[38;2;245;222;179mJe te propose donc cette application pour que tu fasses tes propres simulations et découvre les secrets enfouis\033[0m dans\f\033[38;2;216;191;216mles volutes des courbes financières.\033[0m 🎉";
-
-	Paragraphe->AddAnimation(400, paragColor);
-
-	paragColor = L"\033[38;2;255;182;193mSalutations, brave lache \033[48;2;255;255;255m\033[38;2;0;0;0m!\033[0m\033[0m\033[38;2;176;224;230m Mon projet est une application maléfique\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\033[0m\033[38;2;152;251;152mapplication magique qui ouvre les portes des marchés financiers.\033[0m\nÀ l'aide de la puissante technique de \033[38;2;216;191;216mDiCaprio\b\b\b\b\b\b\b\bMonte-Carlo\033[0m, \033[38;2;240;230;140mje simule des trajectoires aléatoires\033[0m pour les options (calls et \033[38;2;250;235;215mputain\b\b\bs\033[0m).\n\033[38;2;255;222;173mImagine-toi chevauchant un dragon volant au-dessus des courbes de prix, scrutant les volatilités et les risques.\033[0m\nLes prix d'\033[38;2;255;228;196moptions\033[0m se révèlent tels des trésors cachés dans les profondeurs du marché. \033[38;2;240;255;255mTu attends quoi pour jouer avec les courbes !\033[0m\n\033[38;2;245;222;179mJe te propose donc cette application pour que tu fasses tes propres simulations et découvre les secrets enfouis\033[0m dans\f\033[38;2;216;191;216mles volutes des courbes financières.\033[0m 🎉";
-
-	Paragraphe->AddAnimation(400, paragColor);
-
-	paragColor = L"\033[38;2;255;182;193mSalutations, \033[48;2;255;255;255m\033[38;2;0;0;0mbrave lache !\033[0m\033[0m\033[38;2;176;224;230m Mon projet est une application maléfique\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\033[0m\033[38;2;152;251;152mapplication magique qui ouvre les portes des marchés financiers.\033[0m\nÀ l'aide de la puissante technique de \033[38;2;216;191;216mDiCaprio\b\b\b\b\b\b\b\bMonte-Carlo\033[0m, \033[38;2;240;230;140mje simule des trajectoires aléatoires\033[0m pour les options (calls et \033[38;2;250;235;215mputain\b\b\bs\033[0m).\n\033[38;2;255;222;173mImagine-toi chevauchant un dragon volant au-dessus des courbes de prix, scrutant les volatilités et les risques.\033[0m\nLes prix d'\033[38;2;255;228;196moptions\033[0m se révèlent tels des trésors cachés dans les profondeurs du marché. \033[38;2;240;255;255mTu attends quoi pour jouer avec les courbes !\033[0m\n\033[38;2;245;222;179mJe te propose donc cette application pour que tu fasses tes propres simulations et découvre les secrets enfouis\033[0m dans\f\033[38;2;216;191;216mles volutes des courbes financières.\033[0m 🎉";
-
-	Paragraphe->AddAnimation(700, paragColor);
-
-	paragColor = L"\033[38;2;255;182;193mSalutations, \033[0m\033[38;2;176;224;230mMon projet est une application maléfique\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\033[0m\033[38;2;152;251;152mapplication magique qui ouvre les portes des marchés financiers.\033[0m\nÀ l'aide de la puissante technique de \033[38;2;216;191;216mDiCaprio\b\b\b\b\b\b\b\bMonte-Carlo\033[0m, \033[38;2;240;230;140mje simule des trajectoires aléatoires\033[0m pour les options (calls et \033[38;2;250;235;215mputain\b\b\bs\033[0m).\n\033[38;2;255;222;173mImagine-toi chevauchant un dragon volant au-dessus des courbes de prix, scrutant les volatilités et les risques.\033[0m\nLes prix d'\033[38;2;255;228;196moptions\033[0m se révèlent tels des trésors cachés dans les profondeurs du marché. \033[38;2;240;255;255mTu attends quoi pour jouer avec les courbes !\033[0m\n\033[38;2;245;222;179mJe te propose donc cette application pour que tu fasses tes propres simulations et découvre les secrets enfouis\033[0m dans\f\033[38;2;216;191;216mles volutes des courbes financières.\033[0m 🎉";
-
-	Paragraphe->AddAnimation(1000, paragColor);
-
-	paragColor = L"\033[38;2;255;182;193mSalutations, brave aventurier !\033[0m\033[38;2;176;224;230m Mon projet est une application maléfique\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\033[0m\033[38;2;152;251;152mapplication magique qui ouvre les portes des marchés financiers.\033[0m\nÀ l'aide de la puissante technique de \033[38;2;216;191;216mDiCaprio\b\b\b\b\b\b\b\bMonte-Carlo\033[0m, \033[38;2;240;230;140mje simule des trajectoires aléatoires\033[0m pour les options (calls et \033[38;2;250;235;215mputain\b\b\bs\033[0m).\n\033[38;2;255;222;173mImagine-toi chevauchant un dragon volant au-dessus des courbes de prix, scrutant les volatilités et les risques.\033[0m\nLes prix d'\033[38;2;255;228;196moptions\033[0m se révèlent tels des trésors cachés dans les profondeurs du marché. \033[38;2;240;255;255mTu attends quoi pour jouer avec les courbes !\033[0m\n\033[38;2;245;222;179mJe te propose donc cette application pour que tu fasses tes propres simulations et découvre les secrets enfouis\033[0m dans\f\033[38;2;216;191;216mles volutes des courbes financières.\033[0m 🎉";
-
-	Paragraphe->AddAnimation(1100, paragColor);*/
-
-	Paragraphe->DoAnimation();
-
-	Sleep(1200);
+	Sleep(max(0, 1200 - Paragraphe->GetDeltaTime().GetDataActual()));
 
 	for (int i = 0; i < 6; i++)
 	{
@@ -260,34 +223,47 @@ void MyUI::Menu1()
 
 	// trObject *an_obj = new trObject();
 
-	KB->CreateBTN(new trBTN_Key(
+	/*KB->CreateBTN(new trBTN_Key(
 		KEY_W,
 		OnPress,
 		HoldToTrigger,
 		std::bind(&trWidget::AddToPosition, dynamic_cast<trWidget*>(World->GetPtrActor("Simulation")), 0, -1),
 		World->GetPtrActor("Simulation")
-	));
+	));*/
 
 	// KB->CreateBTN(trBTN_Key(0x57, OnPress, HoldToTrigger, bind(&trWidget::AddToPosition, World->GetPtrActor("Simulation"), 0, -1), World->GetPtrActor("Simulation")));
 
-	/*KB->CreateBTN(trBTN_Key(
-		0x57,
+	double x(0), y(0), e(0), o(0);
+
+	KB->CreateBTN(new trBTN_Key(
+		KEY_W,
 		OnPress,
 		HoldToTrigger,
-		[ptr = dynamic_cast<trWidget*>(World->GetPtrActor("Simulation"))]() {
+		[ptr = dynamic_cast<trWidget*>(World->GetPtrActor("Simulation")), &x]() {
 			if (ptr) {
-				ptr->AddToPosition(0, -1);
+				x += ptr->GetDeltaTime().GetDataActual() * 0.2;
+				if (x > 1)
+				{
+					ptr->AddToPosition(0, -(int(x)));
+					x = 0;
+				}
 			}
 		},
 		World->GetPtrActor("Simulation")
-	));*/
+	));
 
 	KB->CreateBTN(new trBTN_Key(
 		0x41,
 		OnPress,
 		HoldToTrigger,
-		[ptr = dynamic_cast<trWidget*>(World->GetPtrActor("Simulation"))]() {
-			if (ptr) ptr->AddToPosition(-1, 0);
+		[ptr = dynamic_cast<trWidget*>(World->GetPtrActor("Simulation")), &y]() {
+			
+			y += ptr->GetDeltaTime().GetDataActual() * 0.4;
+			if (y > 1)
+			{
+				if (ptr) ptr->AddToPosition(-(int(y)), 0);
+				y = 0;
+			}
 		},
 		World->GetPtrActor("Simulation")
 	));
@@ -296,8 +272,14 @@ void MyUI::Menu1()
 		0x53,
 		OnPress,
 		HoldToTrigger,
-		[ptr = dynamic_cast<trWidget*>(World->GetPtrActor("Simulation"))]() {
-			if (ptr) ptr->AddToPosition(0, 1);
+		[ptr = dynamic_cast<trWidget*>(World->GetPtrActor("Simulation")), &e]() {
+			
+			e += ptr->GetDeltaTime().GetDataActual() * 0.2;
+			if (e > 1)
+			{
+				if (ptr) ptr->AddToPosition(0, (int(e)));
+				e = 0;
+			}
 		},
 		World->GetPtrActor("Simulation")
 	));
@@ -306,8 +288,14 @@ void MyUI::Menu1()
 		0x44,
 		OnPress,
 		HoldToTrigger,
-		[ptr = dynamic_cast<trWidget*>(World->GetPtrActor("Simulation"))]() {
-			if (ptr) ptr->AddToPosition(1, 0);
+		[ptr = dynamic_cast<trWidget*>(World->GetPtrActor("Simulation")), &o]() {
+			
+			o += ptr->GetDeltaTime().GetDataActual() * 0.4;
+			if (o > 1)
+			{
+				if (ptr) ptr->AddToPosition((int(o)), 0);
+				o = 0;
+			}
 		},
 		World->GetPtrActor("Simulation")
 	));

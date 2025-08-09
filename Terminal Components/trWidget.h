@@ -38,7 +38,9 @@ public:
 
 	// Copy
 
-	virtual trWidget& operator=(const trActor& other) override;
+	trWidget& operator=(const trActor& other);
+
+	virtual trWidget& Clone(const trActor& other_) override;
 
 	// SET
 

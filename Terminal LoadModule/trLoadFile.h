@@ -31,4 +31,9 @@ namespace trLoad
 #endif
 
 #define LOAD(Type, Name, path) \
-	Type* Name = dynamic_cast<Type*>(trLoad::LoadObject(path))
+	Type* Name = dynamic_cast<Type*>(trLoad::LoadObject(path)); 
+
+#define RELOAD(Type, Name, path) \
+	Type* Temp = dynamic_cast<Type*>(trLoad::LoadObject(path)); \
+	*Name = *Temp; \
+	delete Temp; 

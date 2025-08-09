@@ -40,13 +40,18 @@ trPawn::trPawn(const trPawn& other) : trActor(other), PositionRelative(new trCoo
 
 trPawn& trPawn::operator=(const trActor& other_)
 {
+	return Clone(other_);
+}
+
+trPawn& trPawn::Clone(const trActor& other_)
+{
 	try
 	{
 		const trPawn& other = dynamic_cast<const trPawn&>(other_);
 
 		if (this == &other) { return *this; }
 
-		trActor::operator=(other_);
+		trActor::Clone(other_);
 
 		if (RpType == nullptr) {
 			RpType = new trData<uint8_t>(*other.RpType);
@@ -90,7 +95,7 @@ trPawn& trPawn::operator=(const trActor& other_)
 	{
 		trActor& Me = dynamic_cast<trActor&>(*this);
 
-		Me = other_;
+		Me.trActor::Clone(other_);
 
 		return *this;
 	}

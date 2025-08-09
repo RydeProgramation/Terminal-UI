@@ -9,7 +9,7 @@ bool trLoad::FileExists(LPCWSTR filename) {
 	return (attrib != INVALID_FILE_ATTRIBUTES && !(attrib & FILE_ATTRIBUTE_DIRECTORY));
 }
 
-inline void CaseColorProcess(unordered_map<trPair<int, int>, std::wstring> &CaseColor, trWidget &WidgetLoad, wstring &Content_ID)
+inline void CaseColorProcess(unordered_map<trPair<int, int>, std::wstring>& CaseColor, trWidget& WidgetLoad, wstring& Content_ID)
 {
 	wstring raw = Content_ID;
 
@@ -176,9 +176,9 @@ trObject* trLoad::LoadObject(LPCWSTR NameFile_)
 		ExitProcess(1);
 	}
 
-	while (reader->Read(&nodeType) == S_OK) 
+	while (reader->Read(&nodeType) == S_OK)
 	{
-		if (nodeType == XmlNodeType_Element) 
+		if (nodeType == XmlNodeType_Element)
 		{
 			reader->GetLocalName(&ElementName, nullptr);
 
@@ -1220,7 +1220,7 @@ trObject* trLoad::LoadObject(LPCWSTR NameFile_)
 				// pas fini du tout
 			}
 
-			if (wcscmp(ElementName, L"Property") == 0 && isPropreties) 
+			if (wcscmp(ElementName, L"Property") == 0 && isPropreties)
 			{
 				// Lire les attributs si présents
 				if (reader->MoveToFirstAttribute() == S_OK)
@@ -1236,7 +1236,7 @@ trObject* trLoad::LoadObject(LPCWSTR NameFile_)
 						if (wcscmp(attrName, L"name") == 0)
 						{
 							std::wstring typeStr = attrValue;
-							name_ = std::string(typeStr.begin(), typeStr.end());\
+							name_ = std::string(typeStr.begin(), typeStr.end()); \
 						}
 
 						if (wcscmp(attrName, L"type") == 0)
@@ -1250,7 +1250,7 @@ trObject* trLoad::LoadObject(LPCWSTR NameFile_)
 			}
 		}
 
-		else if (nodeType == XmlNodeType_Text) 
+		else if (nodeType == XmlNodeType_Text)
 		{
 			// On lit le texte entre les balises
 			reader->GetValue(&Text, nullptr);
@@ -1267,7 +1267,7 @@ trObject* trLoad::LoadObject(LPCWSTR NameFile_)
 			// On arrive à </...>
 			if (wcscmp(ElementName, L"trObject") == 0)
 			{
-				
+
 			}
 
 			if (wcscmp(ElementName, L"Properties") == 0)
@@ -1402,7 +1402,7 @@ trObject* trLoad::LoadObject(LPCWSTR NameFile_)
 				wstring TextBase = WidgetLoad->GetRawContent().GetDataNew();
 
 				// Parcours à l'envers 🔁
-				for (auto it = Clr.rbegin(); it != Clr.rend(); ++it) 
+				for (auto it = Clr.rbegin(); it != Clr.rend(); ++it)
 				{
 					TextBase.insert(it->first, it->second);
 				}
@@ -1477,7 +1477,7 @@ trObject* trLoad::LoadObject(LPCWSTR NameFile_)
 
 			if (wcscmp(ElementName, L"trText") == 0)
 			{
-				
+
 
 				TextLoad = nullptr;
 			}
@@ -1568,7 +1568,9 @@ trObject* trLoad::LoadObject(LPCWSTR NameFile_)
 		}
 	}
 
+	fileStream->Release();
+	reader->Release();
+
 	return ObjectLoad;
 }
-
 

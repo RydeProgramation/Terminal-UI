@@ -20,6 +20,8 @@
 #ifndef __TR_UI__
 #define __TR_UI__
 
+#define wait(x) while (x) {Sleep(100);}
+
 #ifdef TERMINAL_ENGINE_EXPORT
 #define TERMINAL_ENGINE_API __declspec(dllexport)
 #else

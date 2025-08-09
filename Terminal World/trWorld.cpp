@@ -39,33 +39,23 @@ bool trWorld::CreateActor(trActor* WIDG)
 {
 	// std::lock_guard<std::mutex> lock(*Mutex); // des fois abort()
 
-	if (Actors->find(WIDG->GetName().GetDataActual()) == Actors->end())
-	{
-		(*Actors)[WIDG->GetName().GetDataActual()] = WIDG;
-		WIDG->Init();
-		WIDG->APPLY(GetConsoleSize());
+	for (auto& pair : *Actors) {
+		if (pair.second == WIDG) {
+			MessageBox(
+				NULL,                           // Pas de fenêtre parente
+				L"Widget already created",      // Message
+				L"Erreur",                      // Titre de la boîte
+				MB_ICONERROR | MB_OK            // Icône d'erreur + bouton OK
+			);
+			return false;
+		}
 	}
 
-	else if (Actors->find(WIDG->GetName().GetDataNew()) == Actors->end())
-	{
-		WIDG->APPLY(GetConsoleSize(BorderWidth));
-
-		(*Actors)[WIDG->GetName().GetDataActual()] = WIDG;
-		WIDG->Init();
-		WIDG->APPLY(GetConsoleSize());
-	}
-
-	else
-	{
-		MessageBox(
-			NULL,                           // Pas de fenêtre parente
-			L"Widget already created",      // Message
-			L"Erreur",                      // Titre de la boîte
-			MB_ICONERROR | MB_OK            // Icône d'erreur + bouton OK
-		);
-		return false;
-	}
-
+	WIDG->GetName().GetDataActual() == "None" ? WIDG->APPLY(GetConsoleSize(BorderWidth)) : (void)0;
+	(*Actors)[WIDG->GetName().GetDataActual()] = WIDG;
+	WIDG->Init();
+	WIDG->APPLY(GetConsoleSize());
+	
 	return true;
 }
 
@@ -169,8 +159,8 @@ void trWorld::UpdateActors(const trSize<uint16_t>& ConsoleSize_Border, const dou
 {
 	for (auto& widg : *Actors)
 	{
-		widg.second->SetDeltaTime(DeltaTime_);
 		widg.second->APPLY(ConsoleSize_Border);
+		widg.second->SetDeltaTime(DeltaTime_);
 	}
 }
 

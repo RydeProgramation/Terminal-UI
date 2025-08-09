@@ -35,13 +35,18 @@ void trWidget::Init()
 
 trWidget& trWidget::operator=(const trActor& other_)
 {
+	return Clone(other_);
+}
+
+trWidget& trWidget::Clone(const trActor& other_)
+{
 	try
 	{
 		const trWidget& other = dynamic_cast<const trWidget&>(other_);
 
 		if (this == &other) { return *this; }
 
-		trPawn::operator=(other_);
+		trPawn::Clone(other_);
 
 		if (Size == nullptr) {
 			Size = new trSize<int>(*other.Size);
@@ -99,7 +104,7 @@ trWidget& trWidget::operator=(const trActor& other_)
 	{
 		trPawn& Me = dynamic_cast<trPawn&>(*this);
 
-		Me = other_;
+		Me.trPawn::Clone(other_);
 
 		return *this;
 	}
@@ -110,7 +115,7 @@ trWidget& trWidget::operator=(const trActor& other_)
 void trWidget::SetSize(int x_, int y_)
 {
 	Size->SetSize(x_, y_);
-	Content->SetData(ContentReorganisation(RawContent->GetDataNew(), trSize<int>(x_, y_)));
+	// Content->SetData(ContentReorganisation(RawContent->GetDataNew(), trSize<int>(x_, y_)));
 }
 
 void trWidget::SetProprety(const std::string& name, const std::string& data, const std::string& type)
@@ -121,7 +126,7 @@ void trWidget::SetProprety(const std::string& name, const std::string& data, con
 void trWidget::SetContent(const wstring& content_)
 {
 	RawContent->SetData(content_);
-	Content->SetData(ContentReorganisation(content_, *Size));
+	// Content->SetData(ContentReorganisation(content_, *Size));
 	ColoredContent->SetData(ContentReorganisationKeepColor(content_, *Size));
 }
 
@@ -142,7 +147,7 @@ void trWidget::SetColor(uint8_t R, uint8_t G, uint8_t B, bool Backround)
 		Color->SetData(L"\x1b[38;2;" + to_wstring(R) + L";" + to_wstring(G) + L";" + to_wstring(B) + L"m");
 	}
 	
-	Content->SetData(ContentReorganisation(RawContent->GetDataNew(), *Size));
+	// Content->SetData(ContentReorganisation(RawContent->GetDataNew(), *Size));
 	ColoredContent->SetData(ContentReorganisationKeepColor(RawContent->GetDataNew(), *Size));
 }
 
@@ -153,7 +158,7 @@ void trWidget::SetColor(const std::wstring& CodeCouleurAnsi)
 		// Et que ça finit bien par 'm'
 		if (CodeCouleurAnsi.back() == L'm') {
 			Color->SetData(CodeCouleurAnsi); // ✅ Code valide
-			Content->SetData(ContentReorganisation(RawContent->GetDataActual(), *Size));
+			// Content->SetData(ContentReorganisation(RawContent->GetDataActual(), *Size));
 			ColoredContent->SetData(ContentReorganisationKeepColor(RawContent->GetDataActual(), *Size));
 		}
 		else {
@@ -177,13 +182,13 @@ void trWidget::ResetColor()
 void trWidget::AddToSize(int x_, int y_)
 {
 	Size->SetSize(Size->GetSizeX().GetDataNew() + x_, Size->GetSizeY().GetDataNew() + y_);
-	Content->SetData(ContentReorganisation(RawContent->GetDataNew(), trSize<int>(Size->GetSizeX().GetDataNew(), Size->GetSizeY().GetDataNew())));
+	// Content->SetData(ContentReorganisation(RawContent->GetDataNew(), trSize<int>(Size->GetSizeX().GetDataNew(), Size->GetSizeY().GetDataNew())));
 }
 
 void trWidget::AddToContent(const wstring& content_)
 {
 	RawContent->SetData(RawContent->GetDataNew() + content_);
-	Content->SetData(ContentReorganisation(RawContent->GetDataNew(), *Size));
+	// Content->SetData(ContentReorganisation(RawContent->GetDataNew(), *Size));
 	ColoredContent->SetData(ContentReorganisationKeepColor(RawContent->GetDataNew(), *Size));
 }
 
@@ -196,6 +201,10 @@ const trSize<int>& trWidget::GetSize() const
 
 const trData<wstring>& trWidget::GetContent() const
 {
+	MessageBoxW(nullptr, L"CONTENT N'EST JAMAIS MIS A JOUR.", L"Warning", MB_ICONWARNING | MB_OK);
+
+	throw std::runtime_error("Content is not updated. Use GetColoredContent() instead.");
+
 	return *Content;
 }
 
@@ -371,9 +380,9 @@ std::wstring trWidget::ContentReorganisation(std::wstring _content, const trSize
 					
 					// Faire continuer la ligne de couleur
 
-					for (int i = coordY + 1; i < SizeWidget.GetSizeY().GetDataActual(); i++)
+					for (int e = coordY + 1; e < SizeWidget.GetSizeY().GetDataActual(); e++)
 					{
-						coloredtemp[i * SizeWidget.GetSizeX().GetDataActual()] = trPair<wstring, trCoordinate<int>>(couleur, trCoordinate<int>(0, i));
+						coloredtemp[e * SizeWidget.GetSizeX().GetDataActual()] = trPair<wstring, trCoordinate<int>>(couleur, trCoordinate<int>(0, e));
 					}
 				}
 

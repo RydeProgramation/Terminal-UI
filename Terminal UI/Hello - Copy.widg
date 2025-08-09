@@ -25,6 +25,6 @@
 			<Line Content="|  _  |  __/ | | (_) |" />
 			<Line Content="|_| |_|\___|_|_|\___/" />
 		</Content>
-		<Color foreground="#9cf493ff" background="#052d0aff" />
+		<Color foreground="#FF00FF" background="#440000" />
 	</trWidget>
 </trObject>

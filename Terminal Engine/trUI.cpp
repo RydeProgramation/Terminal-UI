@@ -132,20 +132,20 @@ void trUserInterface::Start(int argc, char* argv[])
 		// ThrUI = new std::thread([this, Widg]() { this->Load(Widg); });
 		ThrKB = new std::thread([this]() { this->KB->Start(); });
 
+		bool Lock = false;
+
 		KB->CreateBTN(new trBTN_Key(KEY_F5, OnRelease, PressToTrigger,
-			[Widg, file_c]() { LOAD(trWidget, T_Widg, file_c); T_Widg->SetPosition(0, 0);  *Widg = *T_Widg; delete T_Widg; }, this));
+			[Widg, file_c, &Lock]() { LOAD(trWidget, T_Widg, file_c); T_Widg->SetPosition(0, 0);  *Widg = *T_Widg; delete T_Widg; Lock = false; }, this));
 
 		trText* T_Text = dynamic_cast<trText*>(Widg);
-
-		bool Lock = false;
 
 		if (T_Text)
 		{
 			KB->CreateBTN(new trBTN_Key(KEY_F6, OnRelease, PressToTrigger,
-				[T_Text, &Lock]() { Lock = false; T_Text->DoCharToCharAnimation(20); T_Text->ResetIndexAnimation(); }, this)); / ça bloque la boucle par ce qu elle Sleep dans la boucle engine // IL FAUT UTILISER UN CHRONO ou deltatime qu'il faut régler
+				[T_Text, &Lock]() { Lock = true; T_Text->DoCharToCharAnimation(20); T_Text->ResetIndexAnimation(); }, this)); // ça bloque la boucle par ce qu elle Sleep dans la boucle engine // IL FAUT UTILISER UN CHRONO ou deltatime qu'il faut régler
 
 			KB->CreateBTN(new trBTN_Key(KEY_F8, OnRelease, PressToTrigger,
-				[T_Text, &Lock]() { Lock = true; T_Text->DoAnimation(); }, this)); / ça bloque la boucle par ce qu elle Sleep dans la boucle engine // IL FAUT UTILISER UN CHRONO ou deltatime qu'il faut régler
+				[T_Text, &Lock]() { Lock = true; T_Text->DoAnimation(); }, this)); // ça bloque la boucle par ce qu elle Sleep dans la boucle engine // IL FAUT UTILISER UN CHRONO ou deltatime qu'il faut régler
 
 			KB->CreateBTN(new trBTN_Key(KEY_F10, OnRelease, PressToTrigger,
 				[T_Text, &Lock]() { Lock = true; T_Text->DoNextFrameAnimation(); }, this));
@@ -171,8 +171,6 @@ void trUserInterface::Start(int argc, char* argv[])
 
 		cin.ignore();
 
-		timeBeginPeriod(2);  // Demande timer à résolution 2 ms
-
 		ThrUI = new std::thread([this]() { this->Loop(); });
 		ThrKB = new std::thread([this]() { this->KB->Start(); });
 
@@ -191,8 +189,6 @@ void trUserInterface::Load(trObject* LoadObj, LPCTSTR file_c, bool &Lock)
 		LoadObjWidg->SetPosition(0, 0);
 
 		std::lock_guard<std::mutex> lock(*Mutex); // <<-- A voir pourquoi quand on l'enlève ça crée des prblms
-
-		UpdateTime();
 
 		Render->UpdateSizeWindow();
 
@@ -217,18 +213,18 @@ void trUserInterface::Load(trObject* LoadObj, LPCTSTR file_c, bool &Lock)
 			Render->Render(Actors);
 		}
 
-		if (i >= 20 && !Lock)
+		if (i >= 500 && !Lock)
 		{
-			LOAD(trActor, T_Widg, file_c); 
-			*LoadObjWidg = *T_Widg;
-			delete T_Widg;
+			RELOAD(trActor, LoadObjWidg, file_c);
 
-			i = -1;
+			i = 0;
 		}
 
 		Refreshed = false;
 
-		i++;
+		UpdateTime();
+
+		i += static_cast<float>(DeltaTime->GetDataActual());
 	}
 }
 
@@ -249,15 +245,15 @@ void trUserInterface::UpdateTime()
 
 	long long deltaTime_ns = delta.count(); // ✅ delta time en nanosecondes
 
-	DeltaTime->SetData(-(static_cast<double>(deltaTime_ns) / 1'000'000.0));
+	DeltaTime->SetData(-(static_cast<double>(deltaTime_ns) / (double)1'000'000.0));
 	DeltaTime->Update();
+
+	//	cout << "Delta Time: " << DeltaTime->GetDataActual() << " ms" << endl;
 }
 
 void trUserInterface::Update()
 {
 	std::lock_guard<std::mutex> lock(*Mutex); // <<-- A voir pourquoi quand on l'enlève ça crée des prblms
-
-	UpdateTime();
 
 	Render->UpdateSizeWindow();
 
@@ -299,6 +295,8 @@ void trUserInterface::Update()
 	World->Destroy();
 
 	Refreshed = false;
+
+	UpdateTime();
 }
 
 void trUserInterface::Refresh()
@@ -341,6 +339,8 @@ void trUserInterface::SetupConsole()
 	SetConsoleCP(CP_UTF8);
 
 	Render->SetCursorSelector(0);
+
+	timeBeginPeriod(2);  // Demande timer à résolution 2 ms
 
 	hideCursor();
 

@@ -36,7 +36,9 @@ public:
 
 	// Copy
 
-	virtual trText& operator=(const trActor& other) override;
+	trText& operator=(const trActor& other);
+
+	virtual trText& Clone(const trActor& other_) override;
 
 	// SET
 
@@ -60,17 +62,29 @@ public:
 
 	void DoCharToCharAnimation(uint16_t SleepTime_);
 
+	void DoCharToCharAnimation(uint16_t SleepTime_, const std::wstring Content_, bool & Finished);
+
+	void DoCharToCharAnimation(uint16_t SleepTime_, bool& Finished);
+
+	void StopCharToCharAnimation();
+
 	void DoNextFrameAnimation();
 
 	void DoPreviousFrameAnimation();
 
 	void DoAnimation();
 
+	void DoAnimation(bool& Finished);
+
+	void StopAnimation();
+
 	// APPLY
 
 	bool VerificationProprety() override;
 
 protected:
+
+	virtual void Tick() override;
 
 	void APPLY_(const trSize<uint16_t>& SizeWindow) override;
 
@@ -85,6 +99,22 @@ private:
 	std::vector<trPair<uint16_t, std::wstring>> *AnimationVector;
 
 	uint16_t indexAnimation;
+
+	bool isAnimation = false;
+	bool IsAnimationPrevalent = false;
+	bool* isFinishedAnimation = nullptr;
+	uint16_t DelayAnimation = 500;
+	float AccumulatedDelayAnimation = 0;
+	int indexChar = 0;
+
+	bool isCharToCharAnimation = false;
+	uint16_t DelayCharToCharAnimation = 50;
+	bool IsCharToCharAnimationPrevalent = false;
+	bool* isFinishedCharToCharAnimation = nullptr;
+	float AccumulatedDelayCharToCharAnimation = 0;
+
+	std::wstring* Content_;
+
 public:
 	void ResetIndexAnimation();
 };

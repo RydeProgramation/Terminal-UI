@@ -43,6 +43,11 @@ trSelector::trSelector(const trSelector& other) : trWidget(other), Selected(new 
 
 trSelector& trSelector::operator=(const trActor& other_)
 {
+	return Clone(other_);
+}
+
+trSelector& trSelector::Clone(const trActor& other_)
+{
 	try
 	{
 		const trSelector& other = dynamic_cast<const trSelector&>(other_);
@@ -50,7 +55,7 @@ trSelector& trSelector::operator=(const trActor& other_)
 		// Si on est en train de se copier soi-même, il n'y a rien à faire
 		if (this == &other) { return *this; }
 
-		trWidget::operator=(other_);
+		trWidget::Clone(other_);
 
 		if (Selected == nullptr) {
 			Selected = new trData<bool>(*other.Selected);
@@ -80,7 +85,7 @@ trSelector& trSelector::operator=(const trActor& other_)
 	{
 		trWidget& Me = dynamic_cast<trWidget&>(*this);
 
-		Me = other_;
+		Me.trWidget::Clone(other_);
 
 		return *this;
 	}

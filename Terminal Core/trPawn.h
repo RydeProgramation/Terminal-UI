@@ -38,7 +38,9 @@ public:
 
 	// Copy
 
-	virtual trPawn& operator=(const trActor& other) override;
+	trPawn& operator=(const trActor& other);
+
+	virtual trPawn& Clone(const trActor& other_) override;
 
 	// SET
 
@@ -76,7 +78,7 @@ protected:
 
 public:
 
-	virtual void APPLY_Implementation() {};
+	virtual void Tick() {};
 
 	// FONCTION
 

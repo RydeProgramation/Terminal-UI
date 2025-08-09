@@ -178,7 +178,7 @@
 
 			<FrameAdd onLastFrame="true" number="8" time="1100">
 				<OldContent>
-					<Add position="13">brâve aventurier ! </Add>
+					<Add position="13">brave aventurier ! </Add>
 					<CaseColor>
 						<Case Start="13" End="31" foreground="#ffb6c1ff" background_="#ffffffff"/>
 					</CaseColor>

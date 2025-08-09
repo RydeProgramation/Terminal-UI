@@ -29,6 +29,11 @@ trActor::trActor(const trActor& other) : Name(new trData<string>(*other.Name)), 
 
 trActor& trActor::operator=(const trActor& other)
 {
+	return Clone(other);
+}
+
+trActor& trActor::Clone(const trActor& other)
+{
 	if (this == &other) { return *this; }
 
 	if (Name == nullptr) {
@@ -72,7 +77,7 @@ trActor& trActor::operator=(const trActor& other)
 	else {
 		*DeltaTime = *other.DeltaTime;
 	}
-	
+
 	return *this;
 }
 
@@ -263,7 +268,7 @@ void trActor::APPLY(const trSize<uint16_t>& SizeWindow)
 {	
 	DeltaTime->Update();
 
-	APPLY_Implementation();
+	Tick();
 
 	APPLY_(SizeWindow);
 

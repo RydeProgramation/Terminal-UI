@@ -133,24 +133,28 @@ void UIToolsCore::substrAnsiSafeUltraFast(
 	size_t countVisible,
 	std::wstring& result
 ) {
-	result.clear();
-	result.reserve(countVisible + 16); // marge pour séquences ANSI
+	// 🔧 Large estimation pour ne jamais dépasser
+	const size_t estimatedSize = input.size() - startVisible + 128;
 
-	// 🧠 Écrire en direct sur result
+	result.clear();
+	result.resize(estimatedSize, L'\0'); // explicitly fill with zeros
+
 	size_t writeIndex = 0;
-	size_t visibleCount = 0;
 	bool inAnsi = false;
+	size_t visibleCount = 0;
+	wchar_t c;
+
 
 	for (size_t i = 0; i < input.size(); ++i) {
-		wchar_t c = input[i];
+		c = input[i];
 
 		if (c == L'\033') {
 			inAnsi = true;
 		}
 
 		if (inAnsi) {
-			if (writeIndex >= result.size()) result.resize(writeIndex + 1);
-			result[writeIndex++] = c;
+			if (writeIndex < result.size())
+				result[writeIndex++] = c;
 
 			if ((c >= L'A' && c <= L'Z') || (c >= L'a' && c <= L'z')) {
 				inAnsi = false;
@@ -158,16 +162,16 @@ void UIToolsCore::substrAnsiSafeUltraFast(
 		}
 		else {
 			if (visibleCount >= startVisible && visibleCount < startVisible + countVisible) {
-				if (writeIndex >= result.size()) result.resize(writeIndex + 1);
-				result[writeIndex++] = c;
+				if (writeIndex < result.size())
+					result[writeIndex++] = c;
 			}
 			++visibleCount;
 
-			if (visibleCount >= startVisible + countVisible) break;
+			if (visibleCount >= startVisible + countVisible)
+				break;
 		}
 	}
 
-	// Finalise la taille réelle
 	result.resize(writeIndex);
 }
 

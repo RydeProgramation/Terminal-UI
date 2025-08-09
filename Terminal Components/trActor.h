@@ -42,7 +42,9 @@ public:
 
 	// Copy
 
-	virtual trActor& operator=(const trActor& other);
+	trActor& operator=(const trActor& other);
+
+	virtual trActor& Clone(const trActor& other_);
 
 	// SET
 
@@ -92,7 +94,7 @@ protected:
 
 public:
 	
-	virtual void APPLY_Implementation() {};
+	virtual void Tick() {};
 
 	// FONCTION
 

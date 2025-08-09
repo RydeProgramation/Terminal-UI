@@ -54,7 +54,7 @@ public:
 		}
 	}
 
-	void APPLY_Implementation() override
+	void Tick() override
 	{
 		if (a <= 800)
 		{
