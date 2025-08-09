@@ -95,7 +95,7 @@ void MyUI::Debut()
 	{
 		Hello->AddToPosition(-1, 0);
 
-		Sleep(max(0, int(10 - Hello->GetDeltaTime().GetDataActual())));
+		Sleep(max(1, int(10 - Hello->GetDeltaTime().GetDataActual())));
 	}
 
 	Sleep(1500);
@@ -109,6 +109,8 @@ void MyUI::Debut()
 	CreateWidgetWait(Hello3);
 
 	Hello2->Destroy();
+
+	int i_ = 0;
 
 	for (int i = 0; i <= 500; i += 5)
 	{
@@ -125,19 +127,49 @@ void MyUI::Debut()
 
 		Hello3->SetContent(hello3_);
 
-		Sleep(max(0, int(20 - Hello3->GetDeltaTime().GetDataActual())));
+		Sleep(max(20, int(30 - Hello3->GetDeltaTime().GetDataActual())));
+
+		i_ = i;
 	}
 
 	for (int i = 0; i < 10; i++)
 	{
 		Hello3->AddToPosition(0, 1);
 
-		Sleep(max(0, int(100 - Hello3->GetDeltaTime().GetDataActual())));
+		hello3.clear();
+
+		hello3.push_back(applyColorToText(L" _   _      _ _        __        __         _     _ _ ", float(i_))); // 54
+		hello3.push_back(applyColorToText(L"| | | | ___| | | ___   \\ \\      / /__  _ __| | __| | |", float(i_))); // 54
+		hello3.push_back(applyColorToText(L"| |_| |/ _ \\ | |/ _ \\   \\ \\ /\\ / / _ \\| '__| |/ _` | |", float(i_))); // 54
+		hello3.push_back(applyColorToText(L"|  _  |  __/ | | (_) |   \\ V  V / (_) | |  | | (_| |_|", float(i_))); // 54
+		hello3.push_back(applyColorToText(L"|_| |_|\\___|_|_|\\___/     \\_/\\_/ \\___/|_|  |_|\\__,_(_)", float(i_))); // 54
+
+		hello3_ = hello3[0] + hello3[1] + hello3[2] + hello3[3] + hello3[4];
+
+		i_ += 20;
+
+		Hello3->SetContent(hello3_);
+
+		Sleep(max(2, int(100 - Hello3->GetDeltaTime().GetDataActual())));
 	}
 
 	for (int i = 0; i < 5; i++)
 	{
 		Hello3->AddToSize(0, -1);
+
+		hello3.clear();
+
+		hello3.push_back(applyColorToText(L" _   _      _ _        __        __         _     _ _ ", float(i_))); // 54
+		hello3.push_back(applyColorToText(L"| | | | ___| | | ___   \\ \\      / /__  _ __| | __| | |", float(i_))); // 54
+		hello3.push_back(applyColorToText(L"| |_| |/ _ \\ | |/ _ \\   \\ \\ /\\ / / _ \\| '__| |/ _` | |", float(i_))); // 54
+		hello3.push_back(applyColorToText(L"|  _  |  __/ | | (_) |   \\ V  V / (_) | |  | | (_| |_|", float(i_))); // 54
+		hello3.push_back(applyColorToText(L"|_| |_|\\___|_|_|\\___/     \\_/\\_/ \\___/|_|  |_|\\__,_(_)", float(i_))); // 54
+
+		hello3_ = hello3[0] + hello3[1] + hello3[2] + hello3[3] + hello3[4];
+
+		i_ += 20;
+
+		Hello3->SetContent(hello3_);
 
 		Sleep(max(0, int(100 - Hello3->GetDeltaTime().GetDataActual())));
 	}
@@ -150,7 +182,7 @@ void MyUI::Debut()
 
 	bool IsFinished = false;
 
-	Paragraphe->DoCharToCharAnimation(3); // 50 de base
+	Paragraphe->DoCharToCharAnimation(5); // 50 de base
 
 	Paragraphe->DoAnimation(IsFinished);
 
