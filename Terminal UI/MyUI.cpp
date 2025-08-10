@@ -82,6 +82,8 @@ wstring applyColorToText(const wstring& text, float offset) {
 
 void MyUI::Debut()
 {
+	Menu1();
+
 	LOAD(trWidget, Hello, L"Hello.widg")
 	LOAD(trWidget, Hello2, L"HelloWorld.widg")
 	LOAD(trWidget, Hello3, L"HelloWorldComplete.widg")
@@ -127,7 +129,7 @@ void MyUI::Debut()
 
 		Hello3->SetContent(hello3_);
 
-		Sleep(max(20, int(30 - Hello3->GetDeltaTime().GetDataActual())));
+		Sleep(25);
 
 		i_ = i;
 	}
@@ -150,7 +152,7 @@ void MyUI::Debut()
 
 		Hello3->SetContent(hello3_);
 
-		Sleep(max(2, int(100 - Hello3->GetDeltaTime().GetDataActual())));
+		Sleep(25);
 	}
 
 	for (int i = 0; i < 5; i++)
@@ -171,7 +173,7 @@ void MyUI::Debut()
 
 		Hello3->SetContent(hello3_);
 
-		Sleep(max(0, int(100 - Hello3->GetDeltaTime().GetDataActual())));
+		Sleep(25);
 	}
 
 	Hello3->Destroy();
@@ -182,7 +184,7 @@ void MyUI::Debut()
 
 	bool IsFinished = false;
 
-	Paragraphe->DoCharToCharAnimation(5); // 50 de base
+	Paragraphe->DoCharToCharAnimation(25); // 50 de base
 
 	Paragraphe->DoAnimation(IsFinished);
 
@@ -204,28 +206,8 @@ void MyUI::Debut()
 
 void MyUI::Menu1()
 {
-	vector<wstring> sim_cont;
-
-	sim_cont.push_back(L" ________       ___      _____ ______       ___  ___      ___           ________      _________    ___      ________      ________       ");
-	sim_cont.push_back(L"|\\   ____\\     |\\  \\    |\\   _ \\  _   \\    |\\  \\|\\  \\    |\\  \\         |\\   __  \\    |\\___   ___\\ |\\  \\    |\\   __  \\    |\\   ___  \\     ");
-	sim_cont.push_back(L"\\ \\  \\___|_    \\ \\  \\   \\ \\  \\\\\\__\\ \\  \\   \\ \\  \\\\\\  \\   \\ \\  \\        \\ \\  \\|\\  \\   \\|___ \\  \\_| \\ \\  \\   \\ \\  \\|\\  \\   \\ \\  \\\\ \\  \\    ");
-	sim_cont.push_back(L" \\ \\_____  \\    \\ \\  \\   \\ \\  \\\\|__| \\  \\   \\ \\  \\\\\\  \\   \\ \\  \\        \\ \\   __  \\       \\ \\  \\   \\ \\  \\   \\ \\  \\\\\\  \\   \\ \\  \\\\ \\  \\   ");
-	sim_cont.push_back(L"  \\|____|\\  \\    \\ \\  \\   \\ \\  \\    \\ \\  \\   \\ \\  \\\\\\  \\   \\ \\  \\____    \\ \\  \\ \\  \\       \\ \\  \\   \\ \\  \\   \\ \\  \\\\\\  \\   \\ \\  \\\\ \\  \\  ");
-	sim_cont.push_back(L"    ____\\_\\  \\    \\ \\__\\   \\ \\__\\    \\ \\__\\   \\ \\_______\\   \\ \\_______\\   \\ \\__\\ \\__\\       \\ \\__\\   \\ \\__\\   \\ \\_______\\   \\ \\__\\\\ \\__\\ ");
-	sim_cont.push_back(L"   |\\_________\\    \\|__|    \\|__|     \\|__|    \\|_______|    \\|_______|    \\|__|\\|__|        \\|__|    \\|__|    \\|_______|    \\|__| \\|__| ");
-	sim_cont.push_back(L"   \\|_________|                                                                                                                          ");
-
-	wstring sim_3d = sim_cont[0] + sim_cont[1] + sim_cont[2] + sim_cont[3] + sim_cont[4] + sim_cont[5] + sim_cont[6] + sim_cont[7];
-
-	CreateWidgetWait(new trWidget(0, -10, static_cast<int>(sim_cont[0].size()), 8, MiddleCenter, sim_3d, "Simulation"));
-
-	vector<wstring> SimCarlo;
-
-	SimCarlo.push_back(L"  __  __                   _                ____                  _         ");
-	SimCarlo.push_back(L" |  \\/  |   ___    _ __   | |_    ___      / ___|   __ _   _ __  | |   ___  ");
-	SimCarlo.push_back(L" | |\\/| |  / _ \\  | '_ \\  | __|  / _ \\    | |      / _` | | '__| | |  / _ \\ ");
-	SimCarlo.push_back(L" | |  | | | (_) | | | | | | |_  |  __/    | |___  | (_| | | |    | | | (_) |");
-	SimCarlo.push_back(L" |_|  |_|  \\___/  |_| |_|  \\__|  \\___|     \\____|  \\__,_| |_|    |_|  \\___/  ");
+	LOAD(trWidget, SimulationTitle, L"Simulation.widg");
+	CreateWidgetWait(SimulationTitle);
 
 	vector<wstring> Diff;
 
@@ -237,13 +219,13 @@ void MyUI::Menu1()
 
 	wstring Diff_ = Diff[0] + Diff[1] + Diff[2] + Diff[3] + Diff[4];
 
-	wstring SimCarlo_ = SimCarlo[0] + SimCarlo[1] + SimCarlo[2] + SimCarlo[3] + SimCarlo[4];
+	LOAD(trSelector, SimCarlo, L"MonteCarlo.widg");
 
-	CreateSelectorWait(new trSelector(-40, 5, static_cast<int>(SimCarlo[0].size()), 5, MiddleCenter, SimCarlo_, "SimCarlo"));
+	CreateSelectorWait(SimCarlo);
 
 	World->SetActor<trSelector>("SimCarlo", &trSelector::SetSelected, bool(true));
 
-	CreateSelectorWait(new trSelector(40, 5, static_cast<int>(SimCarlo[0].size()), 5, MiddleCenter, SimCarlo_, "SimCarlo2"));
+	CreateSelectorWait(new trSelector(40, 5, static_cast<int>(Diff[0].size()), 5, MiddleCenter, Diff_, "SimCarlo2"));
 
 	// je vais tenter d'abord de pouvoir déplacer le bloc "SimCarlo" pour voir si mon trKeyBoardManagment fonctionne
 

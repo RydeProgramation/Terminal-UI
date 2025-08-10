@@ -1,14 +1,14 @@
 ﻿#include "trSelector.h"
 #include "trUIToolsCore.h"
 
-REGISTER_TYPE(trSelector, int, int, int, int, uint8_t, std::wstring, std::string);
+REGISTER_TYPE(trSelector, int, int, int, int, uint8_t, std::wstring, std::string)
 
 using namespace std;
 using namespace UIToolsCore;
 
 // INI default
 
-trSelector::trSelector() : trWidget(), Selected(new trData<bool>(false)), ColorSelected(new trData<wstring>(L"\x1b[0m")), ColorUnSelected(new trData<wstring>(L"\x1b[0m"))
+trSelector::trSelector() : trWidget(), Selected(new trData<bool>(false)), ColorSelected(new trData<wstring>(L"\033[48;2;255;255;255m\033[38;2;0;0;0m")), ColorUnSelected(new trData<wstring>(L"\x1b[0m"))
 {
 
 }
