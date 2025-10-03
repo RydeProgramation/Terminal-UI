@@ -32,7 +32,8 @@
 	</trWidget>
 
 	<trSelector>
-		<SlectedColor foreground="#ff00d9ff" background="#b3ff00ff"/>
+		<SlectedColor foreground="#fbfbfbff" background="#a6dbfaff"/>
+		<UnSlectedColor _foreground="#fbfbfbff" _background="#110100"/>
 	</trSelector>
 
 </trObject>

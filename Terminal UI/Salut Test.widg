@@ -29,6 +29,6 @@
 			<Line Content="░  ░  ░    ░   ▒     ░ ░    ░░░ ░ ░   ░             ░" />   
 			<Line Content="      ░        ░  ░    ░  ░   ░                  ░   " />                                                                                                      
 		</Content>
-		<Color foreground="#e29f22ff" />
+		<Color foreground="#ffde89ff" />
 	</trWidget>
 </trObject>

@@ -9,6 +9,14 @@ bool trLoad::FileExists(LPCWSTR filename) {
 	return (attrib != INVALID_FILE_ATTRIBUTES && !(attrib & FILE_ATTRIBUTE_DIRECTORY));
 }
 
+std::string WStringToUTF8(const std::wstring& wstr) {
+	int size_needed = WideCharToMultiByte(CP_UTF8, 0, wstr.c_str(), -1, nullptr, 0, nullptr, nullptr);
+	std::string result(size_needed, 0);
+	WideCharToMultiByte(CP_UTF8, 0, wstr.c_str(), -1, &result[0], size_needed, nullptr, nullptr);
+	result.pop_back(); // Supprime le \0 inutile à la fin
+	return result;
+}
+
 inline void CaseColorProcess(unordered_map<trPair<int, int>, std::wstring>& CaseColor, trWidget& WidgetLoad, wstring& Content_ID)
 {
 	wstring raw = Content_ID;
@@ -148,6 +156,7 @@ trObject* trLoad::LoadObject(LPCWSTR NameFile_)
 	trPawn* PawnLoad = nullptr;
 	trWidget* WidgetLoad = nullptr;
 	trText* TextLoad = nullptr;
+	trSelector* SelectorLoad = nullptr;
 
 	vector<trPair<uint16_t, std::wstring>> AnimationVector;
 
@@ -1246,6 +1255,114 @@ trObject* trLoad::LoadObject(LPCWSTR NameFile_)
 						}
 
 					} while (reader->MoveToNextAttribute() == S_OK);
+				}
+			}
+
+			if (wcscmp(ElementName, L"trSelector") == 0)
+			{
+				SelectorLoad = dynamic_cast<trSelector*>(ObjectLoad);
+
+				if (!SelectorLoad)
+				{
+					MessageBox(
+						NULL,
+						L"trSelector not found",
+						L"Error",
+						MB_ICONERROR | MB_OK
+					);
+					return nullptr;
+				}
+			}
+
+			if (wcscmp(ElementName, L"SlectedColor") == 0 && SelectorLoad)
+			{
+				// Lire les attributs si présents
+				if (reader->MoveToFirstAttribute() == S_OK)
+				{
+					wstring ColorSelectedTemp = L"\033[0m";
+					wstring foreground_ = L"";
+					wstring background_ = L"";
+					uint8_t R = 0, G = 0, B = 0;
+
+					do
+					{
+						LPCWSTR attrName = nullptr;
+						LPCWSTR attrValue = nullptr;
+
+						reader->GetLocalName(&attrName, nullptr);
+						reader->GetValue(&attrValue, nullptr);
+
+						if (wcscmp(attrName, L"foreground") == 0)
+						{
+							foreground_ = attrValue;
+
+							// S'assurer que la chaîne est bien formée : #RRGGBB
+							if (wcslen(attrValue) == 7 && attrValue[0] == L'#' || wcslen(attrValue) == 9 && attrValue[0] == L'#')
+							{
+								// Extraire les composants hexadécimaux
+								wchar_t rStr[3] = { attrValue[1], attrValue[2], L'\0' };
+								wchar_t gStr[3] = { attrValue[3], attrValue[4], L'\0' };
+								wchar_t bStr[3] = { attrValue[5], attrValue[6], L'\0' };
+
+								// Convertir les chaînes hex en entier (base 16)
+								int R = wcstol(rStr, nullptr, 16);
+								int G = wcstol(gStr, nullptr, 16);
+								int B = wcstol(bStr, nullptr, 16);
+
+								// Appliquer la couleur au widget
+								foreground_ = L"\x1b[38;2;" + to_wstring(R) + L";" + to_wstring(G) + L";" + to_wstring(B) + L"m";
+							}
+
+							else
+							{
+								MessageBox(
+									NULL,
+									L"Invalid foreground color format. Use #RRGGBB.",
+									L"Error",
+									MB_ICONERROR | MB_OK
+								);
+								return nullptr;
+							}
+						}
+
+						if (wcscmp(attrName, L"background") == 0)
+						{
+							background_ = attrValue;
+
+							// S'assurer que la chaîne est bien formée : #RRGGBB
+							if (wcslen(attrValue) == 7 && attrValue[0] == L'#' || wcslen(attrValue) == 9 && attrValue[0] == L'#')
+							{
+								// Extraire les composants hexadécimaux
+								wchar_t rStr[3] = { attrValue[1], attrValue[2], L'\0' };
+								wchar_t gStr[3] = { attrValue[3], attrValue[4], L'\0' };
+								wchar_t bStr[3] = { attrValue[5], attrValue[6], L'\0' };
+
+								// Convertir les chaînes hex en entier (base 16)
+								int R = wcstol(rStr, nullptr, 16);
+								int G = wcstol(gStr, nullptr, 16);
+								int B = wcstol(bStr, nullptr, 16);
+
+								// Appliquer la couleur au widget
+								background_ = L"\x1b[48;2;" + to_wstring(R) + L";" + to_wstring(G) + L";" + to_wstring(B) + L"m";
+							}
+
+							else
+							{
+								MessageBox(
+									NULL,
+									L"Invalid foreground color format. Use #RRGGBB.",
+									L"Error",
+									MB_ICONERROR | MB_OK
+								);
+								return nullptr;
+							}
+						}
+
+					} while (reader->MoveToNextAttribute() == S_OK);
+
+					foreground_.empty() ? ColorSelectedTemp += SelectorLoad->GetColorSelected().GetDataActual() : ColorSelectedTemp += (foreground_ + background_);
+
+					SelectorLoad->SetProprety("ColorSelected", WStringToUTF8(ColorSelectedTemp), "string");
 				}
 			}
 		}

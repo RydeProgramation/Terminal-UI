@@ -82,7 +82,7 @@ wstring applyColorToText(const wstring& text, float offset) {
 
 void MyUI::Debut()
 {
-	Menu1();
+	// Menu1();
 
 	LOAD(trWidget, Hello, L"Hello.widg")
 	LOAD(trWidget, Hello2, L"HelloWorld.widg")
@@ -97,7 +97,9 @@ void MyUI::Debut()
 	{
 		Hello->AddToPosition(-1, 0);
 
-		Sleep(max(1, int(10 - Hello->GetDeltaTime().GetDataActual())));
+		// Sleep(max(1, int(10 - Hello->GetDeltaTime().GetDataActual())));
+
+		Sleep(10);
 	}
 
 	Sleep(1500);
@@ -152,7 +154,7 @@ void MyUI::Debut()
 
 		Hello3->SetContent(hello3_);
 
-		Sleep(25);
+		Sleep(40);
 	}
 
 	for (int i = 0; i < 5; i++)
@@ -173,7 +175,7 @@ void MyUI::Debut()
 
 		Hello3->SetContent(hello3_);
 
-		Sleep(25);
+		Sleep(40);
 	}
 
 	Hello3->Destroy();
@@ -184,7 +186,7 @@ void MyUI::Debut()
 
 	bool IsFinished = false;
 
-	Paragraphe->DoCharToCharAnimation(25); // 50 de base
+	Paragraphe->DoCharToCharAnimation(60); // 50 de base
 
 	Paragraphe->DoAnimation(IsFinished);
 
