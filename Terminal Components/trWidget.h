@@ -26,6 +26,8 @@ public:
 
 	trWidget();
 
+	virtual void Init() override;
+
 	// INI
 
 	trWidget(int x_, int y_, int size_x_, int size_y_, uint8_t RelativePositionType_, std::wstring content_, std::string name_);
@@ -36,7 +38,9 @@ public:
 
 	// Copy
 
-	trWidget& operator=(const trWidget& other);
+	trWidget& operator=(const trActor& other);
+
+	virtual trWidget& Clone(const trActor& other_) override;
 
 	// SET
 
@@ -44,15 +48,19 @@ public:
 
 	void SetResetColor(const std::vector<trPair<std::wstring, trCoordinate<int>>>& RstColor);
 
-	void SetColor(int color_); // a voir quoi faire avec ça frR
+	void SetColor(uint8_t R, uint8_t G, uint8_t B, bool Backround);
+
+	void SetColor(const std::wstring& CodeCouleurAnsi);
+
+	void ResetColor();
 
 	void SetSize(int x_, int y_);
+
+	virtual void SetProprety(const std::string& name, const std::string& data, const std::string& type) override;
 
 	// ADD
 
 	void AddToContent(const std::wstring& content_);
-
-	void AddToColor(int color_);
 
 	void AddToSize(int x_, int y_);
 
@@ -62,19 +70,27 @@ public:
 
 	const trData<std::wstring>& GetContent() const;
 
+	const trData<std::wstring>& GetColoredContent() const;
+
 	const trData<std::wstring>& GetRawContent() const;
 
-	const trData<trMap<int, trPair<std::wstring, trCoordinate<int>>>>& GetColoredContent() const;
+	const trData<trMap<int, trPair<std::wstring, trCoordinate<int>>>>& GetColoredMap() const;
 
 	const std::vector<trPair<std::wstring, trCoordinate<int>>>& GetResetColor() const;
 
-	const trData<int>& GetColor() const;
+	const trData<std::wstring>& GetColor() const;
+
+	const trData<std::wstring>& GetBackroundColor() const;
+
+protected:
 
 	virtual void APPLY_(const trSize<uint16_t>& SizeWindow) override;
 
 	// FNC
 
-	bool VerificationProprety() override; 
+public:
+
+	bool VerificationProprety() override;
 
 	virtual void UpdateRelativePositionPoint(const trSize<uint16_t>& SizeWindow) override;
 	
@@ -84,6 +100,8 @@ private:
 
 	std::wstring ContentReorganisation(std::wstring _content, const trSize<int>& SizeWidget) const;
 
+	std::wstring ContentReorganisationKeepColor(std::wstring _content, const trSize<int>& SizeWidget) const;
+
 public:
 
 	// Empty Widget (Static)
@@ -91,7 +109,7 @@ public:
 
 	// DESTRUCTEUR
 
-	~trWidget();
+	virtual ~trWidget();
 
 private:
 
@@ -99,14 +117,18 @@ private:
 
 	trSize<int> *Size;
 
-	trData<int> *Color; // a voir si utiliser ??????
+	trData<std::wstring> *Color; // A voir pour supprimer
+
+	trData<std::wstring>* BackroundColor; // A voir pour supprimer
 
 	trData<std::wstring>* RawContent;
 
 	/// <summary>
 	/// L'index correspond aux coordonnées de l'info en 1 dimensions par rapport aux widget PAS a la fenêtre (merci de bien vouloir lire ;) )
 	/// </summary>
-	trData<trMap<int, trPair<std::wstring, trCoordinate<int>>>> *ColoredContent;
+	trData<trMap<int, trPair<std::wstring, trCoordinate<int>>>> *ColoredMap;
+
+	trData<std::wstring>* ColoredContent;
 
 	std::vector<trPair<std::wstring, trCoordinate<int>>> *BaseColor;
 

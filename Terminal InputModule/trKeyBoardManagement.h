@@ -34,7 +34,7 @@ public:
 	/// <summary>
 	/// Cette fonction permet de créer un bouton avec les touches associées
 	/// </summary>
-	bool CreateBTN(const trBTN_Key& Btns);
+	bool CreateBTN(trBTN_Key* Btn);
 
 	// SET
 
@@ -50,7 +50,7 @@ public:
 	/// Cette fonction permet de récupérer le bouton associé à une touche
 	/// </summary>
 	/// <returns> Un pointeur vers le bouton associé à la touche </returns>
-	const std::unordered_map<int, trBTN_Key>& GetBTNS() const; // PROBLEME JE PENSE
+	const std::unordered_map<int, trBTN_Key*>& GetBTNS() const; // PROBLEME JE PENSE
 
 	/// <summary>
 	/// Cette fonction permet de récupérer l'état d'une touche
@@ -81,22 +81,22 @@ private:
 
 protected:
 
-	std::unordered_map<int, trBTN_Key> *BTNS;
+	std::unordered_map<int, trBTN_Key*> *BTNS;
 
 	/// <summary>
 	/// Un vector qui contient les touches actives
 	/// </summary>
-	std::vector<trPair<int, bool>>* ActiveKeysBufferWrite;
+	std::vector<trPair<int, bool>> *ActiveKeysBufferWrite;
 
 	/// <summary>
 	/// Un vector qui contient les touches actives
 	/// </summary>
-	std::vector<trPair<int, bool>>* ActiveKeysBufferRead;
+	std::vector<trPair<int, bool>> *ActiveKeysBufferRead;
 
 	/// <summary>
 	/// Un mutex qui permet de gérer les accès concurrents à la variable ActiveKeys
 	/// </summary>
-	std::mutex* MutexKB;
+	std::mutex *MutexKB;
 
 private:
 

@@ -1,8 +1,10 @@
-#include "trUIToolsCore.h"
+﻿#include "trUIToolsCore.h"
 #include "trPawn.h"
 
 using namespace std;
 using namespace UIToolsCore;
+
+REGISTER_TYPE(trPawn, int, int, int, string)
 
 // INI default
 
@@ -13,7 +15,7 @@ trPawn::trPawn() : trPawn(0, 0, TopLeft, "None")
 
 // INI
 
-trPawn::trPawn(int x_, int y_, int RelativePositionType_, string name_) : trActor(name_), PositionRelative(new trCoordinate<int>(x_, y_)), RpType(new trData<uint8_t>(RelativePositionType_)), RelativePositionPoint(new trCoordinate<int>(0, 0))
+trPawn::trPawn(int x_, int y_, int RelativePositionType_, string name_) : trActor(name_), PositionRelative(new trCoordinate<int>(x_, y_)), RpType(new trData<uint8_t>(RelativePositionType_)), RelativePositionPoint(new trCoordinate<int>(0, 0)), PawnCollision(new std::vector<trActor*>()), /*TEST DE COPILOT*/ PositionAbsolue(new trCoordinate<int>(max(x_ + RelativePositionPoint->GetX().GetDataActual(), 0), max(y_ + RelativePositionPoint->GetY().GetDataActual(), 0)))
 {
 
 }
@@ -29,48 +31,74 @@ void trPawn::Init()
 
 // INI deep copy
 
-trPawn::trPawn(const trPawn& other) : trActor(other), PositionRelative(new trCoordinate<int>(*other.PositionRelative)), RpType(new trData<uint8_t>(*other.RpType)), RelativePositionPoint(new trCoordinate<int>(*other.RelativePositionPoint)), PositionAbsolue(new trCoordinate<int>(*other.PositionAbsolue))
+trPawn::trPawn(const trPawn& other) : trActor(other), PositionRelative(new trCoordinate<int>(*other.PositionRelative)), RpType(new trData<uint8_t>(*other.RpType)), RelativePositionPoint(new trCoordinate<int>(*other.RelativePositionPoint)), PositionAbsolue(new trCoordinate<int>(*other.PositionAbsolue)), PawnCollision(new vector<trActor*>(*other.PawnCollision))
 {
 
 }
 
 // Copy
 
-trPawn& trPawn::operator=(const trPawn& other)
+trPawn& trPawn::operator=(const trActor& other_)
 {
-	if (this == &other) { return *this; }
+	return Clone(other_);
+}
 
-	trActor::operator=(other);
+trPawn& trPawn::Clone(const trActor& other_)
+{
+	try
+	{
+		const trPawn& other = dynamic_cast<const trPawn&>(other_);
 
-	if (RpType == nullptr) {
-		RpType = new trData<uint8_t>(*other.RpType);
-	}
-	else {
-		*RpType = *other.RpType;
+		if (this == &other) { return *this; }
+
+		trActor::Clone(other_);
+
+		if (RpType == nullptr) {
+			RpType = new trData<uint8_t>(*other.RpType);
+		}
+		else {
+			*RpType = *other.RpType;
+		}
+
+		if (PositionRelative == nullptr) {
+			PositionRelative = new trCoordinate<int>(*other.PositionRelative);
+		}
+		else {
+			*PositionRelative = *other.PositionRelative;
+		}
+
+		if (RelativePositionPoint == nullptr) {
+			RelativePositionPoint = new trCoordinate<int>(*other.RelativePositionPoint);
+		}
+		else {
+			*RelativePositionPoint = *other.RelativePositionPoint;
+		}
+
+		if (PositionAbsolue == nullptr) {
+			PositionAbsolue = new trCoordinate<int>(*other.PositionAbsolue);
+		}
+		else {
+			*PositionAbsolue = *other.PositionAbsolue;
+		}
+
+		if (PawnCollision == nullptr) {
+			PawnCollision = new vector<trActor*>(*other.PawnCollision);
+		}
+		else {
+			*PawnCollision = *other.PawnCollision;
+		}
+
+		return *this;
 	}
 
-	if (PositionRelative == nullptr) {
-		PositionRelative = new trCoordinate<int>(*other.PositionRelative);
-	}
-	else {
-		*PositionRelative = *other.PositionRelative;
-	}
+	catch (const std::bad_cast&)
+	{
+		trActor& Me = dynamic_cast<trActor&>(*this);
 
-	if (RelativePositionPoint == nullptr) {
-		RelativePositionPoint = new trCoordinate<int>(*other.RelativePositionPoint);
-	}
-	else {
-		*RelativePositionPoint = *other.RelativePositionPoint;
-	}
+		Me.trActor::Clone(other_);
 
-	if (PositionAbsolue == nullptr) {
-		PositionAbsolue = new trCoordinate<int>(*other.PositionAbsolue);
+		return *this;
 	}
-	else {
-		*PositionAbsolue = *other.PositionAbsolue;
-	}
-
-	return *this;
 }
 
 // SET
@@ -90,6 +118,22 @@ bool trPawn::SetTypeRelativePosition(int rp)
 
 	RpType->SetData(rp);
 	return true;
+}
+
+void trPawn::SetPawnCollision(trActor* actor, bool collision)
+{
+	if (actor != nullptr)
+	{
+		if (collision)
+		{
+			PawnCollision->push_back(actor); // faire belek ici
+		}
+
+		else
+		{
+			// bah je sais pas ce que tu fait mdr
+		}
+	}
 }
 
 // ADD
@@ -116,6 +160,124 @@ const trData<uint8_t>& trPawn::GetRelativePositionType() const
 	return *RpType;
 }
 
+const vector<trActor*>& trPawn::GetPawnCollision() const
+{
+	return *PawnCollision;
+}
+
+void trPawn::SetProprety(const std::string& name, const std::string& data, const std::string& type)
+{
+	trActor::SetProprety(name, data, type);
+
+	if (name == "PositionRelative")
+	{
+		MessageBox(
+			NULL,
+			L"Invalid type for PositionRelative property",
+			L"Error",
+			MB_ICONERROR | MB_OK
+		);
+
+		if (type == "int")
+		{
+			/*int x, y;
+			sscanf(data.c_str(), "%d,%d", &x, &y);
+			SetPosition(x, y);*/
+		}
+
+		else
+		{
+			MessageBox(
+				NULL,
+				L"Invalid type for PositionRelative property",
+				L"Error",
+				MB_ICONERROR | MB_OK
+			);
+		}
+	}
+
+	if (name == "RelativePositionType")
+	{
+		MessageBox(
+			NULL,
+			L"Invalid type for PositionRelative property",
+			L"Error",
+			MB_ICONERROR | MB_OK
+		);
+
+		if (type == "int")
+		{
+			/*int rp;
+
+			// sscanf(data.c_str(), "%d", &rp);
+
+			SetTypeRelativePosition(rp);*/
+		}
+
+		else
+		{
+			MessageBox(
+				NULL,
+				L"Invalid type for RelativePositionType property",
+				L"Error",
+				MB_ICONERROR | MB_OK
+			);
+		}
+	}
+
+	if (name == "PositionAbsolue")
+	{
+		MessageBox(
+			NULL,
+			L"Invalid type for PositionRelative property",
+			L"Error",
+			MB_ICONERROR | MB_OK
+		);
+
+		if (type == "int")
+		{
+			/*int x, y;
+			// sscanf(data.c_str(), "%d,%d", &x, &y);
+			SetPosition(x, y);*/
+		}
+		else
+		{
+			MessageBox(
+				NULL,
+				L"Invalid type for PositionAbsolue property",
+				L"Error",
+				MB_ICONERROR | MB_OK
+			);
+		}
+	}
+
+	if (name == "RpType" || name == "RelativePositionType")
+	{
+		MessageBox(
+			NULL,
+			L"Invalid type for PositionRelative property",
+			L"Error",
+			MB_ICONERROR | MB_OK
+		);
+
+		if (type == "int")
+		{
+			/*int rp;
+			// sscanf(data.c_str(), "%d", &rp);
+			SetTypeRelativePosition(rp);*/
+		}
+		else
+		{
+			MessageBox(
+				NULL,
+				L"Invalid type for RpType property",
+				L"Error",
+				MB_ICONERROR | MB_OK
+			);
+		}
+	}
+}
+
 // APPLY
 
 void trPawn::UpdateRelativePosition()
@@ -125,6 +287,8 @@ void trPawn::UpdateRelativePosition()
 
 void trPawn::APPLY_(const trSize<uint16_t>& SizeWindow)
 {
+	RpType->Update();
+
 	UpdateRelativePositionPoint(SizeWindow);
 
 	RelativePositionPoint->Update();
@@ -133,7 +297,18 @@ void trPawn::APPLY_(const trSize<uint16_t>& SizeWindow)
 
 	PositionAbsolue->Update();
 	PositionRelative->Update();
-	RpType->Update();
+
+	if (PawnCollision->size() > 0)
+	{
+		/*for (auto& it : *PawnCollision) // a utiliser si jamais mais bon pas besoin pour l'instant
+		{
+			
+		}*/
+
+		SetChange(true); // on met a jour les collisions
+
+		PawnCollision->clear();
+	}
 }
 
 // FNC
@@ -199,4 +374,6 @@ trPawn::~trPawn()
 	delete PositionAbsolue;
 
 	delete RpType;
+
+	delete PawnCollision;
 }

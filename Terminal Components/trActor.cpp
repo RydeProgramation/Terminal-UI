@@ -1,10 +1,10 @@
-#include "trUIToolsCore.h"
+﻿#include "trUIToolsCore.h"
 #include "trActor.h"
 
 using namespace std;
 using namespace UIToolsCore;
 
-// INI default
+REGISTER_TYPE(trActor, std::string);
 
 trActor::trActor() : trActor("None")
 {
@@ -13,14 +13,14 @@ trActor::trActor() : trActor("None")
 
 // INI
 
-trActor::trActor(string name_) : Name(new trData<string>(name_)), Activate(new trData<bool>(true)), Protected(new trData<bool>(false)), ToChange(new trData<bool>(true)), ToDestroy(new trData<bool>(false))
+trActor::trActor(string name_) : Name(new trData<string>(name_)), Activate(new trData<bool>(true)), Protected(new trData<bool>(false)), ToChange(new trData<bool>(true)), ToDestroy(new trData<bool>(false)), DeltaTime(new trData<double>())
 {
 	
 }
 
 // INI deep copy
 
-trActor::trActor(const trActor& other) : Name(new trData<string>(*other.Name)), Activate(new trData<bool>(*other.Activate)), ToChange(new trData<bool>(true)), ToDestroy(new trData<bool>(*other.ToDestroy)), Protected(new trData<bool>(*other.Protected))
+trActor::trActor(const trActor& other) : Name(new trData<string>(*other.Name)), Activate(new trData<bool>(*other.Activate)), ToChange(new trData<bool>(true)), ToDestroy(new trData<bool>(*other.ToDestroy)), Protected(new trData<bool>(*other.Protected)), DeltaTime(new trData<double>(*other.DeltaTime))
 {
 
 }
@@ -28,6 +28,11 @@ trActor::trActor(const trActor& other) : Name(new trData<string>(*other.Name)), 
 // Copy
 
 trActor& trActor::operator=(const trActor& other)
+{
+	return Clone(other);
+}
+
+trActor& trActor::Clone(const trActor& other)
 {
 	if (this == &other) { return *this; }
 
@@ -65,7 +70,14 @@ trActor& trActor::operator=(const trActor& other)
 	else {
 		*ToDestroy = *other.ToDestroy;
 	}
-	
+
+	if (DeltaTime == nullptr) {
+		DeltaTime = new trData<double>();
+	}
+	else {
+		*DeltaTime = *other.DeltaTime;
+	}
+
 	return *this;
 }
 
@@ -96,6 +108,123 @@ void trActor::SetDestroy(bool Destroy_)
 	ToDestroy->SetData(Destroy_);
 }
 
+void trActor::SetDeltaTime(const double& DeltaTime_)
+{
+	DeltaTime->SetData(DeltaTime_);
+}
+
+void trActor::SetProprety(const std::string& name, const std::string& data, const std::string& type)
+{
+	if (name == "Activate")
+	{
+		if (type == "bool")
+		{
+			if (data == "true" || data == "1" || data == "True" || data == "TRUE")
+			{
+				Activate->SetData(true);
+			}
+			else if (data == "false" || data == "0" || data == "False" || data == "FALSE")
+			{
+				Activate->SetData(false);
+			}
+			else
+			{
+				MessageBox(
+					NULL,
+					L"Invalid value for Activate property",
+					L"Error",
+					MB_ICONERROR | MB_OK
+				);
+			}
+		}
+	}
+
+	if (name == "Protected")
+	{
+		if (type == "bool")
+		{
+			if (data == "true" || data == "1" || data == "True" || data == "TRUE")
+			{
+				Protected->SetData(true);
+			}
+			else if (data == "false" || data == "0" || data == "False" || data == "FALSE")
+			{
+				Protected->SetData(false);
+			}
+			else
+			{
+				MessageBox(
+					NULL,
+					L"Invalid value for Activate property",
+					L"Error",
+					MB_ICONERROR | MB_OK
+				);
+			}
+		}
+	}
+
+	if (name == "ToChange")
+	{
+		if (type == "bool")
+		{
+			if (data == "true" || data == "1" || data == "True" || data == "TRUE")
+			{
+				ToChange->SetData(true);
+			}
+			else if (data == "false" || data == "0" || data == "False" || data == "FALSE")
+			{
+				ToChange->SetData(false);
+			}
+			else
+			{
+				MessageBox(
+					NULL,
+					L"Invalid value for Activate property",
+					L"Error",
+					MB_ICONERROR | MB_OK
+				);
+			}
+		}
+	}
+
+	if (name == "Name")
+	{
+		if (type == "string")
+		{
+			Name->SetData(data);
+		}
+	}
+
+	if (name == "ToDestroy")
+	{
+		if (type == "bool")
+		{
+			if (data == "true" || data == "1" || data == "True" || data == "TRUE")
+			{
+				ToDestroy->SetData(true);
+			}
+			else if (data == "false" || data == "0" || data == "False" || data == "FALSE")
+			{
+				ToDestroy->SetData(false);
+			}
+			else
+			{
+				MessageBox(
+					NULL,
+					L"Invalid value for Activate property",
+					L"Error",
+					MB_ICONERROR | MB_OK
+				);
+			}
+		}
+	}
+}
+
+void trActor::Destroy()
+{
+	ToDestroy->SetData(true);
+}
+
 // GET
 
 const trData<string>& trActor::GetName() const
@@ -123,11 +252,23 @@ const trData<bool>& trActor::GetDestroy() const
 	return *ToDestroy;
 }
 
+const trData<double>& trActor::GetDeltaTime() const 
+{
+	return *DeltaTime;
+}
+
+const bool trActor::IsCreated() const
+{
+	return Created;
+}
+
 // APPLY
 
 void trActor::APPLY(const trSize<uint16_t>& SizeWindow)
 {	
-	APPLY_Implementation();
+	DeltaTime->Update();
+
+	Tick();
 
 	APPLY_(SizeWindow);
 
@@ -138,6 +279,11 @@ void trActor::APPLY(const trSize<uint16_t>& SizeWindow)
 
 	ToChange->SetData(VerificationProprety() ? true : ToChange->GetDataNew());
 	ToChange->Update();
+
+	if (!Created)
+	{
+		Created = true;
+	}
 }
 
 // FNC
@@ -166,4 +312,6 @@ trActor::~trActor()
 	delete Name;
 
 	delete ToDestroy;
+
+	delete DeltaTime;
 }

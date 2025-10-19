@@ -5,6 +5,7 @@
 #include "trData.h"
 #include "trSize.h"
 #include "trCoordinate.h"
+#include "trWeakPointer.h"
 
 #ifndef __TR_BTN_KEY__
 #define __TR_BTN_KEY__
@@ -39,7 +40,7 @@ public:
 
 	// INI
 
-	trBTN_Key(int Key_, int PressOrRelease_, int UsingMode_, std::function<void()> Action_, trObject* Ptr_);
+	trBTN_Key(int Key_, int PressOrRelease_, int UsingMode_, const std::function<void()>& Action_, trObject* Ptr_);
 
 	// INI deep copy
 
@@ -87,6 +88,8 @@ public:
 	/// </summary>
 	/// <returns> La touche utilisée pour l'action </returns>
 	const int GetKey() const;
+
+	trWeakPointer* GetPtr() const;
 
 	// UPDATE
 
@@ -145,7 +148,7 @@ private:
 	std::function<void()> *Action;
 
 	// J'ai oublié pourquoi j'ai fait ça mais je suis sûr que c'est important
-	trObject* Ptr;
+	trWeakPointer *Ptr;
 };
 
 #endif

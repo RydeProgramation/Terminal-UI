@@ -14,41 +14,47 @@ SI C'EST UN TEMPLATE IL NE FAUT PAS METTRE EN IMPORT/EXPORT CAR IL FAUT INITIAIL
 using namespace std;
 using namespace UITools;
 
-bool IsConsoleFocused() {
-	HWND consoleWindow = GetConsoleWindow();
-	HWND foregroundWindow = GetForegroundWindow();
-
-	return consoleWindow != nullptr && consoleWindow == foregroundWindow;
+std::string WStringToUTF8(const std::wstring& wstr) {
+	int size_needed = WideCharToMultiByte(CP_UTF8, 0, wstr.c_str(), -1, nullptr, 0, nullptr, nullptr);
+	std::string result(size_needed, 0);
+	WideCharToMultiByte(CP_UTF8, 0, wstr.c_str(), -1, &result[0], size_needed, nullptr, nullptr);
+	result.pop_back(); // Supprime le \0 inutile à la fin
+	return result;
 }
 
-int main()
+int main(int argc, char* argv[])
 {
-	SetConsoleOutputCP(CP_UTF8);
-
-	cout << WstringToUtf8(L"Clique sur F11, pour une meilleur experience (sans bug) 😊🎉") << endl << endl << endl;
-
-	cout << WstringToUtf8(L"Ensuite clique sur n'importe quelle touche (entrée)") << endl;
-
-/*
-	while (true) {
-		if (IsConsoleFocused()) {
-			std::cout << "✅ CONSOLE FOCUS\n";
-		}
-		else {
-			std::cout << "❌ PAS FOCUS\n";
-		}
-
-		Sleep(500); // évite de spammer le CPU
-	}
-*/
-
-	cin.ignore();
-
 	MyUI UI;
 
-	UI.Start();
+	// TEST
 
-	// 👇 Boucle d'attente douce si jamais tout est fait sur UI::Start()
+	// Concaténation de 2 chemins
+	std::string chemin1 = "C:\\Users\\Mohamed\\Documents\\Work\\Personnel\\code\\C++\\visual studio ( écrit avec code )\\Terminal-UI\\x64\\Debug\\Terminal UI.exe";
+	std::string chemin2 = "C:\\Users\\Mohamed\\Documents\\Work\\Personnel\\Parag.widg";
+
+	// Créer des buffers dynamiques
+	char* arg1 = new char[chemin1.size() + 1];
+	char* arg2 = new char[chemin2.size() + 1];
+
+	// Copier les chaînes dedans
+	strcpy_s(arg1, chemin1.size() + 1, chemin1.c_str());
+	strcpy_s(arg2, chemin2.size() + 1, chemin2.c_str());
+
+	// Créer un tableau de pointeurs vers char
+	char* mychar[] = { arg1, arg2, nullptr };
+
+	int deux = 2;
+
+	cout << deux << endl;
+
+	for (int i = 0; i < deux; i++) {
+		cout << mychar[i];
+	}
+
+	UI.Start(argc, argv);
+
+	UI.Debut();
+
 	while (true) {
 		Sleep(10000); // 🔄 Laisse le CPU tranquille sans bloquer l'UI
 	}

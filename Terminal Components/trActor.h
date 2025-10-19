@@ -1,4 +1,4 @@
-#pragma once
+﻿#pragma once
 
 #include "include.h"
 
@@ -7,6 +7,9 @@
 #include "trData.h"
 #include "trPair.h"
 #include "trMap.h"
+#include "trRect.h"
+#include "trWeakPointer.h"
+#include "trObjectFactory.h"
 
 #ifndef __TR_ACTOR__
 #define __TR_ACTOR__
@@ -16,6 +19,8 @@
 #else
 #define TERMINAL_CORE_API __declspec(dllimport)
 #endif
+
+class trWorld;
 
 class TERMINAL_CORE_API trActor : public trObject
 {
@@ -39,6 +44,8 @@ public:
 
 	trActor& operator=(const trActor& other);
 
+	virtual trActor& Clone(const trActor& other_);
+
 	// SET
 
 	void SetName(const std::string& name_);
@@ -50,6 +57,12 @@ public:
 	void SetChange(bool Change_);
 
 	void SetDestroy(bool Destroy_);
+
+	void SetDeltaTime(const double& DeltaTime_);
+
+	virtual void SetProprety(const std::string& name, const std::string& data, const std::string& type);
+
+	void Destroy();
 
 	// GET
 
@@ -63,7 +76,15 @@ public:
 
 	const trData<bool>& GetDestroy() const;
 
+	const trData<double>& GetDeltaTime() const;
+
+	const bool IsCreated() const;
+
 	// APPLY
+
+protected:
+
+	friend trWorld;
 
 	void APPLY(const trSize<uint16_t>& SizeWindow);
 
@@ -73,7 +94,7 @@ protected:
 
 public:
 	
-	virtual void APPLY_Implementation() {};
+	virtual void Tick() {};
 
 	// FONCTION
 
@@ -81,19 +102,23 @@ public:
 
 	// DESTRUCTEUR
 
-	~trActor();
+	virtual ~trActor();
 
 private:
 
-	trData<bool>* Activate;
+	trData<bool> *Activate;
 
-	trData<bool>* Protected;
+	trData<bool> *Protected;
 
-	trData<bool>* ToChange;
+	trData<bool> *ToChange;
+
+	trData<double>* DeltaTime;
 
 	trData<std::string>* Name;
 
 	trData<bool>* ToDestroy;
+
+	bool Created = false;
 
 public:
 
@@ -101,5 +126,7 @@ public:
 
 	static trActor EmptyActor;
 };
+
+// SET_TYPE_OBJECT(trActor, std::string);
 
 #endif

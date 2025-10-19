@@ -5,16 +5,15 @@
 #ifndef __MYUI__
 #define __MYUI__
 
-
-class MyUI : trUserInterface
+class MyUI : public trUserInterface
 {
 public:
 
 	MyUI();
 
-	~MyUI();
+	virtual ~MyUI();
 
-	void Start() override;
+	void Debut();
 
 	void Menu1();
 
@@ -31,19 +30,40 @@ class Munition : public trWidget
 {
 public:
 
-	Munition(int x_, int y_, int RelativePosition_, std::wstring content_, std::string name_)
-		: trWidget(x_, y_, 1, 1, RelativePosition_, content_, name_ + std::to_string(bulletCount))
+	Munition()
+		: trWidget(0, 0, 3, 5, MiddleCenter, L"", "BulletDefault" + std::to_string(bulletCount))
 	{
-		this->SetContent(L"*");
+		this->SetContent(L"****************");
 		bulletCount++;
+
+		if (bulletCount >= 20)
+		{
+			// this->SetDestroy(true);
+		}
 	}
 
-	void APPLY_Implementation() override
+	Munition(int x_, int y_, int RelativePosition_, std::wstring content_, std::string name_)
+		: trWidget(x_, y_, 3, 5, RelativePosition_, content_, name_ + std::to_string(bulletCount))
 	{
-		if (a <= 10)
+		this->SetContent(L"****************");
+		bulletCount++;
+
+		if (bulletCount >= 20)
 		{
-			this->AddToPosition(0, -1);
+			// this->SetDestroy(true);
+		}
+	}
+
+	void Tick() override
+	{
+		if (a <= 800)
+		{
+			this->AddToPosition(0, -static_cast<int>(std::floor(b)));
+			b += 0.15f;
 			a++;
+
+			if (b >= 1.1)
+				b = 0;
 		}
 		
 		else
@@ -52,7 +72,13 @@ public:
 		}
 	}
 
+	~Munition()
+	{
+		// bulletCount--;
+	}
+
 	int a = 0;
+	float b = 0;
 
 	static int bulletCount;
 };

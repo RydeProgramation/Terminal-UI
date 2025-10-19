@@ -15,9 +15,6 @@
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="include.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="trUITools.h">
       <Filter>Header Files</Filter>
     </ClInclude>

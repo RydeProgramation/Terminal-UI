@@ -25,20 +25,26 @@
     <ClInclude Include="trData.h" />
     <ClInclude Include="trMap.h" />
     <ClInclude Include="trObject.h" />
+    <ClInclude Include="trObjectFactory.h" />
     <ClInclude Include="trPair.h" />
     <ClInclude Include="trPawn.h" />
+    <ClInclude Include="trRect.h" />
     <ClInclude Include="trSize.h" />
     <ClInclude Include="trUIToolsCore.h" />
+    <ClInclude Include="trWeakPointer.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\Terminal Components\trActor.cpp" />
     <ClCompile Include="trCoordinate.cpp" />
     <ClCompile Include="trData.cpp" />
     <ClCompile Include="trMap.cpp" />
+    <ClCompile Include="trObjectFactory.cpp" />
     <ClCompile Include="trPair.cpp" />
     <ClCompile Include="trPawn.cpp" />
+    <ClCompile Include="trRect.cpp" />
     <ClCompile Include="trSize.cpp" />
     <ClCompile Include="trUIToolsCore.cpp" />
+    <ClCompile Include="trWeakPointer.cpp" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <VCProjectVersion>17.0</VCProjectVersion>
@@ -137,7 +143,7 @@
       <PrecompiledHeader>NotUsing</PrecompiledHeader>
       <PrecompiledHeaderFile>Not Using</PrecompiledHeaderFile>
       <LanguageStandard>stdcpplatest</LanguageStandard>
-      <AdditionalIncludeDirectories>$(SolutionDir)Terminal Core;$(SolutionDir)Terminal AudioModule;$(SolutionDir)Terminal Components;$(SolutionDir)Terminal Engine;$(SolutionDir)Terminal InputModule;$(SolutionDir)Terminal Tool;</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)Terminal Core;$(SolutionDir)Terminal AudioModule;$(SolutionDir)Terminal Components;$(SolutionDir)Terminal Engine;$(SolutionDir)Terminal InputModule;$(SolutionDir)Terminal Tool;$(SolutionDir)Terminal Render;$(SolutionDir)Terminal World;$(SolutionDir)Terminal PrintModule</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>

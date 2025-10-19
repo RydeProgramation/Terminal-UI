@@ -65,6 +65,10 @@ public:
 		return *this;
 	}
 
+	bool operator==(const trPair<PAIR_T_1, PAIR_T_2>& other) const {
+		return *first == *other.first && *second == *other.second;
+	}
+
 	// SET
 
 	void SetPair(const PAIR_T_1& x_1, const PAIR_T_2& x_2)
@@ -97,7 +101,7 @@ public:
 
 	// DESTRUCTEUR
 
-	~trPair()
+	virtual ~trPair()
 	{
 		delete first;
 		delete second;
@@ -108,5 +112,14 @@ public:
 	PAIR_T_1* first;
 	PAIR_T_2* second;
 };
+
+namespace std {
+	template<>
+	struct hash<trPair<int, int>> {
+		std::size_t operator()(const trPair<int, int>& p) const noexcept {
+			return std::hash<int>()(*p.first) ^ (std::hash<int>()(*p.second) << 1);
+		}
+	};
+}
 
 #endif

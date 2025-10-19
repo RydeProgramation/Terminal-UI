@@ -4,6 +4,7 @@
 
 using namespace std;
 using namespace UITools;
+using namespace UIToolsCore;
 
 // fnc
 
@@ -22,37 +23,21 @@ trUserInterface* CreateUserInterface()
 
 // INI default
 
-trUserInterface::trUserInterface() : trUserInterface(RENDER_SYSTEM, 6, L"\033[0m")
+trUserInterface::trUserInterface() : trUserInterface(BUFFER_SYSTEM, 6, L"\033[0m")
 {
 
 }
 
 // INI
 
-trUserInterface::trUserInterface(uint8_t RenderType_, int BordW_, wstring RstClr) : SizeWindow(new trSize<uint16_t>(0, 0)), CursorSelector(new trData<int>(0)), Mutex(new std::mutex), KB(new trKeyBoardManagement()), Actors(new std::unordered_map<std::string, trActor*>()), Render_(new std::wostringstream()), RenderColor_(new std::wostringstream()), Thr_UI(new std::thread()), Thr_KB(new std::thread()), BorderWidth(BordW_), BaseColor(new wstring(RstClr))
+trUserInterface::trUserInterface(uint8_t RenderType_, int BordW_, wstring RstClr) : Mutex(new std::mutex), KB(new trKeyBoardManagement()), ThrUI(new std::thread()), ThrKB(new std::thread()), Render(new trRender(RenderType_, BordW_, RstClr)), World(new trWorld()), Time(new trData<TimePoint>()), DeltaTime(new trData<double>())
 {
-	switch (RenderType_)
-	{
-	case DIRECT_TERMINAL:
-		RenderType = RenderType_;
-		break;
-	case RENDER_SYSTEM:
-		RenderType = RenderType_;
-		break;
-	default:
-		MessageBox(
-			NULL,
-			L"Aucun RenderType ne correspond",
-			L"Erreur",
-			MB_ICONERROR | MB_OK
-		);
-		std::exit(1);
-	}
+	BorderWidth = BordW_;
 }
 
 // INI deep copy
 
-trUserInterface::trUserInterface(const trUserInterface& other) : SizeWindow(new trSize<uint16_t>(*other.SizeWindow)), CursorSelector(new trData<int>(*other.CursorSelector)), Mutex(new std::mutex), KB(new trKeyBoardManagement()), Actors(new std::unordered_map<std::string, trActor*>(*other.Actors)), Render_(new std::wostringstream()), RenderColor_(new std::wostringstream()), Thr_UI(new std::thread()), Thr_KB(new std::thread()), BorderWidth(other.BorderWidth), RenderType(other.RenderType), BaseColor(new wstring(*other.BaseColor))
+trUserInterface::trUserInterface(const trUserInterface& other) : Mutex(new std::mutex), KB(new trKeyBoardManagement()), ThrUI(new std::thread()), ThrKB(new std::thread()), Render(new trRender(*other.Render)), World(new trWorld(*other.World)), Time(new trData<TimePoint>(*other.Time)), DeltaTime(new trData<double>(*other.DeltaTime))
 {
 
 }
@@ -63,99 +48,214 @@ trUserInterface& trUserInterface::operator=(const trUserInterface& other)
 {
 	if (this == &other) { return *this; }
 
-	if (SizeWindow == nullptr) {
-		SizeWindow = new trSize<uint16_t>(*other.SizeWindow);
-	}
-	else {
-		*SizeWindow = *other.SizeWindow;
-	}
-
-	if (CursorSelector == nullptr) {
-		CursorSelector = new trData<int>(*other.CursorSelector);
-	}
-	else {
-		*CursorSelector = *other.CursorSelector;
-	}
-
 	if (Mutex == nullptr) {
 		Mutex = new std::mutex();
-	}
-	else {
+	} else {
 		// Mutex ne peut pas être copié, donc on le laisse tel quel
 	}
 
 	if (KB == nullptr) {
 		KB = new trKeyBoardManagement();
-	}
-	else {
+	} else {
 		*KB = *other.KB;
 	}
 
-	if (Actors == nullptr) {
-		Actors = new std::unordered_map<std::string, trActor*>(*other.Actors);
-	}
-	else {
-		*Actors = *other.Actors;
-	}
-
-	if (Render_ == nullptr) {
-		Render_ = new std::wostringstream();
-	}
-	else {
-		Render_->str(L""); // Vide le contenu de l'ostringstream
-	}
-
-	if (RenderColor_ == nullptr) {
-		RenderColor_ = new std::wostringstream();
-	}
-	else {
-		RenderColor_->str(L""); // Vide le contenu de l'ostringstream
-	}
-
-	if (Thr_UI == nullptr) {
-		Thr_UI = new std::thread();
-	}
-	else {
+	if (ThrUI == nullptr) {
+		ThrUI = new std::thread();
+	} else {
 		// Le thread ne peut pas être copié, donc on le laisse tel quel
 	}
 
-	if (Thr_KB == nullptr) {
-		Thr_KB = new std::thread();
-	}
-	else {
+	if (ThrKB == nullptr) {
+		ThrKB = new std::thread();
+	} else {
 		// Le thread ne peut pas être copié, donc on le laisse tel quel
 	}
 
-	if (BaseColor == nullptr) {
-		BaseColor = new wstring(*other.BaseColor);
-	}
-	else {
-		*BaseColor = *other.BaseColor;
+	if (Render == nullptr) {
+		Render = new trRender();
+	} else {
+		*Render = *other.Render;
 	}
 
-	RenderType = other.RenderType;
+	if (World == nullptr) {
+		World = new trWorld();
+	} else {
+		*World = *other.World;
+	}
+
+	if (Time == nullptr) {
+		Time = new trData<TimePoint>();
+	}
+	else {
+		*Time = *other.Time;
+	}
+
+	if (DeltaTime == nullptr) {
+		DeltaTime = new trData<double>();
+	}
+	else {
+		*DeltaTime = *other.DeltaTime;
+	}
 
 	return *this;
 }
 
 // FNC
 
-void trUserInterface::Start()
+void trUserInterface::Start(int argc, char* argv[])
 {
+	SetConsoleOutputCP(CP_UTF8);
+
 	SetupConsole();
 
-	timeBeginPeriod(2);  // Demande timer à résolution 1 ms
+	std::wstring file = stringToWstring(getArgFileWithExt(argc, argv, ".widg"));
+	std::wstring page_ = stringToWstring(getArgFileWithExt(argc, argv, ".page"));
 
-	Thr_UI = new std::thread([this]() { this->Loop(); });
-	Thr_KB = new std::thread([this]() { this->KB->Start(); });
+	if (!file.empty()) {
+		std::cout << "Ouverture du fichier : ";
+
+		std::wcout << file << std::endl;
+
+		LPCTSTR file_c = file.c_str();
+
+		LOAD(trActor, Widg, file_c);
+
+		trPawn* widgL = dynamic_cast<trPawn*>(Widg);
+
+		if (widgL)
+		{
+			widgL->SetPosition(0, 0);
+			widgL->SetTypeRelativePosition(MiddleCenter);
+		}
+
+		// ThrUI = new std::thread([this, Widg]() { this->Load(Widg); });
+		ThrKB = new std::thread([this]() { this->KB->Start(); });
+
+		bool Lock = false;
+
+		KB->CreateBTN(new trBTN_Key(KEY_F5, OnRelease, PressToTrigger,
+			[Widg, file_c, &Lock]() { LOAD(trWidget, T_Widg, file_c); T_Widg->SetPosition(0, 0);  *Widg = *T_Widg; delete T_Widg; Lock = false; }, this));
+
+		trText* T_Text = dynamic_cast<trText*>(Widg);
+
+		if (T_Text)
+		{
+			KB->CreateBTN(new trBTN_Key(KEY_F6, OnRelease, PressToTrigger,
+				[T_Text, &Lock]() { Lock = true; T_Text->DoCharToCharAnimation(20); T_Text->ResetIndexAnimation(); }, this)); // ça bloque la boucle par ce qu elle Sleep dans la boucle engine // IL FAUT UTILISER UN CHRONO ou deltatime qu'il faut régler
+
+			KB->CreateBTN(new trBTN_Key(KEY_F8, OnRelease, PressToTrigger,
+				[T_Text, &Lock]() { Lock = true; T_Text->DoAnimation(); }, this)); // ça bloque la boucle par ce qu elle Sleep dans la boucle engine // IL FAUT UTILISER UN CHRONO ou deltatime qu'il faut régler
+
+			KB->CreateBTN(new trBTN_Key(KEY_F10, OnRelease, PressToTrigger,
+				[T_Text, &Lock]() { Lock = true; T_Text->DoNextFrameAnimation(); }, this));
+
+			KB->CreateBTN(new trBTN_Key(KEY_F9, OnRelease, PressToTrigger,
+				[T_Text, &Lock]() { Lock = true; T_Text->DoPreviousFrameAnimation(); }, this));
+		}
+
+		World->CreateActor(Widg);
+
+		Load(Widg, file_c, Lock);
+	}
+
+	else if (!page_.empty()) {
+		// std::cout << "Ouverture du fichier : " << file << std::endl;
+		// → Chargement automatique du fichier
+	}
+
+	else {
+		cout << WstringToUtf8(L"Clique sur F11, pour une meilleur experience (sans bug) 😊🎉") << endl << endl << endl;
+
+		cout << WstringToUtf8(L"Ensuite clique sur n'importe quelle touche (entrée)") << endl;
+
+		cin.ignore();
+
+		ThrUI = new std::thread([this]() { this->Loop(); });
+		ThrKB = new std::thread([this]() { this->KB->Start(); });
+
+		Time->SetData(Clock::now());
+	}
+}
+
+void trUserInterface::Load(trObject* LoadObj, LPCTSTR file_c, bool &Lock)
+{
+	trWidget* LoadObjWidg = dynamic_cast<trWidget*>(LoadObj);
+
+	int i = 1;
+
+	while (true)
+	{
+		LoadObjWidg->SetPosition(0, 0);
+
+		std::lock_guard<std::mutex> lock(*Mutex); // <<-- A voir pourquoi quand on l'enlève ça crée des prblms
+
+		Render->UpdateSizeWindow();
+
+		KB->Update();
+
+		if (RefreshVerification())
+		{
+			Refresh();
+		}
+
+		World->UpdateActors(Render->GetSizeWindowBorder(), DeltaTime->GetDataActual());
+
+		const std::unordered_map<std::string, trActor*>& Actors = World->GetActors();
+
+		if (LoadObjWidg)
+		{
+			Render->DisplayWidget(LoadObjWidg);
+		}
+
+		if (Render->GetRenderType() == BUFFER_SYSTEM || Render->GetRenderType() == RENDER_SYSTEM)
+		{
+			Render->Render(Actors);
+		}
+
+		if (i >= 500 && !Lock)
+		{
+			RELOAD(trActor, LoadObjWidg, file_c);
+
+			i = 0;
+		}
+
+		Refreshed = false;
+
+		UpdateTime();
+
+		i += static_cast<float>(DeltaTime->GetDataActual());
+	}
+}
+
+// GET
+
+const trData<double>& trUserInterface::GetDeltaTime()
+{
+	return *DeltaTime;
+}
+
+// UPDATE
+
+void trUserInterface::UpdateTime()
+{
+	Time->SetData(Clock::now());
+	Time->Update();
+	Nanoseconds delta = std::chrono::duration_cast<Nanoseconds>(Time->GetDataOld() - Time->GetDataActual());
+
+	long long deltaTime_ns = delta.count(); // ✅ delta time en nanosecondes
+
+	DeltaTime->SetData(-(static_cast<double>(deltaTime_ns) / (double)1'000'000.0));
+	DeltaTime->Update();
+
+	//	cout << "Delta Time: " << DeltaTime->GetDataActual() << " ms" << endl;
 }
 
 void trUserInterface::Update()
 {
 	std::lock_guard<std::mutex> lock(*Mutex); // <<-- A voir pourquoi quand on l'enlève ça crée des prblms
 
-	SizeWindow->SetSize(GetConsoleSize().GetSizeX().GetDataActual(), GetConsoleSize().GetSizeY().GetDataActual());
-	SizeWindow->Update();
+	Render->UpdateSizeWindow();
 
 	if (RefreshVerification()) 
 	{
@@ -163,48 +263,52 @@ void trUserInterface::Update()
 	}
 
 	KB->Update();
-	
-	UpdateActors();
 
-	for (auto& widg : *Actors)
+	World->Update();
+	
+	World->UpdateActors(Render->GetSizeWindowBorder(), DeltaTime->GetDataActual());
+
+	const std::unordered_map<std::string, trActor*> &Actors = World->GetActors();
+
+	for (auto& widg : Actors)
 	{
 		trWidget* widgetPtr = dynamic_cast<trWidget*>(widg.second);
+
 		if (!widgetPtr) continue; // Passe au suivant si ce n'est pas un trWidget
 
 		if (!widg.second->GetActivate().GetDataActual())
 		{
-			HideWidget(widgetPtr);
+			Render->HideWidget(widgetPtr);
 		}
 
 		else if (widg.second->GetActivate().GetDataActual() && widg.second->GetChange().GetDataActual())
 		{
-			DisplayWidget(widgetPtr);
+			Render->DisplayWidget(widgetPtr);
 		}
 	}
 
-	if (RenderType == RENDER_SYSTEM)
+	if (Render->GetRenderType() == BUFFER_SYSTEM || Render->GetRenderType() == RENDER_SYSTEM)
 	{
-		Render();
+		Render->Render(Actors);
 	}
 
-	/// Gerer les destruction a ce moment plutot que dans le thread de l'UI (car sinon ça fait des bugs de mutex et de destruction de thread)
-
-	Destroy();
+	World->Destroy();
 
 	Refreshed = false;
+
+	UpdateTime();
 }
 
 void trUserInterface::Refresh()
 {
-	Render_->clear();
-	RenderColor_->clear();
+	Render->Clear();
 
 	Refreshed = true;
 	ForceRefresh = false;
 
-	Border();
+	Render->Border();
 
-	for (auto& widg : *Actors)
+	for (auto& widg : World->GetActors())
 	{
 		widg.second->SetChange(true);
 	}
@@ -214,490 +318,152 @@ void trUserInterface::Refresh()
 
 bool trUserInterface::RefreshVerification()
 {
-	return (SizeWindow->GetSizeX().GetDataActual() != SizeWindow->GetSizeX().GetDataOld() || SizeWindow->GetSizeY().GetDataActual() != SizeWindow->GetSizeY().GetDataOld() || ForceRefresh) ? true : false;
-}
-
-void trUserInterface::Border()
-{
-	if (RenderType == DIRECT_TERMINAL)
-	{
-		MoveCursorTo(trCoordinate<int>(0, 0));
-
-		std::ostringstream output;
-
-		string topBottomBorder(SizeWindow->GetSizeX().GetDataActual() * BorderWidth, '*');
-		string sideBorder(BorderWidth * 2, '*');
-		string emptyLine(SizeWindow->GetSizeX().GetDataActual() - BorderWidth * 4, ' ');
-
-		output << topBottomBorder;
-
-		string middleLine = sideBorder + emptyLine + sideBorder;
-		for (int i = BorderWidth; i < SizeWindow->GetSizeY().GetDataActual() - BorderWidth; ++i)
-		{
-			output << middleLine;
-		}
-
-		output << topBottomBorder;
-
-		SetColorConsole(15);
-
-		cout << output.str();
-
-		MoveCursorTo(trCoordinate<int>(0, 0));
-	}
-
-	else if (RenderType == RENDER_SYSTEM)
-	{
-		MoveCursorToOstream(trCoordinate<int>(0, 0), Render_, *SizeWindow);
-
-		wstring topBottomBorder(SizeWindow->GetSizeX().GetDataActual() * BorderWidth, '*');
-		wstring sideBorder(BorderWidth * 2, '*');
-		wstring emptyLine(max(SizeWindow->GetSizeX().GetDataActual() - BorderWidth * 4, 0), ' ');
-
-		(*Render_) << topBottomBorder;
-
-		wstring middleLine = sideBorder + emptyLine + sideBorder;
-
-		for (int i = BorderWidth; i < SizeWindow->GetSizeY().GetDataActual() - BorderWidth; ++i)
-		{
-			(*Render_) << middleLine;
-		}
-
-		(*Render_) << topBottomBorder;
-
-		CleanOstreamSize(Render_, *SizeWindow);
-	}
+	return (Render->GetSizeWindow().GetSizeX().GetDataActual() != Render->GetSizeWindow().GetSizeX().GetDataOld() || Render->GetSizeWindow().GetSizeY().GetDataActual() != Render->GetSizeWindow().GetSizeY().GetDataOld() || ForceRefresh) ? true : false;
 }
 
 void trUserInterface::SetupConsole()
 {
+	// Récupérer le handle du processus actuel
+	HANDLE hProcess = GetCurrentProcess();
+
+	// Mettre la priorité à HIGH PRIORITY CLASS
+	if (SetPriorityClass(hProcess, HIGH_PRIORITY_CLASS)) {
+		std::cout << "Priorité élevée appliquée avec succès ! 🚀\n";
+	}
+	else {
+		std::cerr << "Erreur lors du changement de priorité : " << GetLastError() << "\n";
+	}
+
 	SetConsoleOutputCP(CP_UTF8);
 
 	SetConsoleCP(CP_UTF8);
 
-	CursorSelector = 0;
+	Render->SetCursorSelector(0);
+
+	timeBeginPeriod(2);  // Demande timer à résolution 2 ms
 
 	hideCursor();
 
-	SizeWindow->SetSize(GetConsoleSize(BorderWidth).GetSizeX().GetDataActual(), GetConsoleSize(BorderWidth).GetSizeY().GetDataActual());
-	SizeWindow->Update();
+	Render->UpdateSizeWindow();
 
-	KB->CreateBTN(trBTN_Key(VK_LEFT, OnRelease, PressToTrigger, bind(&trUserInterface::SelectPrevious, this), this));
-	KB->CreateBTN(trBTN_Key(VK_RIGHT, OnRelease, PressToTrigger, bind(&trUserInterface::SelectNext, this), this));
+	KB->CreateBTN(new trBTN_Key(VK_LEFT, OnRelease, PressToTrigger, bind(&trUserInterface::SelectPrevious, this), this));
+	KB->CreateBTN(new trBTN_Key(VK_RIGHT, OnRelease, PressToTrigger, bind(&trUserInterface::SelectNext, this), this));
 }
 
 /// SELECTION ///
 
 void trUserInterface::Select(const string& name)
 {
-	for (auto& widg : *Actors)
+	for (auto& widg : World->GetActors())
 	{
-		if (trSelector* sltr = dynamic_cast<trSelector*>(widg.second))
+		trSelector* sltr = dynamic_cast<trSelector*>(widg.second);
+		if (sltr)
 		{
-			sltr->SetSelected(sltr->trWidget::GetName().GetDataActual() == name);
-			sltr->trWidget::SetChange(true);
+			sltr->SetSelected(sltr->GetName().GetDataActual() == name);
 		}
-	}
-}
 
-void trUserInterface::SelectNext() // <-- a refaire en entier (car pas optimiser + non-utilisation de vector)
-{
-	// std::lock_guard<std::mutex> lock(*Mutex); ça fait crash, par ce que le lock est appeler dnas un meme lock
-
-	cout << "droite";
-
-	/*bool found = false;
-
-	for (auto& widg : Actors)
-	{
-		if (trSelector* sltr = dynamic_cast<trSelector*>(widg.second))
-		{
-			if (found)
-			{
-				sltr->SetSelected(true);
-				sltr->SetChange(true);
-				found = false;
-				i = Actors.size();
-			}
-
-			else if (sltr->IsSelected().GetDataActual())
-			{
-				found = true;
-				sltr->SetSelected(false);
-				sltr->SetChange(true);
-			}
-		}
-	}
-
-	if (found)
-	{
-		for (size_t i = 0; i < Actors.size(); i++)
-		{
-			if (trSelector* sltr = dynamic_cast<trSelector*>(Actors[i]))
-			{
-				sltr->SetSelected(true);
-				sltr->SetChange(true);
-				found = false;
-				i = Actors.size();
-			}
-		}
-	}*/
-}
-
-void trUserInterface::SelectPrevious() // <-- a refaire en entier (car pas optimiser + non-utilisation de vector)
-{
-	// std::lock_guard<std::mutex> lock(*Mutex); ça fait crash, par ce que le lock est appeler dnas un meme lock
-
-	cout << "gauche";
-
-	/*bool found = false;
-
-	for (int i = int(Actors.size()) - 1; i >= 0; i--)
-	{
-		if (trSelector* sltr = dynamic_cast<trSelector*>(Actors[i]))
-		{
-			if (found)
-			{
-				sltr->SetSelected(true);
-				sltr->SetChange(true);
-				found = false;
-				i = 0;
-			}
-
-			else if (sltr->IsSelected().GetDataActual())
-			{
-				found = true;
-				sltr->SetSelected(false);
-				sltr->SetChange(true);
-			}
-		}
-	}
-
-	if (found)
-	{
-		for (int i = int(Actors.size()) - 1; i > 0; i--)
-		{
-			if (trSelector* sltr = dynamic_cast<trSelector*>(Actors[i]))
-			{
-				sltr->SetSelected(true);
-				sltr->SetChange(true);
-				found = false;
-				i = 0;
-			}
-		}
-	}*/
-}
-
-/// WIDGET MANG ///
-
-bool trUserInterface::CreateActor(trActor* WIDG)
-{
-	std::lock_guard<std::mutex> lock(*Mutex); // des fois abort()
-
-	if (Actors->find(WIDG->GetName().GetDataActual()) == Actors->end())
-	{
-		(*Actors)[WIDG->GetName().GetDataActual()] = WIDG;
-		WIDG->Init();
-	}
-
-	else
-	{
-		MessageBox(
-			NULL,                           // Pas de fenêtre parente
-			L"Widget already created",      // Message
-			L"Erreur",                      // Titre de la boîte
-			MB_ICONERROR | MB_OK            // Icône d'erreur + bouton OK
-		);
-		return false;
-	}
-
-	return true;
-}
-
-bool trUserInterface::DestroyActor(trActor* WIDG)
-{
-	WIDG->SetDestroy(true);
-
-	return true; 
-}
-
-bool trUserInterface::DestroyActor(const string& name) // VERIF SI BUG
-{
-	// Ne pas mettre de mutex ici
-
-	if ((*Actors)[name])
-	{
-		return DestroyActor((*Actors)[name]);
-	}
-
-	MessageBox(
-		NULL,
-		L"Widget Not found for destroying",
-		L"Erreur",
-		MB_ICONERROR | MB_OK 
-	);
-
-	return false;
-}
-
-bool trUserInterface::Destroy()
-{
-	for (auto it = Actors->begin(); it != Actors->end(); )
-	{
-		if (it->second->GetDestroy().GetDataActual())
-		{
-			delete it->second;          // supprime l'objet pointé
-			it = Actors->erase(it);   // efface et récupère l'itérateur valide suivant
-			ForceRefresh = true;
-		}
 		else
 		{
-			++it;
+			MessageBox(
+				NULL,
+				L"Ce n'est pas un selector",
+				L"Message",
+				MB_ICONERROR | MB_OK
+			);
+		}
+	}
+}
+
+void trUserInterface::SelectNext()
+{
+	// Récupérer la liste des selectors uniquement
+	std::vector<trSelector*> selectors;
+	for (auto& widg : World->GetActors())
+	{
+		if (trSelector* sltr = dynamic_cast<trSelector*>(widg.second))
+		{
+			selectors.push_back(sltr);
 		}
 	}
 
-	return true; // Retourne true si tous les widgets ont été détruits avec succès
-}
+	if (selectors.empty())
+		return; // Rien à faire s'il n'y a pas de selectors
 
-const trActor trUserInterface::GetActor(const string& Name) const
-{
-	auto it = Actors->find(Name);
-
-	if (it != Actors->end())
+	// Trouver l'index du selector sélectionné actuellement
+	int currentIndex = -1;
+	for (size_t i = 0; i < selectors.size(); ++i)
 	{
-		return *(it->second);
+		if (selectors[i]->IsSelected().GetDataActual())
+		{
+			currentIndex = static_cast<int>(i);
+			break;
+		}
 	}
 
+	// Désélectionner l'actuel si trouvé
+	if (currentIndex != -1)
+	{
+		selectors[currentIndex]->SetSelected(false);
+		selectors[currentIndex]->SetChange(true);
+	}
+
+	// Calculer l'index du suivant (boucle)
+	int nextIndex = (currentIndex + 1) % selectors.size();
+
+	// Sélectionner le suivant
+	selectors[nextIndex]->SetSelected(true);
+}
+
+void trUserInterface::SelectPrevious()
+{
+	// Récupérer la liste des selectors uniquement
+	std::vector<trSelector*> selectors;
+	for (auto& widg : World->GetActors())
+	{
+		if (trSelector* sltr = dynamic_cast<trSelector*>(widg.second))
+		{
+			selectors.push_back(sltr);
+		}
+	}
+
+	if (selectors.empty())
+		return; // Rien à faire s'il n'y a pas de selectors
+
+	// Trouver l'index du selector sélectionné actuellement
+	int currentIndex = -1;
+	for (size_t i = 0; i < selectors.size(); ++i)
+	{
+		if (selectors[i]->IsSelected().GetDataActual())
+		{
+			currentIndex = static_cast<int>(i);
+			break;
+		}
+	}
+
+	// Désélectionner l'actuel si trouvé
+	if (currentIndex != -1)
+	{
+		selectors[currentIndex]->SetSelected(false);
+		selectors[currentIndex]->SetChange(true);
+	}
+
+	// Calculer l'index du précédent (boucle en arrière)
+	int prevIndex;
+	if (currentIndex == -1) // Si aucun sélectionné, prendre le dernier
+	{
+		prevIndex = static_cast<int>(selectors.size()) - 1;
+	}
 	else
 	{
-		MessageBox(
-			NULL,
-			L"Widget Not found",
-			L"Warning",
-			MB_ICONERROR | MB_OK
-		);
-
-		return trActor::EmptyActor; // Retourne un actor vide
-
-		// return trWidget::EmptyWidget(); // Retourne le widget vide
-		
-		// faurda changer en actor
-
-		// return trActor(0, 0, MiddleCenter, L""); // Retourne un actor vide
+		prevIndex = (currentIndex - 1 + static_cast<int>(selectors.size())) % selectors.size();
 	}
+
+	// Sélectionner le précédent
+	selectors[prevIndex]->SetSelected(true);
 }
 
-// Protected 
-
-trActor* trUserInterface::GetPtrActor(const std::string& Name) const
-{
-	auto it = Actors->find(Name);
-
-	if (it != Actors->end())
-	{
-		return (it->second);
-	}
-
-	else
-	{
-		MessageBox(
-			NULL,
-			L"Widget Not found",
-			L"Warning",
-			MB_ICONERROR | MB_OK
-		);
-
-		return nullptr; // Retourne le widget vide
-	}
-}
 
 // private FNC
-
-void trUserInterface::DisplayWidget(trWidget* WIDG)
-{
-	///
-
-	/// je pense que je peut deja optimiser par juste crée des appel pour éviter d'appeler 50 000 fois une fonction inutilement
-
-	///
-
-	// améliorer pour direct_terminal a voir quoi faire
-	if (RenderType == DIRECT_TERMINAL)
-	{
-		CleanWidget(WIDG);
-
-		std::wostringstream output;
-
-		int col = 0;
-
-		for (int ln = WIDG->GetAbsolutePosition().GetY().GetDataActual(); ln < WIDG->GetAbsolutePosition().GetY().GetDataActual() + WIDG->GetSize().GetSizeY().GetDataActual(); ln++)
-		{
-			output << WIDG->GetContent().GetDataActual().substr(min(col, WIDG->GetContent().GetDataActual().size() - 1), WIDG->GetSize().GetSizeX().GetDataActual() - max(WIDG->GetAbsolutePosition().GetX().GetDataActual() + WIDG->GetSize().GetSizeX().GetDataActual() - GetConsoleSize(BorderWidth).GetSizeX().GetDataActual(), 0));
-
-			MoveCursorTo(trCoordinate<int>(WIDG->GetAbsolutePosition().GetX().GetDataActual(), ln), BorderWidth);
-
-			if (!IsOutSide(trCoordinate<int>(WIDG->GetAbsolutePosition().GetX().GetDataActual(), ln), BorderWidth))
-			{
-				WIDG->Display(output);
-			}
-
-			output.str(L"");
-
-			col += WIDG->GetSize().GetSizeX().GetDataActual();
-		}
-
-		WIDG->SetChange(false);
-	}
-
-	else if (RenderType == RENDER_SYSTEM)
-	{
-		if (!Refreshed)
-		{
-			CleanWidget(WIDG);
-		}
-
-		std::wostringstream output;
-
-		int col = 0;
-
-		std::vector<trPair<std::wstring, trCoordinate<int>>> rstColortemp;
-
-		for (int ln = WIDG->GetAbsolutePosition().GetY().GetDataActual(); ln < WIDG->GetAbsolutePosition().GetY().GetDataActual() + WIDG->GetSize().GetSizeY().GetDataActual(); ln++)
-		{
-			output << WIDG->GetContent().GetDataActual().substr(min(col, WIDG->GetContent().GetDataActual().size()), WIDG->GetSize().GetSizeX().GetDataActual() - max(WIDG->GetAbsolutePosition().GetX().GetDataActual() + WIDG->GetSize().GetSizeX().GetDataActual() - GetConsoleSize(BorderWidth).GetSizeX().GetDataActual(), 0));
-
-			if (!IsOutSide(trCoordinate<int>(WIDG->GetAbsolutePosition().GetX().GetDataActual(), ln), BorderWidth))
-			{
-				MoveCursorToOstream(trCoordinate<int>(WIDG->GetAbsolutePosition().GetX().GetDataActual(), ln), Render_, *SizeWindow, BorderWidth);
-
-				// PROTOTYPE COULEUR
-
-				rstColortemp.push_back(trPair<wstring, trCoordinate<int>>(L"\033[0m" + *BaseColor, trCoordinate<int>(WIDG->GetAbsolutePosition().GetX().GetDataActual() + static_cast<int>(output.str().size()), ln)));
-
-				// fin PROTOTYPE COULEUR
-
-				*Render_ << output.str();
-			}
-
-			output.str(L"");
-
-			col += WIDG->GetSize().GetSizeX().GetDataActual();
-		}
-
-		WIDG->SetResetColor(rstColortemp);
-
-		WIDG->SetChange(false);
-	}
-}
-
-void trUserInterface::DisplayColor()
-{
-	///
-
-	/// je pense que je peut deja optimiser par juste crée des appel pour éviter d'appeler 50 000 fois une fonction inutilement
-
-	///
-
-	std::map<int, wstring> Color;
-
-	for (auto& it : *Actors)
-	{
-		trWidget* widgetPtr = dynamic_cast<trWidget*>(it.second);
-		if (!widgetPtr) continue; // Passe au suivant si ce n'est pas un trWidget
-
-		for (auto& it_ : widgetPtr->GetColoredContent().GetDataActual())
-		{
-			// La condition en dessous est juste watafak, pourquoi ça marche (je sais pas)... Mais est-ce ça marche ? (Du tonnerre, enfaite pas de fou)
-			if (!IsOutSide(*it_.second->second, BorderWidth, false) && !IsOutSide(trCoordinate<int>(it_.second->second->GetY().GetDataActual() + widgetPtr->GetAbsolutePosition().GetY().GetDataActual(), it_.second->second->GetY().GetDataActual() + widgetPtr->GetAbsolutePosition().GetY().GetDataActual()), BorderWidth, false))
-			{
-				if (it_.second->second->GetY().GetDataActual() + widgetPtr->GetAbsolutePosition().GetY().GetDataActual() < widgetPtr->GetSize().GetSizeY().GetDataActual() + widgetPtr->GetAbsolutePosition().GetY().GetDataActual()) // verifier si la couelur n'est pas en dehors du widget en taille
-				{
-					MoveCursorToOstream(trCoordinate<int>(it_.second->second->GetX().GetDataActual() + widgetPtr->GetAbsolutePosition().GetX().GetDataActual(), it_.second->second->GetY().GetDataActual() + widgetPtr->GetAbsolutePosition().GetY().GetDataActual()), Render_, *SizeWindow, BorderWidth);
-					Color[static_cast<int>(Render_->tellp())] = *it_.second->first;
-				}
-			}
-		}
-
-		for (auto& it_ : widgetPtr->GetResetColor())
-		{
-			if (!IsOutSide(*it_.second, BorderWidth, false))
-			{
-				MoveCursorToOstream(*it_.second, Render_, *SizeWindow, BorderWidth);
-				Color[static_cast<int>(Render_->tellp())] = *it_.first;
-			}
-		}
-	}
-
-	for (auto it = Color.rbegin(); it != Color.rend(); ++it)
-	{
-		if (it->first <= RenderColor_->str().size())
-		{
-			RenderColor_->str(RenderColor_->str().insert(it->first, it->second));
-		}
-	}
-
-	// reset les color a la fin de la ligne
-	RenderColor_->str(RenderColor_->str().insert(0, L"\033[0m" + *BaseColor));
-}
-
-void trUserInterface::HideWidget(trWidget* WIDG) // < ----- BUUUG
-{
-	/*for (int ln = min(WIDG->GetAbsolutePosition().GetY().GetDataActual(), WIDG->GetAbsolutePosition().GetY().GetDataOld()); ln < max(WIDG->GetAbsolutePosition().GetY().GetDataActual(), WIDG->GetAbsolutePosition().GetY().GetDataOld()) + max(WIDG->GetSize().GetSizeY().GetDataOld(), WIDG->GetSize().GetSizeY().GetDataActual()); ln++)
-	{
-		for (int i = min(WIDG->GetAbsolutePosition().GetX().GetDataActual(), WIDG->GetAbsolutePosition().GetX().GetDataOld()); i < max(WIDG->GetAbsolutePosition().GetX().GetDataActual(), WIDG->GetAbsolutePosition().GetX().GetDataOld()) + max(WIDG->GetSize().GetSizeX().GetDataOld(), WIDG->GetSize().GetSizeX().GetDataActual()); i++)
-		{
-			if (IsOutSide(trCoordinate<int>(i, ln), false))
-			{
-				continue; // <-- pas sur (chatgpt)
-			}
-
-			MoveCursorTo(trCoordinate<int>(ln, i), BorderWidth);
-			cout << " ";
-		}
-	}*/
-
-	CleanWidget(WIDG);
-
-	throw std::out_of_range("code pas fait (utiliser cleanwidget ?)"); // jsp pas pk ln'utilise out of range ;(((((((((((((((((
-}
-
-void trUserInterface::CleanWidget(trWidget* WIDG)
-{
-	if (RenderType == DIRECT_TERMINAL)
-	{
-		for (int ln = WIDG->GetAbsolutePosition().GetY().GetDataOld(); ln <= WIDG->GetAbsolutePosition().GetY().GetDataOld() + WIDG->GetSize().GetSizeY().GetDataOld(); ln++)
-		{
-			if (!IsOutSide(trCoordinate<int>(WIDG->GetAbsolutePosition().GetX().GetDataOld(), ln), BorderWidth))
-			{
-				SetColorConsole(15);
-				wstring clean(WIDG->GetSize().GetSizeX().GetDataOld() - max(WIDG->GetAbsolutePosition().GetX().GetDataOld() + WIDG->GetSize().GetSizeX().GetDataOld() - GetConsoleSize(BorderWidth).GetSizeX().GetDataActual(), 0), ' ');
-				MoveCursorTo(trCoordinate<int>(WIDG->GetAbsolutePosition().GetX().GetDataOld(), ln), BorderWidth);
-				cout << WstringToUtf8(clean);
-			}
-		}
-	}
-
-	else if (RenderType == RENDER_SYSTEM)
-	{
-		for (int ln = WIDG->GetAbsolutePosition().GetY().GetDataOld(); ln <= WIDG->GetAbsolutePosition().GetY().GetDataOld() + WIDG->GetSize().GetSizeY().GetDataOld(); ln++)
-		{
-			if (!IsOutSide(trCoordinate<int>(WIDG->GetAbsolutePosition().GetX().GetDataOld(), ln), BorderWidth))
-			{
-				wstring clean(WIDG->GetSize().GetSizeX().GetDataOld() - max((WIDG->GetAbsolutePosition().GetX().GetDataOld() + WIDG->GetSize().GetSizeX().GetDataOld() - GetConsoleSize(BorderWidth).GetSizeX().GetDataActual()), 0), ' ');
-				MoveCursorToOstream(trCoordinate<int>(WIDG->GetAbsolutePosition().GetX().GetDataOld(), ln), Render_, *SizeWindow, BorderWidth);
-				*Render_ << clean;
-			}
-		}
-	}
-}
-
-void trUserInterface::UpdateActors()
-{
-	for (auto& widg : *Actors)
-	{
-		widg.second->APPLY(GetConsoleSize(BorderWidth));
-	}
-}
 
 void trUserInterface::Loop()
 {
@@ -705,47 +471,6 @@ void trUserInterface::Loop()
 	{
 		Update();
 	}
-}
-
-void trUserInterface::Render()
-{
-	// PROTOTYPE COULEUR qui marche tres bien (a voir si on peut l'optimiser) ou le mettre de façon definitive
-
-	RenderColor_->str(Render_->str());
-
-	DisplayColor(); // il faut optimiser
-
-	// fin PROTOTYPE COULEUR
-
-	MoveCursorTo(trCoordinate<int>(0, 0));
-
-	string temp = WstringToUtf8(RenderColor_->str());
-
-	std::this_thread::sleep_for(std::chrono::milliseconds(2));
-
-	std::print("{}", temp); // ici il faut optimiser
-}
-
-// Fonciton utilise (à deplacer dans trUiTools je pense)
-
-void trUserInterface::MoveCursorToOstream(const trCoordinate<int>& Pos, std::wostringstream* output, const trSize<uint16_t>& SizeOutput)
-{
-	output->seekp(Pos.GetX().GetDataActual() + Pos.GetY().GetDataActual() * SizeOutput.GetSizeX().GetDataActual());
-}
-
-void trUserInterface::MoveCursorToOstream(const trCoordinate<int>& Pos, std::wostringstream* output, const trSize<uint16_t>& SizeOutput, uint8_t BorderW)
-{
-	int adjustedX = Pos.GetX().GetDataActual() + (BorderW * 2);
-	int adjustedY = Pos.GetY().GetDataActual() + BorderW;
-
-	int position = adjustedX + adjustedY * SizeOutput.GetSizeX().GetDataActual();
-
-	output->seekp(position);
-}
-
-void trUserInterface::CleanOstreamSize(std::wostringstream* output, const trSize<uint16_t>& SizeOutput)
-{
-	output->str(output->str().substr(0, SizeOutput.GetSizeX().GetDataActual() * SizeOutput.GetSizeY().GetDataActual()));
 }
 
 // DESTRUCTEUR
@@ -756,21 +481,17 @@ trUserInterface::~trUserInterface()
 
 	delete Mutex;
 
-	delete Actors;
+	delete ThrUI;
 
-	delete Thr_UI;
+	delete ThrKB;
 
-	delete Thr_KB;
+	delete Render;
 
-	delete SizeWindow;
+	delete World;
 
-	delete CursorSelector;
+	delete Time;
 
-	delete Render_;
-
-	delete RenderColor_;
-
-	delete BaseColor;
+	delete DeltaTime;
 
 	timeEndPeriod(1);    // Libère la résolution demandée
 }

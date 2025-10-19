@@ -1,4 +1,4 @@
-#include "trUIToolsCore.h"
+Ôªø#include "trUIToolsCore.h"
 
 using namespace std;
 
@@ -37,7 +37,7 @@ bool UIToolsCore::IsMyWindowInFocus() // ne fonctionne pas si la console n'est p
 
 	// return GetConsoleWindow() == GetForegroundWindow();
 
-	// boite de dialogue d'erreur pour arreter l'appli si cette fonction est utilisÈ
+	// boite de dialogue d'erreur pour arreter l'appli si cette fonction est utilis√©
 
 	MessageBox(NULL, L"La fonction ne fonctionne jamais", L"Erreur", MB_OK | MB_ICONERROR);
 	return false;
@@ -45,10 +45,10 @@ bool UIToolsCore::IsMyWindowInFocus() // ne fonctionne pas si la console n'est p
 
 std::string UIToolsCore::WstringToUtf8(const std::wstring& wstr)
 {
-	// Calculer la taille nÈcessaire pour la chaÓne UTF-8
+	// Calculer la taille n√©cessaire pour la cha√Æne UTF-8
 	int size_needed = WideCharToMultiByte(CP_UTF8, 0, wstr.c_str(), -1, NULL, 0, NULL, NULL);
 
-	// Convertir la chaÓne wchar_t en UTF-8
+	// Convertir la cha√Æne wchar_t en UTF-8
 	std::string utf8_str(size_needed, 0);
 	WideCharToMultiByte(CP_UTF8, 0, wstr.c_str(), -1, &utf8_str[0], size_needed, NULL, NULL);
 
@@ -68,19 +68,147 @@ bool UIToolsCore::IsPureColor(const std::wstring& input) // code chatGPT
 
 	if (firstPos == std::wstring::npos)
 	{
-		// Pas de sÈquence \x1b dans la chaÓne
+		// Pas de s√©quence \x1b dans la cha√Æne
 		return false;
 	}
 
-	// VÈrifie s'il y a une autre occurrence de \x1b aprËs la premiËre
+	// V√©rifie s'il y a une autre occurrence de \x1b apr√®s la premi√®re
 	size_t secondPos = input.find(L"\x1b", firstPos + 1);
 
 	if (secondPos != std::wstring::npos)
 	{
-		// Plus d'une sÈquence \x1b trouvÈe
+		// Plus d'une s√©quence \x1b trouv√©e
 		return false;
 	}
 
-	// VÈrifie que la sÈquence ANSI commence par \x1b[ et se termine par 'm'
+	// V√©rifie que la s√©quence ANSI commence par \x1b[ et se termine par 'm'
 	return bool(input.find(L"\x1b[") == firstPos && input.find(L"m") == input.size() - 1);
+}
+
+std::wstring UIToolsCore::RemoveColor(const std::wstring& input)
+{
+	std::wstring result = input;
+	size_t pos = 0;
+
+	while ((pos = result.find(L"\x1B[", pos)) != std::wstring::npos)
+	{
+		// Trouver la fin de la s√©quence ansi, qui termine par 'm'
+		size_t endPos = result.find(L'm', pos + 2);
+		if (endPos == std::wstring::npos)
+			break;  // S√©quence incompl√®te, on stop
+
+		// Effacer la s√©quence de pos √† endPos inclus
+		result.erase(pos, endPos - pos + 1);
+		// Ne pas avancer pos, car on vient de modifier la string
+	}
+
+	return result;
+}
+
+inline void UIToolsCore::FastToWString(int value, std::wstring& out)
+{
+	out.clear();
+
+	if (value < 0) {
+		out += L'-';
+		value = -value;
+	}
+
+	wchar_t temp[20];
+	size_t i = 0;
+
+	do {
+		temp[i++] = L'0' + (value % 10);
+		value /= 10;
+	} while (value != 0);
+
+	while (i-- > 0) {
+		out += temp[i];
+	}
+}
+
+void UIToolsCore::substrAnsiSafeUltraFast(
+	const std::wstring& input,
+	size_t startVisible,
+	size_t countVisible,
+	std::wstring& result
+) {
+	// üîß Large estimation pour ne jamais d√©passer
+	const size_t estimatedSize = input.size() - startVisible + 128;
+
+	result.clear();
+	result.resize(estimatedSize, L'\0'); // explicitly fill with zeros
+
+	size_t writeIndex = 0;
+	bool inAnsi = false;
+	size_t visibleCount = 0;
+	wchar_t c;
+
+
+	for (size_t i = 0; i < input.size(); ++i) {
+		c = input[i];
+
+		if (c == L'\033') {
+			inAnsi = true;
+		}
+
+		if (inAnsi) {
+			if (writeIndex < result.size())
+				result[writeIndex++] = c;
+
+			if ((c >= L'A' && c <= L'Z') || (c >= L'a' && c <= L'z')) {
+				inAnsi = false;
+			}
+		}
+		else {
+			if (visibleCount >= startVisible && visibleCount < startVisible + countVisible) {
+				if (writeIndex < result.size())
+					result[writeIndex++] = c;
+			}
+			++visibleCount;
+
+			if (visibleCount >= startVisible + countVisible)
+				break;
+		}
+	}
+
+	result.resize(writeIndex);
+}
+
+bool UIToolsCore::IsConsoleFocused() /*Ne fonctionne pas*/ {
+	HWND consoleWindow = GetConsoleWindow();
+	HWND foregroundWindow = GetForegroundWindow();
+
+	return consoleWindow != nullptr && consoleWindow == foregroundWindow;
+}
+
+std::string UIToolsCore::getArgFileWithExt(int argc, char* argv[], const std::string& ext) {
+	if (argc > 1) {
+		std::string filePath = argv[1];
+		std::filesystem::path path(filePath);
+
+		if (path.has_extension()) {
+			std::string fileExt = path.extension().string();
+			// G√®re ext = "ia" ou ".ia"
+			if (fileExt == ext || fileExt == "." + ext) {
+				return filePath;
+			}
+		}
+	}
+	return "";
+}
+
+TERMINAL_CORE_API std::wstring UIToolsCore::stringToWstring(const std::string& str)
+{
+	if (str.empty()) return std::wstring();
+
+	// Utiliser CP_ACP (Windows ANSI Code Page)
+	int size_needed = MultiByteToWideChar(CP_ACP, 0, str.c_str(), -1, nullptr, 0);
+	if (size_needed == 0) return std::wstring(); // erreur
+
+	std::wstring wstr(size_needed, 0);
+	MultiByteToWideChar(CP_ACP, 0, str.c_str(), -1, &wstr[0], size_needed);
+
+	wstr.resize(size_needed - 1); // enlever '\0'
+	return wstr;
 }

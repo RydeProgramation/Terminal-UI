@@ -1,4 +1,4 @@
-#pragma once
+﻿#pragma once
 
 #include "include.h"
 
@@ -38,7 +38,9 @@ public:
 
 	// Copy
 
-	trPawn& operator=(const trPawn& other);
+	trPawn& operator=(const trActor& other);
+
+	virtual trPawn& Clone(const trActor& other_) override;
 
 	// SET
 
@@ -46,6 +48,7 @@ public:
 
 	bool SetTypeRelativePosition(int rp);
 
+	void SetPawnCollision(trActor* actor, bool collision);
 
 	// ADD
 
@@ -59,17 +62,23 @@ public:
 
 	const trData<uint8_t>& GetRelativePositionType() const;
 
+	const std::vector<trActor*>& GetPawnCollision() const;
+
+	virtual void SetProprety(const std::string& name, const std::string& data, const std::string& type) override;
+
 	// UPDATE APPLY (a mettre en private ?)
 
 	void UpdateRelativePosition();
 
 	// APPLY
 
+protected:
+
 	virtual void APPLY_(const trSize<uint16_t>& SizeWindow) override;
 
 public:
 
-	virtual void APPLY_Implementation() {};
+	virtual void Tick() {};
 
 	// FONCTION
 
@@ -79,7 +88,7 @@ public:
 
 	// DESTRUCTEUR
 
-	~trPawn();
+	virtual ~trPawn();
 
 protected:
 
@@ -88,6 +97,8 @@ protected:
 	trCoordinate<int>* RelativePositionPoint;
 
 	trCoordinate<int>* PositionAbsolue;
+
+	std::vector<trActor*>* PawnCollision;
 
 	trData<uint8_t>* RpType;
 };

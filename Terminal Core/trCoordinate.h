@@ -87,7 +87,7 @@ public:
 
 	// DESTRUCTEUR
 
-	~trCoordinate()
+	virtual ~trCoordinate()
 	{
 		delete x;
 		delete y;

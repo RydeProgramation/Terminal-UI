@@ -1,4 +1,4 @@
-#pragma once
+﻿#pragma once
 
 #include "include.h"
 
@@ -32,20 +32,20 @@ namespace UIToolsCore
 	/// Permet d'obtenir la taille de la console
 	/// </summary>
 	/// <param name="trCoordinate"></param>
-	/// <param name="WithBorder"> Mettre false si tu veux �tre � l'interieur des bordures </param>
+	/// <param name="WithBorder"> Mettre false si tu veux être à l'interieur des bordures </param>
 	TERMINAL_CORE_API trSize<uint16_t> GetConsoleSize(uint8_t BorderWitdh);
 
 	/// <summary>
 	/// Permet d'obtenir la taille de la console
 	/// </summary>
 	/// <param name="trCoordinate"></param>
-	/// <param name="WithBorder"> Mettre false si tu veux �tre � l'interieur des bordures </param>
+	/// <param name="WithBorder"> Mettre false si tu veux être à l'interieur des bordures </param>
 	TERMINAL_CORE_API trSize<uint16_t> GetConsoleSize();
 
 	/// <summary>
-	/// Permet de savoir si la fen�tre de l'application est au premier plan
+	/// Permet de savoir si la fenêtre de l'application est au premier plan
 	/// </summary>
-	/// <returns> true si la fen�tre est au premier plan, false sinon </returns>
+	/// <returns> true si la fenêtre est au premier plan, false sinon </returns>
 	TERMINAL_CORE_API bool IsMyWindowInFocus();
 
 	/// <summary>
@@ -67,6 +67,53 @@ namespace UIToolsCore
 	/// <param name="input"></param>
 	/// <returns></returns>
 	TERMINAL_CORE_API bool IsPureColor(const std::wstring& input);
+
+	/// <summary>
+	/// Supprime les couleurs d'une chaîne de caractères
+	/// </summary>
+	/// <param name="input"> Chaîne de caractères d'entrée contenant des séquences de couleurs ANSI </param>
+	/// <returns> Permet de retourner la chaines de charactère sans code ansii de couleur </returns>
+	TERMINAL_CORE_API std::wstring RemoveColor(const std::wstring& input);
+	
+	/// <summary>
+	/// 
+	/// </summary>
+	/// <param name="value"></param>
+	/// <param name="out"></param>
+	/// <returns></returns>
+	TERMINAL_CORE_API inline void FastToWString(int value, std::wstring& out);
+
+	/// <summary>
+	/// 
+	/// </summary>
+	/// <param name="input"></param>
+	/// <param name="startVisible"></param>
+	/// <param name="countVisible"></param>
+	/// <param name="result"></param>
+	/// <returns></returns>
+	TERMINAL_CORE_API void substrAnsiSafeUltraFast(const std::wstring& input, size_t startVisible, size_t countVisible, std::wstring& result);
+
+	/// <summary>
+	///	
+	/// </summary>
+	/// <returns></returns>
+	TERMINAL_CORE_API bool IsConsoleFocused() /*Ne fonctionne pas*/;
+
+	/// <summary>
+	/// 
+	/// </summary>
+	/// <param name="argc"></param>
+	/// <param name="argv"></param>
+	/// <param name="ext"></param>
+	/// <returns></returns>
+	TERMINAL_CORE_API std::string getArgFileWithExt(int argc, char* argv[], const std::string& ext);
+
+	/// <summary>
+	/// Retourne le chemin du fichier passé en argument s’il correspond à l’extension donnée
+	/// </summary>
+	/// <param name="str"></param>
+	/// <returns></returns>
+	TERMINAL_CORE_API std::wstring stringToWstring(const std::string& str);
 
 	/// <summary>
 	/// FONCTION VIDE
