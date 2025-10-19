@@ -32,7 +32,7 @@ Le projet est découpé en modules indépendants, chacun responsable d’une par
 | **Core** | Structures internes, types fondamentaux (trPair, trMulti, etc.) | 🟢 Stable |
 | **Engine** | Cœur du moteur, logique principale et communication inter-modules | 🟢 Stable |
 | **InputModule** | Gestion des entrées clavier et souris | 🟢 Stable |
-| **LoadModule** | Chargement et parsing des fichiers `.widg` (XML propriétaire) | 🟡 En développemen |
+| **LoadModule** | Chargement et parsing des fichiers `.widg` (XML propriétaire) | 🟡 En développement |
 | **PrintModule** | Impression texte et gestion couleurs ANSI | 🟡 Instable |
 | **Render** | Pipeline de rendu, positionnement | 🟢 Fonctionnel |
 | **Tool** | Boîte à outils mathématique, alogorithmique... | 🟡 En développement |
@@ -41,28 +41,33 @@ Le projet est découpé en modules indépendants, chacun responsable d’une par
 
 ---
 
-## 🧩 Langage `.widg` — XML propriétaire
+## 🧩 Langage `.widg` — XML propriétaire INCOMPLET
 
 Chaque widget peut être décrit via un fichier `.widg`, utilisant un XML personnalisé avec des balises avancées.  
 Ces balises permettent de définir **les propriétés, la position, le contenu et les couleurs...** d’un widget.
 
-### 📋 Liste des balises et leur rôle (INCOMPLET)
-
-| Balise | Description |
-|--------|-------------|
-| `<trObject>` | Conteneur principal d’un objet dans la scène. Peut contenir des widgets, actors ou pawns. |
-| `<Properties>` | Définition des propriétés de l’objet (booléens, entiers, chaînes). |
-| `<Property>` | Une propriété spécifique d’un objet. Attributs : `name` (nom), `type` (type de donnée). |
-| `<trActor>` | Section pour définir le comportement d’un acteur dans le widget. |
-| `<APPLY_Implementation>` | Code spécifique à exécuter pour cet acteur. (Optionnel, à supprimer si vide.) |
-| `<trPawn>` | Définition de la position et du type de placement du widget dans le terminal. |
-| `<Position>` | Coordonnées du widget : `x` et `y`. |
-| `<RelativePositionType>` | Type de position relative : ex. `MiddleCenter`, `TopLeft`. |
-| `<trWidget>` | Section représentant le widget réel à afficher, avec taille et contenu. |
-| `<Size>` | Définition de la taille du widget : `width` et `height`. |
-| `<Content>` | Contenu textuel du widget, structuré en lignes. |
-| `<Line>` | Ligne de texte à afficher dans le widget. Attribut : `Content`. |
-| `<Color>` | Couleurs du widget : `foreground` et `background` (format HEX RGBA). |
+| Élément XML | Attribut(s) | Type C++ associé | Description |
+|------------|-------------|----------------|------------|
+| `trObject` | `type` | `trObject*` | Définit le type de l'objet à créer via `trObjectFactory`. |
+| `trObject` | `name` | `trActor*` | Nom de l'objet (s’applique si c’est un acteur/pawn). |
+| `trPawn` | `-` | `trPawn*` | Objet de type Pawn, utilisé pour position et type de position relative. |
+| `Position` | `x`, `y` | `int` | Position du pawn à l’écran. |
+| `RelativePositionType` | `RpType` | enum `TopLeft`, `MiddleCenter`, etc. | Définit l’ancrage relatif du pawn. |
+| `trWidget` | `-` | `trWidget*` | Widget pouvant contenir du texte ou des couleurs. |
+| `Size` | `height`, `width` | `int` | Taille du widget. |
+| `Color` | `foreground`, `background` | `uint8_t R,G,B` | Couleur du texte et/ou du fond. |
+| `Content` | - | `std::wstring` | Contenu textuel du widget (peut être multi-lignes). |
+| `Line` | `Content` | `std::wstring` | Ligne de texte normale. |
+| `LineRaw` | `Content` | `std::wstring` | Ligne avec séquences d’échappement (`\n`, `\t`, etc.). |
+| `CaseColor` | - | `unordered_map<trPair<int,int>, std::wstring>` | Définition des couleurs pour des intervalles spécifiques dans le texte. |
+| `Case` | `Start`, `End`, `foreground`, `background` | `int / uint8_t / std::wstring` | Intervalle d’un style ANSI appliqué à une partie du texte. |
+| `trText` | - | `trText*` | Texte animé ou statique, supporte `Animation`, `RawFrame` et `FrameAdd`. |
+| `Animation` | - | `vector<trPair<uint16_t, wstring>>` | Conteneur de frames animées. |
+| `RawFrame` | `number`, `time` | `int` | Frame brute avec durée. |
+| `FrameAdd` | `number`, `time`, `onLastFrame` | `int / bool` | Ajout de frame sur le texte existant ou dernière frame de l’animation. |
+| `OldContent` | - | `std::wstring` | Texte existant avant ajout ou effacement. |
+| `Add` | `position` | `int` | Position où ajouter le texte dans `OldContent`. |
+| `Erase` | `Start`, `End` | `int` | Supprime un intervalle de texte dans `OldContent`. |
 
 Le tableau n'est pas complet, me contacter pour d'autre informations !
 
@@ -123,6 +128,8 @@ Le tableau n'est pas complet, me contacter pour d'autre informations !
   | **DIRECT_SYSTEM** | Chaque caractère est écrit directement sur le terminal | Très simple, mais **très lent**, provoque lag et bugs visuels |
   | **BUFFER_SYSTEM** | Tout est écrit dans un `ostringstream` tampon avant affichage | Fluide pour peu d’actions, mais **instable** avec de nombreux changements simultanés |
   | **RENDER_SYSTEM** | Buffer complet pour tous les éléments, sans toucher directement au terminal | **Le plus performant et fluide**, gestion complète des positions et superpositions, modifications possibles **avant affichage** |
+
+Voici des exemples (que je devrais mettre)
 
 - Passage progressif à une architecture **multi-couches** pour le rendu.  
 - Gestion de la **superposition contrôlée des widgets** et des zones d’affichage partiel.  
