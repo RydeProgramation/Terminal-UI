@@ -12,6 +12,7 @@
 
 Le projet **Terminal-UI** est une bibliothèque C++ visant à fournir une **infrastructure complète de rendu et d’interaction dans le terminal**.  
 Il permet de créer des **widgets textuels dynamiques** (boutons, fenêtres, barres de progression, etc.) avec un langage XML propriétaire, sans dépendances graphiques externes.
+Tout les objets sont hiérarichisé selon du polymorphismes partant de `trObject`. Avec la recréation des weakpointer custom.
 
 Objectifs principaux :
 1. Fournir une base solide pour le **rendu en mode texte**.  
@@ -159,6 +160,7 @@ LE GIF EST EN 25 FPS
   - Ouvrir un widget depuis l’application pour le visualiser **seul** avec toutes ses animations et couleurs.  
   - **Modification en direct du fichier XML** : les changements apparaissent immédiatement dans l’aperçu du widget.  
   - Permet de tester et déboguer des widgets sans recompiler l’application.
+  - Surtout pour déboguer les widgets animée avec l'utilisation des touches F5, F6, F8, F9, F10
 
 ![INLIVEMODIF](https://github.com/user-attachments/assets/090849cb-c1d0-4d6c-bfa8-6de805ad6557)
 
