@@ -1,6 +1,6 @@
 # 🧱 Terminal-UI — Projet C++ de Rendu et Interface Terminal
 
-> **Auteur :** MOHAMED  
+> **Auteur :** MOHAMED.B
 > **Langage :** C++17+ / C++20  
 > **Version :** 0.4.1 (Prototype avancé)  
 > **Statut :** En développement 🚧  
