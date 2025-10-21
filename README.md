@@ -227,6 +227,7 @@ Pour faciliter la gestion des classes et l'enregistrement automatique dans le mo
 - Manipulation directe des codes ANSI pour les couleurs et positions.  
 - Compatibilité entre environnements Windows / Linux.  
 - Suivi mémoire précis sans dépendance externe.
+- MAIS surtout l'optimisation, le but et de pouvoir faire tourner le programme même sur un grille pain :)
 
 ---
 
