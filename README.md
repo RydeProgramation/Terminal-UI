@@ -235,7 +235,9 @@ Pour faciliter la gestion des classes et l'enregistrement automatique dans le mo
 - Ajouter une **API de son** simple pour des effets audio dans le terminal.  
 - Améliorer la **documentation interne** (Doxygen ou Markdown détaillé).  
 - Créer un **exemple complet** (mini UI avec plusieurs widgets interactifs).  
-- Intégrer un **système de profilage mémoire et CPU** pour l’optimisation.  
+- Intégrer un **système de profilage mémoire et CPU** pour l’optimisation.
+- Faire des projet exemple (Jeu T-Rex, Fractal simulation...)
+- Faire un autre dépôt *copiable* pour les gens qui veulent faire leur projets !
 
 ### 🔹 Vision long terme
 > Transformer Terminal-UI en un **moteur complet de rendu console** open-source, modulable et extensible, inspiré des architectures d’Unreal Engine et d’autres frameworks C++ modernes, mais conçu pour un environnement texte.
