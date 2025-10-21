@@ -58,16 +58,16 @@ Ces balises permettent de définir **les propriétés, la position, le contenu e
 | `trWidget` | `-` | `trWidget*` | Widget pouvant contenir du texte ou des couleurs. |
 | `Size` | `height`, `width` | `int` | Taille du widget. |
 | `Color` | `foreground`, `background` | `uint8_t R,G,B` | Couleur du texte et/ou du fond. |
-| `Content` | - | `std::wstring` | Contenu textuel du widget (peut être multi-lignes). |
+| `Content` | `-` | `std::wstring` | Contenu textuel du widget (peut être multi-lignes). |
 | `Line` | `Content` | `std::wstring` | Ligne de texte normale. |
 | `LineRaw` | `Content` | `std::wstring` | Ligne avec séquences d’échappement (`\n`, `\t`, etc.). |
-| `CaseColor` | - | `unordered_map<trPair<int,int>, std::wstring>` | Définition des couleurs pour des intervalles spécifiques dans le texte. |
+| `CaseColor` | `-` | `unordered_map<trPair<int,int>, std::wstring>` | Définition des couleurs pour des intervalles spécifiques dans le texte. |
 | `Case` | `Start`, `End`, `foreground`, `background` | `int / uint8_t / std::wstring` | Intervalle d’un style ANSI appliqué à une partie du texte. |
-| `trText` | - | `trText*` | Texte animé ou statique, supporte `Animation`, `RawFrame` et `FrameAdd`. |
-| `Animation` | - | `vector<trPair<uint16_t, wstring>>` | Conteneur de frames animées. |
+| `trText` | `-` | `trText*` | Texte animé ou statique, supporte `Animation`, `RawFrame` et `FrameAdd`. |
+| `Animation` | `-` | `vector<trPair<uint16_t, wstring>>` | Conteneur de frames animées. |
 | `RawFrame` | `number`, `time` | `int` | Frame brute avec durée. |
 | `FrameAdd` | `number`, `time`, `onLastFrame` | `int / bool` | Ajout de frame sur le texte existant ou dernière frame de l’animation. |
-| `OldContent` | - | `std::wstring` | Texte existant avant ajout ou effacement. |
+| `OldContent` | `-` | `std::wstring` | Texte existant avant ajout ou effacement. |
 | `Add` | `position` | `int` | Position où ajouter le texte dans `OldContent`. |
 | `Erase` | `Start`, `End` | `int` | Supprime un intervalle de texte dans `OldContent`. |
 
