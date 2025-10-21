@@ -115,8 +115,18 @@ Le tableau n'est pas complet, me contacter pour d'autre informations !
 
 **Nouveau rendu :**
 
-![image](https://github.com/user-attachments/assets/3da9de98-7350-4619-a5cb-2649bafdf5c2)
-  
+<img width="420" height="199" alt="image" src="https://github.com/user-attachments/assets/5b4d0721-7920-4dd5-8a64-b0fa5b4e7b65" />
+
+et
+
+<img width="435" height="375" alt="image" src="https://github.com/user-attachments/assets/775f98f0-1140-4ec0-9ec7-167b810dd7d6" />
+
+et
+
+<img width="641" height="364" alt="image" src="https://github.com/user-attachments/assets/11553335-0237-48db-9f7b-4570ba86b2b6" />
+
+On remarque une trèèès grande optimisation !
+
 - Mise en place de tests internes pour valider le comportement des widgets dans des conditions extrêmes.  
 - Ajout du **système de détection de collisions** entre widgets : l’utilisateur peut récupérer les collisions et définir les réactions souhaitées.  
 
@@ -129,13 +139,15 @@ Le tableau n'est pas complet, me contacter pour d'autre informations !
   | **BUFFER_SYSTEM** | Tout est écrit dans un `ostringstream` tampon avant affichage | Fluide pour peu d’actions, mais **instable** avec de nombreux changements simultanés |
   | **RENDER_SYSTEM** | Buffer complet pour tous les éléments, sans toucher directement au terminal | **Le plus performant et fluide**, gestion complète des positions et superpositions, modifications possibles **avant affichage** |
 
-Voici des exemples (que je devrais mettre)
+![DEMO](DEMO.gif)
 
 - Passage progressif à une architecture **multi-couches** pour le rendu.  
 - Gestion de la **superposition contrôlée des widgets** et des zones d’affichage partiel.  
 - Optimisation globale avec **delta time**, permettant des animations et transitions fluides indépendamment du framerate.  
 - Déplacement dynamique des widgets, changements de contenu et effets de transition appliqués directement via le buffer.  
-- **Gestion complète des couleurs** : couleurs de premier plan, arrière-plan, surbrillance, et transitions dynamiques sur tous les widgets.  
+- **Gestion complète des couleurs** : couleurs de premier plan, arrière-plan, surbrillance, et transitions dynamiques sur tous les widgets.
+
+![RGB_CONTROL_HD](https://github.com/user-attachments/assets/d282ad91-481c-4a3d-aed9-4209a3a1faef)
 
 ### 5️⃣ — Cinquième itération : Optimisation et robustesse
 - Optimisation **partout** : rafraîchissement partiel, calcul delta time, buffers internes.  
@@ -144,7 +156,10 @@ Voici des exemples (que je devrais mettre)
 - **Chargement et aperçu dynamique d’un fichier `.widg`** :  
   - Ouvrir un widget depuis l’application pour le visualiser **seul** avec toutes ses animations et couleurs.  
   - **Modification en direct du fichier XML** : les changements apparaissent immédiatement dans l’aperçu du widget.  
-  - Permet de tester et déboguer des widgets sans recompiler l’application.  
+  - Permet de tester et déboguer des widgets sans recompiler l’application.
+
+![INLIVEMODIF](https://github.com/user-attachments/assets/090849cb-c1d0-4d6c-bfa8-6de805ad6557)
+
 - Base solide pour intégrer des fonctionnalités supplémentaires : sons, souris, multi-couches complexes.  
 
 > 💡 *À ce stade, Terminal-UI est un moteur **extrêmement flexible et interactif**, capable de gérer des interfaces complexes, animations, collisions, couleurs et interactions dans un environnement purement console, tout en permettant l’édition et la prévisualisation en temps réel.*
