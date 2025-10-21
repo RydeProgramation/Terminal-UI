@@ -139,7 +139,9 @@ On remarque une trèèès grande optimisation !
   | **BUFFER_SYSTEM** | Tout est écrit dans un `ostringstream` tampon avant affichage | Fluide pour peu d’actions, mais **instable** avec de nombreux changements simultanés |
   | **RENDER_SYSTEM** | Buffer complet pour tous les éléments, sans toucher directement au terminal | **Le plus performant et fluide**, gestion complète des positions et superpositions, modifications possibles **avant affichage** |
 
+LE GIF EST EN 25 FPS
 
+![DEMO](DEMO.gif)
 
 - Passage progressif à une architecture **multi-couches** pour le rendu.  
 - Gestion de la **superposition contrôlée des widgets** et des zones d’affichage partiel.  
