@@ -23,7 +23,7 @@ Objectifs principaux :
 
 ---
 
-## ⚙️ Architecture modulaire
+## ⚙️ Architecture modulaire (dépendance)
 
 Le projet est découpé en modules indépendants, chacun responsable d’une partie spécifique du moteur :
 
