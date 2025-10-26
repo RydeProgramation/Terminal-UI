@@ -35,7 +35,7 @@ Le projet est découpé en modules indépendants, chacun responsable d’une par
 | **Engine** | Cœur du moteur, logique principale et communication inter-modules | 🟢 Stable |
 | **InputModule** | Gestion des entrées clavier et souris | 🟢 Stable |
 | **LoadModule** | Chargement et parsing des fichiers `.widg` (XML propriétaire) | 🟡 En développement |
-| **PrintModule** | Impression texte et gestion couleurs ANSI | 🟡 Instable |
+| **PrintModule** | Impression texte et gestion couleurs ANSI | 🔴 Instable |
 | **Render** | Pipeline de rendu, positionnement | 🟢 Fonctionnel |
 | **Tool** | Boîte à outils mathématique, alogorithmique... | 🟡 En développement |
 | **UI** | Système hiérarchique des widgets, focus, masquage | 🟢 Fonctionnel |
