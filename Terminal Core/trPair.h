@@ -113,6 +113,8 @@ public:
 	PAIR_T_2* second;
 };
 
+// C'est pour l'indexion de MAP
+
 namespace std {
 	template<>
 	struct hash<trPair<int, int>> {

@@ -30,7 +30,7 @@ int main(int argc, char* argv[])
 
 	// Concaténation de 2 chemins
 	std::string chemin1 = "C:\\Users\\Mohamed\\Documents\\Work\\Personnel\\code\\C++\\visual studio ( écrit avec code )\\Terminal-UI\\x64\\Debug\\Terminal UI.exe";
-	std::string chemin2 = "C:\\Users\\Mohamed\\Documents\\Work\\Personnel\\Parag.widg";
+	std::string chemin2 = "C:\\Users\\Mohamed\\Documents\\Work\\Personnel\\Diffusion.widg";
 
 	// Créer des buffers dynamiques
 	char* arg1 = new char[chemin1.size() + 1];
@@ -51,7 +51,7 @@ int main(int argc, char* argv[])
 		cout << mychar[i];
 	}
 
-	UI.Start(argc, argv);
+	UI.Start(deux, mychar);
 
 	UI.Debut();
 

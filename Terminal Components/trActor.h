@@ -127,6 +127,4 @@ public:
 	static trActor EmptyActor;
 };
 
-// SET_TYPE_OBJECT(trActor, std::string);
-
 #endif

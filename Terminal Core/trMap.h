@@ -110,7 +110,7 @@ public:
 
 private:
 
-	std::vector<trPair<INDEX, MAP_T>>* Map; 
+	std::vector<trPair<INDEX, MAP_T>>* Map; // je sais que c'est de la triche unpeu mais bon
 };
 
 #endif

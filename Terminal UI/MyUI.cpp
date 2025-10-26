@@ -1,6 +1,6 @@
 ﻿#include "MyUI.h"
 
-REGISTER_TYPE(Munition, int, int, int, std::wstring, std::string);
+REGISTER_TYPE(Munition, int, int, int, std::wstring, std::string)
 
 using namespace std;
 using namespace UITools;
@@ -82,7 +82,7 @@ wstring applyColorToText(const wstring& text, float offset) {
 
 void MyUI::Debut()
 {
-	// Menu1();
+	Menu1();
 
 	LOAD(trWidget, Hello, L"Hello.widg")
 	LOAD(trWidget, Hello2, L"HelloWorld.widg")
@@ -96,8 +96,6 @@ void MyUI::Debut()
 	for (int i = 0; i < 115; i++)
 	{
 		Hello->AddToPosition(-1, 0);
-
-		// Sleep(max(1, int(10 - Hello->GetDeltaTime().GetDataActual())));
 
 		Sleep(10);
 	}
@@ -131,7 +129,7 @@ void MyUI::Debut()
 
 		Hello3->SetContent(hello3_);
 
-		Sleep(25);
+		Sleep(35);
 
 		i_ = i;
 	}
@@ -186,7 +184,7 @@ void MyUI::Debut()
 
 	bool IsFinished = false;
 
-	Paragraphe->DoCharToCharAnimation(60); // 50 de base
+	Paragraphe->DoCharToCharAnimation(10); // 50 de base
 
 	Paragraphe->DoAnimation(IsFinished);
 
@@ -213,12 +211,6 @@ void MyUI::Menu1()
 
 	vector<wstring> Diff;
 
-	Diff.push_back(L"  ____    _    __    __                 _                    ____                                ");
-	Diff.push_back(L" |  _ \\  (_)  / _|  / _|  _   _   ___  (_)   ___    _ __    / ___|  _   _   _ __  __   __   ___  ");
-	Diff.push_back(L" | | | | | | | |_  | |_  | | | | / __| | |  / _ \\  | '_ \\  | |     | | | | | '__| \\ \\ / /  / _ \\ ");
-	Diff.push_back(L" | |_| | | | |  _| |  _| | |_| | \\__ \\ | | | (_) | | | | | | |___  | |_| | | |     \\ V /  |  __/ ");
-	Diff.push_back(L" |____/  |_| |_|   |_|    \\__,_| |___/ |_|  \\___/  |_| |_|  \\____|  \\__,_| |_|      \\_/    \\___| ");
-
 	wstring Diff_ = Diff[0] + Diff[1] + Diff[2] + Diff[3] + Diff[4];
 
 	LOAD(trSelector, SimCarlo, L"MonteCarlo.widg");
@@ -229,25 +221,7 @@ void MyUI::Menu1()
 
 	CreateSelectorWait(new trSelector(40, 5, static_cast<int>(Diff[0].size()), 5, MiddleCenter, Diff_, "SimCarlo2"));
 
-	// je vais tenter d'abord de pouvoir déplacer le bloc "SimCarlo" pour voir si mon trKeyBoardManagment fonctionne
-
-	// ICI
-
-	// CreateSelectorWait(new trSelector(25, 5, static_cast<int>(Diff[0].size()), 5, MiddleCenter, Diff_, "SimDiffusion"));
-
-	// TEST
-
-	// trObject *an_obj = new trObject();
-
-	/*KB->CreateBTN(new trBTN_Key(
-		KEY_W,
-		OnPress,
-		HoldToTrigger,
-		std::bind(&trWidget::AddToPosition, dynamic_cast<trWidget*>(World->GetPtrActor("Simulation")), 0, -1),
-		World->GetPtrActor("Simulation")
-	));*/
-
-	// KB->CreateBTN(trBTN_Key(0x57, OnPress, HoldToTrigger, bind(&trWidget::AddToPosition, World->GetPtrActor("Simulation"), 0, -1), World->GetPtrActor("Simulation")));
+	// RENDRE ÇA PLUS SIMPLE A CODER ET PLUS OPTIMISER
 
 	double x(0), y(0), e(0), o(0);
 

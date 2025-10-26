@@ -138,20 +138,36 @@ void trUserInterface::Start(int argc, char* argv[])
 			[Widg, file_c, &Lock]() { LOAD(trWidget, T_Widg, file_c); T_Widg->SetPosition(0, 0);  *Widg = *T_Widg; delete T_Widg; Lock = false; }, this));
 
 		trText* T_Text = dynamic_cast<trText*>(Widg);
+		trSelector* T_Selector = dynamic_cast<trSelector*>(Widg);
+
+		/// DANS LE FUTUR ///
+		/*
+		Ce serait cool d'éviter de faire des lock et plustot enregistrer l'état des modifications et reload à chaque foix
+		*/
+		/// DANS LE FUTUR ///
 
 		if (T_Text)
 		{
 			KB->CreateBTN(new trBTN_Key(KEY_F6, OnRelease, PressToTrigger,
-				[T_Text, &Lock]() { Lock = true; T_Text->DoCharToCharAnimation(20); T_Text->ResetIndexAnimation(); }, this)); // ça bloque la boucle par ce qu elle Sleep dans la boucle engine // IL FAUT UTILISER UN CHRONO ou deltatime qu'il faut régler
+				[T_Text, &Lock]() { Lock = true; T_Text->DoCharToCharAnimation(20); T_Text->ResetIndexAnimation(); }, this)); 
 
 			KB->CreateBTN(new trBTN_Key(KEY_F8, OnRelease, PressToTrigger,
-				[T_Text, &Lock]() { Lock = true; T_Text->DoAnimation(); }, this)); // ça bloque la boucle par ce qu elle Sleep dans la boucle engine // IL FAUT UTILISER UN CHRONO ou deltatime qu'il faut régler
+				[T_Text, &Lock]() { Lock = true; T_Text->DoAnimation(); }, this)); 
 
 			KB->CreateBTN(new trBTN_Key(KEY_F10, OnRelease, PressToTrigger,
 				[T_Text, &Lock]() { Lock = true; T_Text->DoNextFrameAnimation(); }, this));
 
 			KB->CreateBTN(new trBTN_Key(KEY_F9, OnRelease, PressToTrigger,
 				[T_Text, &Lock]() { Lock = true; T_Text->DoPreviousFrameAnimation(); }, this));
+		}
+
+		if (T_Selector)
+		{
+			KB->CreateBTN(new trBTN_Key(KEY_F9, OnRelease, PressToTrigger,
+				[T_Selector, &Lock]() { Lock = true; T_Selector->SetSelected(true); }, this));
+
+			KB->CreateBTN(new trBTN_Key(KEY_F10, OnRelease, PressToTrigger,
+				[T_Selector, &Lock]() { Lock = true; T_Selector->SetSelected(false); }, this));
 		}
 
 		World->CreateActor(Widg);
@@ -169,7 +185,10 @@ void trUserInterface::Start(int argc, char* argv[])
 
 		cout << WstringToUtf8(L"Ensuite clique sur n'importe quelle touche (entrée)") << endl;
 
-		cin.ignore();
+		cin.ignore(); // A voir pour enlever ou pas
+
+		KB->CreateBTN(new trBTN_Key(VK_LEFT, OnRelease, PressToTrigger, bind(&trUserInterface::SelectPrevious, this), this));
+		KB->CreateBTN(new trBTN_Key(VK_RIGHT, OnRelease, PressToTrigger, bind(&trUserInterface::SelectNext, this), this));
 
 		ThrUI = new std::thread([this]() { this->Loop(); });
 		ThrKB = new std::thread([this]() { this->KB->Start(); });
@@ -217,6 +236,8 @@ void trUserInterface::Load(trObject* LoadObj, LPCTSTR file_c, bool &Lock)
 		{
 			RELOAD(trActor, LoadObjWidg, file_c);
 
+			Refresh();
+
 			i = 0;
 		}
 
@@ -243,7 +264,7 @@ void trUserInterface::UpdateTime()
 	Time->Update();
 	Nanoseconds delta = std::chrono::duration_cast<Nanoseconds>(Time->GetDataOld() - Time->GetDataActual());
 
-	long long deltaTime_ns = delta.count(); // ✅ delta time en nanosecondes
+	long long deltaTime_ns = delta.count(); // delta time en nanosecondes
 
 	DeltaTime->SetData(-(static_cast<double>(deltaTime_ns) / (double)1'000'000.0));
 	DeltaTime->Update();
@@ -318,7 +339,11 @@ void trUserInterface::Refresh()
 
 bool trUserInterface::RefreshVerification()
 {
-	return (Render->GetSizeWindow().GetSizeX().GetDataActual() != Render->GetSizeWindow().GetSizeX().GetDataOld() || Render->GetSizeWindow().GetSizeY().GetDataActual() != Render->GetSizeWindow().GetSizeY().GetDataOld() || ForceRefresh) ? true : false;
+	return (
+		Render->GetSizeWindow().GetSizeX().GetDataActual() != Render->GetSizeWindow().GetSizeX().GetDataOld() || 
+		Render->GetSizeWindow().GetSizeY().GetDataActual() != Render->GetSizeWindow().GetSizeY().GetDataOld() || 
+		ForceRefresh
+		) ? true : false;
 }
 
 void trUserInterface::SetupConsole()
@@ -345,9 +370,6 @@ void trUserInterface::SetupConsole()
 	hideCursor();
 
 	Render->UpdateSizeWindow();
-
-	KB->CreateBTN(new trBTN_Key(VK_LEFT, OnRelease, PressToTrigger, bind(&trUserInterface::SelectPrevious, this), this));
-	KB->CreateBTN(new trBTN_Key(VK_RIGHT, OnRelease, PressToTrigger, bind(&trUserInterface::SelectNext, this), this));
 }
 
 /// SELECTION ///

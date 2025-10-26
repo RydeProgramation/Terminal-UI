@@ -1,7 +1,7 @@
 ﻿#include "trWidget.h"
 #include "trUIToolsCore.h"
 
-REGISTER_TYPE(trWidget, int, int, int, int, uint8_t, std::wstring, std::string);
+REGISTER_TYPE(trWidget, int, int, int, int, uint8_t, std::wstring, std::string)
 
 using namespace std;
 using namespace UIToolsCore;
@@ -201,7 +201,7 @@ const trSize<int>& trWidget::GetSize() const
 
 const trData<wstring>& trWidget::GetContent() const
 {
-	MessageBoxW(nullptr, L"CONTENT N'EST JAMAIS MIS A JOUR.", L"Warning", MB_ICONWARNING | MB_OK);
+	MessageBoxW(nullptr, L"CONTENT N'EST JAMAIS MIS A JOUR. Use GetColoredContent() instead.", L"Warning", MB_ICONWARNING | MB_OK);
 
 	throw std::runtime_error("Content is not updated. Use GetColoredContent() instead.");
 

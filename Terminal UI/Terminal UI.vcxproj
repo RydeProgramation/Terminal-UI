@@ -150,12 +150,15 @@
     <ClInclude Include="resource.h" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="Diffusion.widg" />
     <None Include="Hello.widg" />
     <None Include="HelloWorld.widg" />
     <None Include="HelloWorldComplete.widg" />
+    <None Include="MonteCarlo.widg" />
     <None Include="PlusTard.page" />
     <None Include="Parag.widg" />
     <None Include="Pre_Build.py" />
+    <None Include="Simulation.widg" />
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="Terminal UI.rc" />
