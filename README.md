@@ -199,8 +199,6 @@ LE GIF EST EN 25 FPS
 
 ## 🐍 Précompilateur Python — Auto-registration des classes
 
-Pour faciliter la gestion des classes et l'enregistrement automatique dans le moteur C++, j’ai créé un **précompilateur en Python**.  
-
 ### Fonctionnalités principales :
 - Parcourt tous les fichiers `.h` / `.cpp` du projet pour **détecter les classes héritant de `trActor`**.  
 - Identifie les **constructeurs principaux** et leurs paramètres pour chaque classe.  
