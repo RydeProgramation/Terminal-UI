@@ -56,7 +56,7 @@ int main(int argc, char* argv[])
 	UI.Debut();
 
 	while (true) {
-		Sleep(10000); // 🔄 Laisse le CPU tranquille sans bloquer l'UI
+		Sleep(10000); // Laisse le CPU tranquille sans bloquer l'UI
 	}
 }
 
