@@ -55,6 +55,15 @@
     <None Include="Parag.widg">
       <Filter>Resource Files</Filter>
     </None>
+    <None Include="Diffusion.widg">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="MonteCarlo.widg">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="Simulation.widg">
+      <Filter>Resource Files</Filter>
+    </None>
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="Terminal UI.rc">

@@ -133,11 +133,11 @@ void UIToolsCore::substrAnsiSafeUltraFast(
 	size_t countVisible,
 	std::wstring& result
 ) {
-	// 🔧 Large estimation pour ne jamais dépasser
+	// Large estimation pour ne jamais dépasser
 	const size_t estimatedSize = input.size() - startVisible + 128;
 
 	result.clear();
-	result.resize(estimatedSize, L'\0'); // explicitly fill with zeros
+	result.resize(estimatedSize, L'\0');
 
 	size_t writeIndex = 0;
 	bool inAnsi = false;

@@ -4,7 +4,7 @@
 using namespace std;
 using namespace UIToolsCore;
 
-REGISTER_TYPE(trActor, std::string);
+REGISTER_TYPE(trActor, std::string)
 
 trActor::trActor() : trActor("None")
 {

@@ -17,7 +17,7 @@
 	</trPawn>
 
 	<trWidget>
-		<Size width="53" height="9" />
+		<Size width="53" height="3" />
 		<Content>
 			<Line Content="  ██████  ▄▄▄       ██▓     █    ██ ▄▄▄█████▓    ▐██▌" />
 			<Line Content="▒██    ▒ ▒████▄    ▓██▒     ██  ▓██▒▓  ██▒ ▓▒    ▐██▌" />
@@ -29,6 +29,6 @@
 			<Line Content="░  ░  ░    ░   ▒     ░ ░    ░░░ ░ ░   ░             ░" />   
 			<Line Content="      ░        ░  ░    ░  ░   ░                  ░   " />                                                                                                      
 		</Content>
-		<Color foreground="#ffde89ff" />
+		<Color foreground="#f7f7f7ff" background="#c41d1dff" />
 	</trWidget>
 </trObject>

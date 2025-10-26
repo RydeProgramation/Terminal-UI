@@ -173,7 +173,7 @@ void trPawn::SetProprety(const std::string& name, const std::string& data, const
 	{
 		MessageBox(
 			NULL,
-			L"Invalid type for PositionRelative property",
+			L"Invalid type for PositionRelative property | a voir plus tard pour changer ça",
 			L"Error",
 			MB_ICONERROR | MB_OK
 		);
@@ -240,6 +240,7 @@ void trPawn::SetProprety(const std::string& name, const std::string& data, const
 			// sscanf(data.c_str(), "%d,%d", &x, &y);
 			SetPosition(x, y);*/
 		}
+
 		else
 		{
 			MessageBox(
@@ -266,6 +267,7 @@ void trPawn::SetProprety(const std::string& name, const std::string& data, const
 			// sscanf(data.c_str(), "%d", &rp);
 			SetTypeRelativePosition(rp);*/
 		}
+
 		else
 		{
 			MessageBox(

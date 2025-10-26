@@ -4,7 +4,7 @@ using namespace std;
 
 // INI default
 
-trBTN_Key::trBTN_Key() : Key(0), KeyState(false), Action(nullptr), Protect(false), Ptr(nullptr), Mode(OnPress), UsingMode(HoldToTrigger) // avoir
+trBTN_Key::trBTN_Key() : Key(0), KeyState(false), Action(nullptr), Protect(false), Ptr(nullptr), Mode(OnPress), UsingMode(HoldToTrigger) // a voir
 {
 
 }
@@ -49,7 +49,7 @@ trBTN_Key& trBTN_Key::operator=(const trBTN_Key& other)
 
 // SET / RESET
 
-void trBTN_Key::Reset()
+void trBTN_Key::Reset() // INUTILE ?
 {	
 	// KeyDetached = false;
 	// KeyState = false;
@@ -64,11 +64,10 @@ void trBTN_Key::SetPointer(trObject* Ptr_)
 {
 	MessageBox(
 		NULL,
-		L"NON",
+		L"(ERRUER CHANGMENT DE POINTEUR POUR UN INPUT) : NON EN TOUT PAS COMME ÇA",
 		L"Message",
 		MB_ICONERROR | MB_OK
 	);
-	// *Ptr = Ptr_; // fait belek mon reuf
 }
 
 // GET

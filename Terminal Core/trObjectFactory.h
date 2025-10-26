@@ -18,7 +18,7 @@ struct trAnObjectBase {
 };
 
 template<typename... Args>
-struct trAnObject_ : public trAnObjectBase
+struct trAnObject_ : public trAnObjectBase // Avec argument
 {
 	using CreateFunc = trObject * (*)(Args&&...);
 
@@ -32,7 +32,7 @@ struct trAnObject_ : public trAnObjectBase
 	}
 };
 
-struct trAnObjectDefault_ : public trAnObjectBase
+struct trAnObjectDefault_ : public trAnObjectBase // Sans argument
 {
 	using CreateFunc = trObject * (*)();
 
@@ -108,7 +108,7 @@ public:
 			std::string givenTypes = GetTypeNames<Args...>();
 
 			// Obtenir les types attendus
-			// std::string expectedTypes = typed->typeSignature.name(); // manglé 😬
+			// std::string expectedTypes = typed->typeSignature.name(); // manglé...
 
 			std::wstring message = L"LES PARAMÈTRES NE CORRESPONDENT PAS POUR " + errTypeName +
 				L"\n\nTypes donnés    : " + std::wstring(givenTypes.begin(), givenTypes.end()); /*+
