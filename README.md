@@ -199,7 +199,8 @@ LE GIF EST EN 25 FPS
 
 ## 🐍 Précompilateur Python — Auto-registration des classes
 
-### Fonctionnalités principales :
+### 🔹 Fonctionnalités principales :
+Pour faciliter la gestion des classes et l'enregistrement automatique dans le moteur C++, j’ai créé un **précompilateur en Python**.  
 - Parcourt tous les fichiers `.h` / `.cpp` du projet pour **détecter les classes héritant de `trActor`**.  
 - Identifie les **constructeurs principaux** et leurs paramètres pour chaque classe.  
 - Génère et insère automatiquement les macros `REGISTER_TYPE(ClassName, Param1, Param2, ...)` dans les fichiers `.cpp`, juste après les `#include`.  
@@ -207,7 +208,7 @@ LE GIF EST EN 25 FPS
 - Signale les erreurs : header manquant, constructeur non trouvé, ou `.cpp` introuvable.  
 - Permet un workflow **plus rapide et sécurisé** pour la génération des classes et l’intégration dans le moteur.  
 
-### Comment ça marche :
+### 🔹 Comment ça marche :
 1. Le script parcourt le projet et remplit un dictionnaire `class_parents` pour connaître l’arborescence des classes.  
 2. Il construit une liste des classes déjà enregistrées (`registered_classes`).  
 3. Il détecte les classes manquantes à enregistrer et cherche le `.h` et le `.cpp` correspondant.  
