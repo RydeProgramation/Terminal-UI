@@ -88,7 +88,7 @@ Le tableau n'est pas complet, me contacter pour d'autre informations !
 - Structures internes puissantes : `trPair`, `trMulti`, `trMap` personnalisée pour améliorer la performance par rapport à `std::vector`.  
 - Base prête pour intégrer des modules supplémentaires : audio, interactions souris, scènes complexes, etc.  
 
-> 💡 *Ces fonctionnalités montrent que Terminal-UI est un système **modulaire, performant et capable de gérer des animations complexes** directement dans le terminal.* 
+> 💡 *Ces fonctionnalités montrent que Terminal-UI est un système **modulaire, performant et capable de gérer des animations** directement dans le terminal.* 
 
 ---
 
@@ -141,7 +141,7 @@ On remarque une trèèès grande optimisation !
   | **BUFFER_SYSTEM** | Tout est écrit dans un `ostringstream` tampon avant affichage | Fluide pour peu d’actions, mais **instable** avec de nombreux changements simultanés |
   | **RENDER_SYSTEM** | Buffer complet pour tous les éléments, sans toucher directement au terminal | **Le plus performant et fluide**, gestion complète des positions et superpositions, modifications possibles **avant affichage** |
 
-LE GIF EST EN 25 FPS
+!! LE GIF EST EN 25 FPS !!
 
 ![DEMO](DEMO.gif)
 
