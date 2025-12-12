@@ -19,7 +19,7 @@ Objectifs principaux :
 1. Fournir une base solide pour le **rendu en mode texte**.  
 2. Permettre aux développeurs de **concevoir leurs propres composants visuels**, à la manière d’un moteur d’interface moderne, mais dans le terminal.
 
-> 🎯 *“Tu rêves de pouvoir faire des widgets à ta sauce ? Ce projet te donne les outils pour les créer.”*
+> *“Tu rêves de pouvoir faire des widgets à ta sauce ? Ce projet te donne les outils pour les créer.”*
 
 ---
 
@@ -92,7 +92,7 @@ Le tableau n'est pas complet, me contacter pour d'autre informations !
 
 ---
 
-## 🧪 Étapes de développement
+## Étapes de développement
 
 ### 1️⃣ — Première itération : Base du moteur
 - Mise en place du moteur de rendu en texte pur.  
